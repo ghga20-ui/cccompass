@@ -202,13 +202,24 @@ function RoadmapContent() {
     configs.forEach(({ grade, semester }) => {
       const groups = getSelectionGroups(cohort, grade, semester);
 
-      // 이 학기 이전에 (같은 학년 1학기) 선택된 과목 수집
-      const prevSemSelected = new Set<string>();
+      // 이전에 선택된 과목 수집 (같은 학년 1학기 + 이전 학년 전체)
+      const prevSelected = new Set<string>();
       if (semester === 2) {
         const s1Groups = getSelectionGroups(cohort, grade, 1);
         s1Groups.forEach((g) => {
-          (init[g.id] || []).forEach((n) => prevSemSelected.add(n));
+          (init[g.id] || []).forEach((n) => prevSelected.add(n));
         });
+      }
+      // 이전 학년에서 선택된 과목 (예: 2학년 수강 → 3학년 불가)
+      if (grade > 2) {
+        for (let pg = 2; pg < grade; pg++) {
+          for (const ps of [1, 2]) {
+            const pgGroups = getSelectionGroups(cohort, pg, ps);
+            pgGroups.forEach((g) => {
+              (init[g.id] || []).forEach((n) => prevSelected.add(n));
+            });
+          }
+        }
       }
 
       // 같은 학기 내 이미 선택된 과목 추적 (선택군 간 중복 방지)
@@ -217,7 +228,7 @@ function RoadmapContent() {
       groups.forEach((group) => {
         const recommended = group.options.filter((opt) =>
           recNames.has(opt) &&
-          !prevSemSelected.has(opt) &&
+          !prevSelected.has(opt) &&
           !sameSemSelected.has(opt)
         );
         const sorted = sortByPriority(recommended, uniScores, coreAreas);
@@ -254,6 +265,21 @@ function RoadmapContent() {
             conflicts.set(name, "1학기 수강");
           });
         });
+      }
+
+      // 3) 이전 학년에서 선택된 과목 → 중복 수강 불가 (예: 2학년 수강 → 3학년 불가)
+      if (grade > 2) {
+        for (let prevGrade = 2; prevGrade < grade; prevGrade++) {
+          for (const prevSem of [1, 2]) {
+            const prevGroups = getSelectionGroups(cohort, prevGrade, prevSem);
+            prevGroups.forEach((g) => {
+              const sel = selections[g.id] || [];
+              sel.forEach((name) => {
+                conflicts.set(name, `${prevGrade}학년 수강`);
+              });
+            });
+          }
+        }
       }
 
       return conflicts;
