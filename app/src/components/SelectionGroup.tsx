@@ -11,6 +11,8 @@ export interface SelectionGroupProps {
   selected: string[];
   onToggle: (subjectName: string) => void;
   recommendedSubjects?: Set<string>;
+  /** 다른 선택군 또는 다른 학기에서 이미 수강한 과목 (중복 수강 불가) */
+  conflictSubjects?: Map<string, string>;  // subjectName -> reason
 }
 
 export default function SelectionGroup({
@@ -18,6 +20,7 @@ export default function SelectionGroup({
   selected,
   onToggle,
   recommendedSubjects,
+  conflictSubjects,
 }: SelectionGroupProps) {
   const isRadio = group.choose === 1;
   const isFull = selected.length >= group.choose;
@@ -46,7 +49,9 @@ export default function SelectionGroup({
         {group.options.map((name) => {
           const isSelected = selected.includes(name);
           const isRecommended = recommendedSubjects?.has(name) ?? false;
-          const isDisabled = !isSelected && isFull;
+          const conflictReason = conflictSubjects?.get(name);
+          const isConflict = !!conflictReason && !isSelected;
+          const isDisabled = isConflict || (!isSelected && isFull);
 
           return (
             <button
@@ -88,7 +93,15 @@ export default function SelectionGroup({
 
               {/* Badges */}
               <span className="flex shrink-0 items-center gap-1">
-                {isRecommended && (
+                {isConflict && (
+                  <Badge
+                    variant="secondary"
+                    className="border-0 bg-red-100 px-1.5 py-0 text-[10px] font-medium text-red-500 h-4"
+                  >
+                    {conflictReason}
+                  </Badge>
+                )}
+                {isRecommended && !isConflict && (
                   <Badge
                     variant="secondary"
                     className="border-0 bg-[var(--cta)]/10 px-1.5 py-0 text-[10px] font-semibold text-[var(--cta)] h-4"

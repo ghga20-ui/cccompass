@@ -201,16 +201,65 @@ function RoadmapContent() {
 
     configs.forEach(({ grade, semester }) => {
       const groups = getSelectionGroups(cohort, grade, semester);
+
+      // 이 학기 이전에 (같은 학년 1학기) 선택된 과목 수집
+      const prevSemSelected = new Set<string>();
+      if (semester === 2) {
+        const s1Groups = getSelectionGroups(cohort, grade, 1);
+        s1Groups.forEach((g) => {
+          (init[g.id] || []).forEach((n) => prevSemSelected.add(n));
+        });
+      }
+
+      // 같은 학기 내 이미 선택된 과목 추적 (선택군 간 중복 방지)
+      const sameSemSelected = new Set<string>();
+
       groups.forEach((group) => {
-        const recommended = group.options.filter((opt) => recNames.has(opt));
-        // 대입 반영 점수 → 핵심 교과 순으로 정렬 후 택N만큼 선택
+        const recommended = group.options.filter((opt) =>
+          recNames.has(opt) &&
+          !prevSemSelected.has(opt) &&
+          !sameSemSelected.has(opt)
+        );
         const sorted = sortByPriority(recommended, uniScores, coreAreas);
-        init[group.id] = sorted.slice(0, group.choose);
+        const picked = sorted.slice(0, group.choose);
+        init[group.id] = picked;
+        picked.forEach((n) => sameSemSelected.add(n));
       });
     });
 
     return init;
   });
+
+  // ========== 충돌 감지: 같은 학기 내 다른 선택군 + 같은 학년 이전 학기 ==========
+  const getConflictsForGroup = useCallback(
+    (targetGroupId: string, grade: number, semester: number): Map<string, string> => {
+      const conflicts = new Map<string, string>();
+      const allGroups = getSelectionGroups(cohort, grade, semester);
+
+      // 1) 같은 학기 내 다른 선택군에서 선택된 과목 → 중복 수강 불가
+      allGroups.forEach((g) => {
+        if (g.id === targetGroupId) return;
+        const sel = selections[g.id] || [];
+        sel.forEach((name) => {
+          conflicts.set(name, "이미 선택");
+        });
+      });
+
+      // 2) 같은 학년 이전 학기에서 선택된 과목 → 중복 수강 불가
+      if (semester === 2) {
+        const s1Groups = getSelectionGroups(cohort, grade, 1);
+        s1Groups.forEach((g) => {
+          const sel = selections[g.id] || [];
+          sel.forEach((name) => {
+            conflicts.set(name, "1학기 수강");
+          });
+        });
+      }
+
+      return conflicts;
+    },
+    [cohort, selections]
+  );
 
   const handleToggle = useCallback(
     (groupId: string, choose: number, subjectName: string) => {
@@ -393,6 +442,7 @@ function RoadmapContent() {
                         selected={selections[group.id] || []}
                         onToggle={(name) => handleToggle(group.id, group.choose, name)}
                         recommendedSubjects={recommendedNames}
+                        conflictSubjects={getConflictsForGroup(group.id, grade, semester)}
                       />
                     </CardContent>
                   </Card>
