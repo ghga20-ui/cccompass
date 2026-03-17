@@ -125,7 +125,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-lg">
           <div className="mb-4 flex items-center gap-2.5 md:justify-center">
             <img src="/school-logo.png" alt="효자고등학교 로고" className="h-10 w-10 rounded-full object-cover" />
-            <span className="text-lg font-bold text-foreground tracking-tight">효자고등학교</span>
+            <span className="text-2xl font-bold text-foreground tracking-tight">효자고등학교</span>
           </div>
           <h1 className="text-2xl font-bold leading-tight text-foreground md:text-3xl">
             나에게 딱 맞는
