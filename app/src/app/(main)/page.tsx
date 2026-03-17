@@ -121,10 +121,11 @@ export default function HomePage() {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Hero */}
-      <section className="px-5 pt-12 pb-6 md:pt-16 md:text-center">
+      <section className="px-5 pt-10 pb-6 md:pt-16 md:text-center">
         <div className="mx-auto max-w-lg">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-            🏫 효자고등학교 · 2022 개정 교육과정
+          <div className="mb-4 flex items-center gap-2.5 md:justify-center">
+            <img src="/school-logo.png" alt="효자고등학교 로고" className="h-10 w-10 rounded-full object-cover" />
+            <span className="text-lg font-bold text-foreground tracking-tight">효자고등학교</span>
           </div>
           <h1 className="text-2xl font-bold leading-tight text-foreground md:text-3xl">
             나에게 딱 맞는
