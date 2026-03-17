@@ -397,8 +397,8 @@ function RoadmapContent() {
       </div>
 
       {/* Sticky 학점 요약 바 */}
-      <div className="sticky top-[49px] z-20 -mx-0 px-4 py-2 bg-background/95 backdrop-blur-md border-b border-border/50">
-        <div className="mx-auto max-w-lg flex items-center justify-center gap-3">
+      <div className="sticky top-[49px] z-20 px-4 py-3 mt-1 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="mx-auto max-w-lg flex items-center justify-center gap-4">
           {cohort === "2026" ? (
             // 고1: 고2/고3 학점 별도 표시
             <>
@@ -408,11 +408,11 @@ function RoadmapContent() {
                 const isComplete = gt.selected === gt.expected;
                 return (
                   <div key={grade} className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium",
-                    isComplete ? "bg-emerald-50 text-emerald-700" : "bg-muted/50 text-muted-foreground"
+                    "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
+                    isComplete ? "bg-emerald-50 text-emerald-700" : "bg-muted/60 text-muted-foreground"
                   )}>
-                    <span>고{grade}</span>
-                    <span className="font-bold">{gt.selected}/{gt.expected}</span>
+                    <span className="font-semibold">고{grade}</span>
+                    <span className="text-base font-bold">{gt.selected}/{gt.expected}</span>
                     <span>학점</span>
                     {isComplete && <span>{"\u2713"}</span>}
                   </div>
@@ -422,13 +422,13 @@ function RoadmapContent() {
           ) : (
             // 고2: 고3 학점만
             <div className={cn(
-              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium",
+              "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
               grandTotal.selected === grandTotal.expected
                 ? "bg-emerald-50 text-emerald-700"
-                : "bg-muted/50 text-muted-foreground"
+                : "bg-muted/60 text-muted-foreground"
             )}>
-              <span>고3 전체</span>
-              <span className="font-bold">{grandTotal.selected}/{grandTotal.expected}</span>
+              <span className="font-semibold">고3 전체</span>
+              <span className="text-base font-bold">{grandTotal.selected}/{grandTotal.expected}</span>
               <span>학점</span>
               {grandTotal.selected === grandTotal.expected && <span>{"\u2713"}</span>}
             </div>
