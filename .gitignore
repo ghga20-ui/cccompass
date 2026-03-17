@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+app/node_modules/
+
+# Next.js
+app/.next/
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# Python
+__pycache__/
+*.pyc
+
+# Temp files
+data/_gemini_progress.json
+data/page_*.png
+data/check_*.png
+data/verify_*.png
+
+# Claude/IDE
+.claude/
+.superpowers/
+
+# Large source files (PDF/Excel)
+*.pdf
+*.pptx
+*.xlsm
+*.xlsx
+
+# Intermediate parse artifacts
+pdf_*.txt
+ocr_*.py
+parse_*.py
+convert_career.py
+export_to_excel.py
+data/_*.txt
+data/_*.json
+data/*.md
+data/*.xlsx
+
+# OS
+.DS_Store
+Thumbs.db

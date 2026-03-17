@@ -1,0 +1,656 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState, Suspense } from "react";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Sparkles, ChevronDown, GraduationCap, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import SubjectCard from "@/components/SubjectCard";
+import {
+  interestTags,
+  getRecommendedSubjectsByInterest,
+} from "@/data/career-mapping";
+import { getSubjectByName, type Subject } from "@/data/subjects";
+import { getCohortData } from "@/data/school";
+import { useCohort } from "@/contexts/CohortContext";
+import { getDepartmentRecommendation } from "@/data/search-index";
+
+/**
+ * 앞으로 선택해야 할 과목 → 개설 학기 매핑
+ * 2025(현 고2): 고3 선택과목만 / 2026(현 고1): 고2+고3 선택과목
+ */
+function buildSelectableSubjectMap(cohortYear: string): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  const cohort = getCohortData(cohortYear);
+  if (!cohort) return map;
+
+  const minGrade = cohortYear === "2025" ? 3 : 2;
+
+  const addName = (name: string, label: string) => {
+    const existing = map.get(name) || [];
+    if (!existing.includes(label)) existing.push(label);
+    map.set(name, existing);
+  };
+
+  cohort.selections.forEach((g) => {
+    if (g.grade < minGrade) return;
+    const label = `${g.grade}-${g.semester}`;
+    g.options.forEach((o) => {
+      addName(o, label);
+      if (o.includes("↔")) {
+        o.split("↔").forEach((s) => addName(s.trim(), label));
+      }
+    });
+  });
+
+  return map;
+}
+
+/** 우리 학교에 개설되는 전체 과목 (지정+선택, 전 학년) */
+function buildAllSchoolSubjectNames(cohortYear: string): Set<string> {
+  const names = new Set<string>();
+  const cohort = getCohortData(cohortYear);
+  if (!cohort) return names;
+
+  cohort.designated.forEach((d) => {
+    names.add(d.subject);
+    if (d.subject.includes("↔")) {
+      d.subject.split("↔").forEach((s) => names.add(s.trim()));
+    }
+  });
+  cohort.selections.forEach((g) =>
+    g.options.forEach((o) => {
+      names.add(o);
+      if (o.includes("↔")) {
+        o.split("↔").forEach((s) => names.add(s.trim()));
+      }
+    })
+  );
+
+  return names;
+}
+
+/** 추천에서 제외할 과목: 지정과목 + 이미 지난 학년 과목 */
+function buildExcludedNames(cohortYear: string): Set<string> {
+  const names = new Set<string>();
+  const cohort = getCohortData(cohortYear);
+  if (!cohort) return names;
+
+  const minGrade = cohortYear === "2025" ? 3 : 2;
+
+  // 학교지정 과목 전체 (필수라 추천 불필요)
+  cohort.designated.forEach((d) => names.add(d.subject));
+
+  // 이미 지난 학년의 선택과목 (고2가 이미 고2에서 선택한 과목)
+  cohort.selections.forEach((g) => {
+    if (g.grade < minGrade) {
+      g.options.forEach((o) => names.add(o));
+    }
+  });
+
+  return names;
+}
+
+interface SubjectWithMeta {
+  subject: Subject;
+  isAvailable: boolean;
+  suneung: boolean;
+  semesters: string[]; // e.g. ["2-1", "3-2"]
+}
+
+type SelectionCategory = "일반선택" | "진로선택" | "융합선택";
+
+// ========== Department-based recommendation view ==========
+function DeptRecommendContent({ deptName }: { deptName: string }) {
+  const { cohort } = useCohort();
+
+  const deptData = useMemo(() => getDepartmentRecommendation(deptName), [deptName]);
+
+  const selectableMap = useMemo(() => buildSelectableSubjectMap(cohort), [cohort]);
+  const allSchoolNames = useMemo(() => buildAllSchoolSubjectNames(cohort), [cohort]);
+  const excludedNames = useMemo(() => buildExcludedNames(cohort), [cohort]);
+
+  const { bySemester, unavailable, semesterOrder } = useMemo(() => {
+    if (!deptData) {
+      return {
+        bySemester: new Map<string, SubjectWithMeta[]>(),
+        unavailable: [] as SubjectWithMeta[],
+        semesterOrder: [] as string[],
+      };
+    }
+
+    const allItems: SubjectWithMeta[] = [];
+    const seen = new Set<string>();
+
+    (["일반선택", "진로선택", "융합선택"] as const).forEach((cat) => {
+      deptData.subjects[cat].forEach((subjectName) => {
+        const subject = getSubjectByName(subjectName);
+        if (!subject) return;
+        if (seen.has(subject.id)) return;
+        if (subject.category === "공통") return;
+        if (excludedNames.has(subject.name)) return;
+        seen.add(subject.id);
+
+        const semesters = selectableMap.get(subject.name) || [];
+        const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
+        const suneung = subject.suneung === true;
+
+        allItems.push({ subject, isAvailable, suneung, semesters });
+      });
+    });
+
+    const unavail = allItems.filter((item) => !item.isAvailable);
+
+    const semMap = new Map<string, SubjectWithMeta[]>();
+    const placed = new Set<string>();
+
+    const order = cohort === "2025"
+      ? ["3-1", "3-2"]
+      : ["2-1", "2-2", "3-1", "3-2"];
+
+    order.forEach((sem) => semMap.set(sem, []));
+
+    allItems
+      .filter((item) => item.isAvailable)
+      .forEach((item) => {
+        if (placed.has(item.subject.id)) return;
+        const firstSem = order.find((sem) => item.semesters.includes(sem));
+        if (firstSem) {
+          semMap.get(firstSem)!.push(item);
+          placed.add(item.subject.id);
+        }
+      });
+
+    const catOrder: Record<string, number> = { "일반선택": 0, "진로선택": 1, "융합선택": 2 };
+    semMap.forEach((items) => {
+      items.sort((a, b) => {
+        const catDiff = (catOrder[a.subject.category] ?? 3) - (catOrder[b.subject.category] ?? 3);
+        if (catDiff !== 0) return catDiff;
+        return a.suneung === b.suneung ? 0 : a.suneung ? -1 : 1;
+      });
+    });
+
+    return { bySemester: semMap, unavailable: unavail, semesterOrder: order };
+  }, [deptData, selectableMap, allSchoolNames, excludedNames, cohort]);
+
+  const [openSemesters, setOpenSemesters] = useState<Set<string>>(() => new Set(semesterOrder));
+  const [showUnavailable, setShowUnavailable] = useState(false);
+
+  const toggleSemester = (sem: string) => {
+    setOpenSemesters((prev) => {
+      const next = new Set(prev);
+      if (next.has(sem)) next.delete(sem);
+      else next.add(sem);
+      return next;
+    });
+  };
+
+  const availableCount = Array.from(bySemester.values()).reduce(
+    (sum, items) => sum + items.length, 0
+  );
+
+  if (!deptData) {
+    return (
+      <div className="flex min-h-dvh flex-col items-center justify-center px-5 text-center">
+        <p className="text-muted-foreground mb-4">
+          해당 학과를 찾을 수 없습니다
+        </p>
+        <Link href="/">
+          <Button>홈으로 돌아가기</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-dvh pb-4">
+      {/* Header */}
+      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3">
+        <div className="mx-auto flex max-w-lg items-center gap-3">
+          <Link href="/" className="shrink-0 p-1">
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </Link>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-semibold text-foreground">
+              학과별 추천 과목
+            </h1>
+            <p className="text-[11px] text-muted-foreground">
+              효자고등학교 · {cohort === "2025" ? "고2" : "고1"}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-lg px-4 pt-4">
+        {/* Department info */}
+        <div className="mb-4">
+          <div className="mb-2 flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-[var(--primary)]" />
+            <h2 className="text-lg font-bold text-foreground">
+              {deptData.department.name} 추천 과목
+            </h2>
+          </div>
+          <div className="flex items-center gap-1.5 mb-3">
+            <Badge className="bg-[var(--primary)]/10 text-[var(--primary)]">
+              {deptData.department.fieldName}
+            </Badge>
+            <Badge className="bg-[var(--cta)]/10 text-[var(--cta)]">
+              {deptData.department.trackName}
+            </Badge>
+          </div>
+
+          {/* Description */}
+          <div className="rounded-xl bg-gradient-to-r from-[var(--primary)]/5 to-[var(--cta)]/5 border border-border/50 p-3.5 mb-3">
+            <p className="text-sm text-foreground leading-relaxed">
+              {deptData.department.description}
+            </p>
+          </div>
+
+          {/* Recommended students */}
+          {deptData.department.recommendedStudents.length > 0 && (
+            <div className="rounded-xl border border-border bg-card p-3.5 mb-4">
+              <p className="text-xs font-semibold text-[var(--primary)] mb-2">
+                이런 학생에게 추천
+              </p>
+              <ul className="space-y-1.5">
+                {deptData.department.recommendedStudents.map((text, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                    <CheckCircle2 className="h-4 w-4 text-[var(--cta)] shrink-0 mt-0.5" />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Summary */}
+        <div className="mb-4 rounded-xl bg-gradient-to-r from-[var(--primary)]/5 to-[var(--cta)]/5 border border-border/50 p-3">
+          <p className="text-sm text-foreground">
+            우리 학교에서 수강 가능한 추천 과목 <span className="font-bold text-[var(--primary)]">{availableCount}개</span>
+          </p>
+        </div>
+
+        {/* 학기별 섹션 */}
+        {semesterOrder.map((sem) => {
+          const items = bySemester.get(sem) || [];
+          if (items.length === 0) return null;
+          const [g, s] = sem.split("-");
+          const isGrade2 = g === "2";
+          const semLabel = `${g}학년 ${s}학기`;
+
+          return (
+            <section
+              key={sem}
+              className={`mb-3 rounded-xl border-l-[3px] ${
+                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
+              }`}
+            >
+              <button
+                onClick={() => toggleSemester(sem)}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
+              >
+                <h2 className={`text-sm font-bold ${
+                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
+                }`}>
+                  {semLabel}
+                </h2>
+                <span className="text-xs text-muted-foreground ml-auto mr-1">
+                  {items.length}개 추천
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 text-muted-foreground transition-transform ${
+                    openSemesters.has(sem) ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {openSemesters.has(sem) && (
+                <div className="space-y-2 px-3 pb-3">
+                  {items.map((item) => (
+                    <SubjectCard
+                      key={item.subject.id}
+                      subject={item.subject}
+                      suneung={item.suneung}
+                      semesters={item.semesters}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          );
+        })}
+
+        {/* 미개설 과목 - 아코디언 */}
+        {unavailable.length > 0 && (
+          <section className="mb-5">
+            <button
+              onClick={() => setShowUnavailable(!showUnavailable)}
+              className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 bg-muted/50 border border-border/50 transition-colors hover:bg-muted/80"
+            >
+              <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+              <span className="text-sm font-medium text-muted-foreground">
+                우리 학교 미개설 과목
+              </span>
+              <span className="text-xs text-muted-foreground/60 ml-auto mr-1">
+                {unavailable.length}개
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                  showUnavailable ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {showUnavailable && (
+              <div className="mt-2.5 space-y-2 opacity-60">
+                {unavailable.map((item) => (
+                  <SubjectCard
+                    key={item.subject.id}
+                    subject={item.subject}
+                    suneung={item.suneung}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Roadmap CTA */}
+        <div className="mt-4 mb-2">
+          <Link href={`/roadmap?dept=${encodeURIComponent(deptName)}`}>
+            <Button className="w-full h-12 rounded-xl text-base font-semibold bg-[var(--cta)] hover:bg-[var(--cta)]/90 text-white shadow-lg shadow-[var(--cta)]/25">
+              이 추천으로 로드맵 만들기
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+
+        {/* Back to home */}
+        <div className="mb-2">
+          <Link href="/">
+            <Button variant="outline" className="w-full h-12 rounded-xl text-base font-semibold">
+              다른 학과 검색하기
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========== Interest-based recommendation view (existing) ==========
+function InterestRecommendContent({ interests }: { interests: string[] }) {
+  const { cohort } = useCohort();
+
+  // 선택해야 할 과목 → 학기 매핑
+  const selectableMap = useMemo(() => buildSelectableSubjectMap(cohort), [cohort]);
+  // 학교 전체 개설 과목
+  const allSchoolNames = useMemo(() => buildAllSchoolSubjectNames(cohort), [cohort]);
+  // 추천에서 제외할 과목 (지정 + 이미 지난 학년)
+  const excludedNames = useMemo(() => buildExcludedNames(cohort), [cohort]);
+
+  // 학기별로 그룹핑 + 미개설 분리
+  const { bySemester, unavailable, semesterOrder } = useMemo(() => {
+    const allItems: SubjectWithMeta[] = [];
+    const seen = new Set<string>();
+
+    interests.forEach((interestId) => {
+      const byCategory = getRecommendedSubjectsByInterest(interestId);
+      (["일반선택", "진로선택", "융합선택"] as const).forEach((cat) => {
+        byCategory[cat].forEach((subject) => {
+          if (seen.has(subject.id)) return;
+          if (subject.category === "공통") return;
+          if (excludedNames.has(subject.name)) return;
+          seen.add(subject.id);
+
+          const semesters = selectableMap.get(subject.name) || [];
+          // 선택 가능한 학기가 있으면 available, 아니면 학교 전체에 있는지 체크
+          const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
+          const suneung = subject.suneung === true;
+
+          allItems.push({ subject, isAvailable, suneung, semesters });
+        });
+      });
+    });
+
+    // 미개설 분리
+    const unavail = allItems.filter((item) => !item.isAvailable);
+
+    // 개설 과목을 학기별로 분류 (같은 과목이 여러 학기에 있을 수 있음 → 첫 번째 학기에만 배치)
+    const semMap = new Map<string, SubjectWithMeta[]>();
+    const placed = new Set<string>();
+
+    // 학기 순서 결정
+    const order = cohort === "2025"
+      ? ["3-1", "3-2"]
+      : ["2-1", "2-2", "3-1", "3-2"];
+
+    order.forEach((sem) => semMap.set(sem, []));
+
+    // 각 과목을 첫 번째 해당 학기에 배치
+    allItems
+      .filter((item) => item.isAvailable)
+      .forEach((item) => {
+        if (placed.has(item.subject.id)) return;
+        const firstSem = order.find((sem) => item.semesters.includes(sem));
+        if (firstSem) {
+          semMap.get(firstSem)!.push(item);
+          placed.add(item.subject.id);
+        }
+      });
+
+    // 각 학기 내에서 일반→진로→융합 순 정렬, 그 안에서 수능 우선
+    const catOrder: Record<string, number> = { "일반선택": 0, "진로선택": 1, "융합선택": 2 };
+    semMap.forEach((items) => {
+      items.sort((a, b) => {
+        const catDiff = (catOrder[a.subject.category] ?? 3) - (catOrder[b.subject.category] ?? 3);
+        if (catDiff !== 0) return catDiff;
+        return a.suneung === b.suneung ? 0 : a.suneung ? -1 : 1;
+      });
+    });
+
+    return { bySemester: semMap, unavailable: unavail, semesterOrder: order };
+  }, [interests, selectableMap, allSchoolNames, excludedNames, cohort]);
+
+  const [openSemesters, setOpenSemesters] = useState<Set<string>>(() => new Set(semesterOrder));
+  const [showUnavailable, setShowUnavailable] = useState(false);
+
+  const toggleSemester = (sem: string) => {
+    setOpenSemesters((prev) => {
+      const next = new Set(prev);
+      if (next.has(sem)) next.delete(sem);
+      else next.add(sem);
+      return next;
+    });
+  };
+
+  const selectedLabels = interests
+    .map((id) => interestTags.find((t) => t.id === id)?.label)
+    .filter(Boolean);
+
+  const availableCount = Array.from(bySemester.values()).reduce(
+    (sum, items) => sum + items.length, 0
+  );
+
+  if (interests.length === 0) {
+    return (
+      <div className="flex min-h-dvh flex-col items-center justify-center px-5 text-center">
+        <p className="text-muted-foreground mb-4">
+          관심 분야를 먼저 선택해주세요
+        </p>
+        <Link href="/">
+          <Button>홈으로 돌아가기</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-dvh pb-4">
+      {/* Header */}
+      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3">
+        <div className="mx-auto flex max-w-lg items-center gap-3">
+          <Link href="/" className="shrink-0 p-1">
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </Link>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-semibold text-foreground">
+              맞춤 과목 추천
+            </h1>
+            <p className="text-[11px] text-muted-foreground">
+              효자고등학교 · {cohort === "2025" ? "고2" : "고1"}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-lg px-4 pt-4">
+        {/* Selected interests */}
+        <div className="mb-3 flex items-center gap-2 flex-wrap">
+          <Sparkles className="h-4 w-4 text-[var(--cta)]" />
+          {selectedLabels.map((label) => (
+            <Badge
+              key={label}
+              className="bg-[var(--primary)]/10 text-[var(--primary)]"
+            >
+              {label}
+            </Badge>
+          ))}
+          <span className="text-xs text-muted-foreground">
+            기반 추천 결과
+          </span>
+        </div>
+
+        {/* Summary */}
+        <div className="mb-4 rounded-xl bg-gradient-to-r from-[var(--primary)]/5 to-[var(--cta)]/5 border border-border/50 p-3">
+          <p className="text-sm text-foreground">
+            우리 학교에서 수강 가능한 추천 과목 <span className="font-bold text-[var(--primary)]">{availableCount}개</span>
+          </p>
+        </div>
+
+        {/* 학기별 섹션 */}
+        {semesterOrder.map((sem) => {
+          const items = bySemester.get(sem) || [];
+          if (items.length === 0) return null;
+          const [g, s] = sem.split("-");
+          const isGrade2 = g === "2";
+          const semLabel = `${g}학년 ${s}학기`;
+
+          return (
+            <section
+              key={sem}
+              className={`mb-3 rounded-xl border-l-[3px] ${
+                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
+              }`}
+            >
+              <button
+                onClick={() => toggleSemester(sem)}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
+              >
+                <h2 className={`text-sm font-bold ${
+                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
+                }`}>
+                  {semLabel}
+                </h2>
+                <span className="text-xs text-muted-foreground ml-auto mr-1">
+                  {items.length}개 추천
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 text-muted-foreground transition-transform ${
+                    openSemesters.has(sem) ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {openSemesters.has(sem) && (
+                <div className="space-y-2 px-3 pb-3">
+                  {items.map((item) => (
+                    <SubjectCard
+                      key={item.subject.id}
+                      subject={item.subject}
+                      suneung={item.suneung}
+                      semesters={item.semesters}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          );
+        })}
+
+        {/* 미개설 과목 - 아코디언 */}
+        {unavailable.length > 0 && (
+          <section className="mb-5">
+            <button
+              onClick={() => setShowUnavailable(!showUnavailable)}
+              className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 bg-muted/50 border border-border/50 transition-colors hover:bg-muted/80"
+            >
+              <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+              <span className="text-sm font-medium text-muted-foreground">
+                우리 학교 미개설 과목
+              </span>
+              <span className="text-xs text-muted-foreground/60 ml-auto mr-1">
+                {unavailable.length}개
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                  showUnavailable ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {showUnavailable && (
+              <div className="mt-2.5 space-y-2 opacity-60">
+                {unavailable.map((item) => (
+                  <SubjectCard
+                    key={item.subject.id}
+                    subject={item.subject}
+                    suneung={item.suneung}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* CTA to roadmap */}
+        <div className="mt-4 mb-2">
+          <Link href={`/roadmap?interests=${interests.join(",")}`}>
+            <Button className="w-full h-12 rounded-xl text-base font-semibold bg-[var(--cta)] hover:bg-[var(--cta)]/90 text-white shadow-lg shadow-[var(--cta)]/25">
+              3년 로드맵 만들기
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========== Router component ==========
+function RecommendContent() {
+  const searchParams = useSearchParams();
+  const deptName = searchParams.get("dept");
+  const interests = searchParams.get("interests")?.split(",") ?? [];
+
+  // Department-based mode
+  if (deptName) {
+    return <DeptRecommendContent deptName={deptName} />;
+  }
+
+  // Interest-based mode (existing behavior)
+  return <InterestRecommendContent interests={interests} />;
+}
+
+export default function RecommendPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-dvh items-center justify-center">
+          <p className="text-muted-foreground">로딩 중...</p>
+        </div>
+      }
+    >
+      <RecommendContent />
+    </Suspense>
+  );
+}
