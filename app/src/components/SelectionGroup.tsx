@@ -64,7 +64,7 @@ export default function SelectionGroup({
                 isSelected
                   ? "bg-[var(--primary)]/8 ring-1 ring-[var(--primary)]/30"
                   : "bg-muted/30 hover:bg-muted/60",
-                isDisabled && "opacity-40 cursor-not-allowed",
+                isDisabled && "cursor-not-allowed",
                 isRecommended && !isSelected && "ring-1 ring-[var(--cta)]/20"
               )}
             >
@@ -75,7 +75,8 @@ export default function SelectionGroup({
                   isRadio ? "h-[18px] w-[18px]" : "h-[18px] w-[18px] rounded-[4px]",
                   isSelected
                     ? "bg-[var(--primary)] text-white"
-                    : "border-2 border-muted-foreground/30 bg-white"
+                    : "border-2 border-muted-foreground/30 bg-white",
+                  isDisabled && "opacity-40"
                 )}
               >
                 {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
@@ -85,7 +86,8 @@ export default function SelectionGroup({
               <span
                 className={cn(
                   "flex-1 text-sm",
-                  isSelected ? "font-medium text-foreground" : "text-foreground/80"
+                  isSelected ? "font-medium text-foreground" : "text-foreground/80",
+                  isDisabled && "opacity-40"
                 )}
               >
                 {name}

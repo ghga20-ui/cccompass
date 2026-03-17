@@ -195,7 +195,7 @@ export default function HomePage() {
           <div className="mb-2.5 flex items-center gap-1.5">
             <Search className="h-4 w-4 text-[var(--primary)]" />
             <h2 className="text-sm font-medium text-foreground">
-              학과/직업으로 검색
+              학과로 검색
             </h2>
           </div>
 
@@ -209,7 +209,7 @@ export default function HomePage() {
                 onFocus={() => {
                   if (searchResults.length > 0) setShowDropdown(true);
                 }}
-                placeholder="학과나 직업을 검색해봐! (예: 의사, 컴퓨터공학과)"
+                placeholder="학과를 검색해봐! (예: 컴퓨터공학과, 간호학과)"
                 disabled={isSearchMode}
                 className={cn(
                   "w-full min-h-[44px] rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all",
@@ -228,17 +228,10 @@ export default function HomePage() {
                     onClick={() => handleSelectSearchResult(result)}
                     className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left hover:bg-[var(--primary)]/5 transition-colors border-b border-border/50 last:border-b-0"
                   >
-                    <span className="text-lg shrink-0">
-                      {result.type === "department" ? "\uD83C\uDF93" : "\uD83D\uDCBC"}
-                    </span>
+                    <span className="text-lg shrink-0">{"\uD83C\uDF93"}</span>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-foreground truncate">
                         {result.label}
-                        {result.type === "career" && (
-                          <span className="ml-1.5 text-xs font-normal text-muted-foreground">
-                            → {result.departmentName}
-                          </span>
-                        )}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
                         {result.fieldName} · {result.trackName}
@@ -254,16 +247,9 @@ export default function HomePage() {
           {selectedDept && (
             <div className="mt-3 flex items-center gap-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-[var(--primary)] bg-[var(--primary)]/10 px-4 py-2 min-h-[44px]">
-                <span className="text-sm">
-                  {selectedDept.type === "department" ? "\uD83C\uDF93" : "\uD83D\uDCBC"}
-                </span>
+                <span className="text-sm">{"\uD83C\uDF93"}</span>
                 <span className="text-sm font-medium text-[var(--primary)]">
                   {selectedDept.label}
-                  {selectedDept.type === "career" && (
-                    <span className="ml-1 text-xs font-normal text-[var(--primary)]/70">
-                      → {selectedDept.departmentName}
-                    </span>
-                  )}
                 </span>
                 <button
                   onClick={handleClearDept}
@@ -277,9 +263,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 구분선 */}
+      <div className="px-5">
+        <div className="mx-auto max-w-lg">
+          <hr className="border-border" />
+        </div>
+      </div>
+
       {/* Tag selector */}
       <section className={cn(
-        "flex-1 px-5 pb-6 transition-all",
+        "flex-1 px-5 pt-4 pb-6 transition-all",
         isSearchMode && "opacity-40 pointer-events-none"
       )}>
         <div className="mx-auto max-w-lg">
@@ -295,74 +288,85 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-wrap gap-2.5">
-            {interestTags.map((tag) => {
-              const isSelected = selectedTags.includes(tag.id);
-              return (
-                <button
-                  key={tag.id}
-                  onClick={() => toggleTag(tag.id)}
-                  className={cn(
-                    "rounded-full border px-4 py-2.5 text-sm font-medium transition-all active:scale-95",
-                    "min-h-[44px]",
-                    isSelected
-                      ? "border-[var(--primary)] bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
-                      : "border-border bg-card text-foreground hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5"
-                  )}
-                >
-                  {tag.label}
-                </button>
-              );
-            })}
-          </div>
+            {/* 선택된 태그 먼저 */}
+            {interestTags.filter(tag => selectedTags.includes(tag.id)).map((tag) => (
+              <button
+                key={tag.id}
+                onClick={() => toggleTag(tag.id)}
+                className={cn(
+                  "rounded-full border px-4 py-2.5 text-sm font-medium transition-all active:scale-95",
+                  "min-h-[44px]",
+                  "border-[var(--primary)] bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
+                )}
+              >
+                {tag.label}
+              </button>
+            ))}
 
-          {/* 2-level: 학과 선택 패널 */}
-          {selectedTags.length > 0 && tagDepartments.length > 0 && (
-            <div
-              className="mt-4 rounded-xl border border-border bg-card p-4 animate-in fade-in slide-in-from-top-2 duration-300"
-            >
-              <div className="mb-3 flex items-center gap-1.5">
-                <ChevronDown className="h-4 w-4 text-[var(--primary)]" />
-                <p className="text-sm font-medium text-foreground">
-                  &ldquo;{interestTags.find(t => t.id === selectedTags[0])?.label}&rdquo; 관련 학과를 선택해봐
+            {/* 세부학과 패널: 선택된 태그 바로 아래 */}
+            {selectedTags.length > 0 && tagDepartments.length > 0 && (
+              <div
+                className="w-full mt-1 mb-2 rounded-xl border border-border bg-card p-4 animate-in fade-in slide-in-from-top-2 duration-300"
+              >
+                <div className="mb-3 flex items-center gap-1.5">
+                  <ChevronDown className="h-4 w-4 text-[var(--primary)]" />
+                  <p className="text-sm font-medium text-foreground">
+                    &ldquo;{interestTags.find(t => t.id === selectedTags[0])?.label}&rdquo; 관련 학과를 선택해봐
+                  </p>
+                </div>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  선택하지 않아도 추천받을 수 있어
                 </p>
-              </div>
-              <p className="mb-3 text-xs text-muted-foreground">
-                선택하지 않아도 추천받을 수 있어
-              </p>
 
-              <div className="grid grid-cols-2 gap-2">
-                {tagDepartments.map((dept) => {
-                  const isDeptSelected = selectedTagDept === dept.name;
-                  return (
-                    <button
-                      key={dept.name}
-                      onClick={() =>
-                        setSelectedTagDept(prev =>
-                          prev === dept.name ? null : dept.name
-                        )
-                      }
-                      className={cn(
-                        "min-h-[44px] rounded-lg border p-2.5 text-left transition-all active:scale-[0.98]",
-                        isDeptSelected
-                          ? "border-[var(--primary)] bg-[var(--primary)]/10 shadow-sm"
-                          : "border-border bg-background hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5"
-                      )}
-                    >
-                      <p className={cn(
-                        "text-sm font-semibold leading-tight",
-                        isDeptSelected ? "text-[var(--primary)]" : "text-foreground"
-                      )}>
-                        {dept.name}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
-                        {dept.description}
-                      </p>
-                    </button>
-                  );
-                })}
+                <div className="grid grid-cols-2 gap-2">
+                  {tagDepartments.map((dept) => {
+                    const isDeptSelected = selectedTagDept === dept.name;
+                    return (
+                      <button
+                        key={dept.name}
+                        onClick={() =>
+                          setSelectedTagDept(prev =>
+                            prev === dept.name ? null : dept.name
+                          )
+                        }
+                        className={cn(
+                          "min-h-[44px] rounded-lg border p-2.5 text-left transition-all active:scale-[0.98]",
+                          isDeptSelected
+                            ? "border-[var(--primary)] bg-[var(--primary)]/10 shadow-sm"
+                            : "border-border bg-background hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5"
+                        )}
+                      >
+                        <p className={cn(
+                          "text-sm font-semibold leading-tight",
+                          isDeptSelected ? "text-[var(--primary)]" : "text-foreground"
+                        )}>
+                          {dept.name}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                          {dept.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* 나머지 미선택 태그 */}
+            {interestTags.filter(tag => !selectedTags.includes(tag.id)).map((tag) => (
+              <button
+                key={tag.id}
+                onClick={() => toggleTag(tag.id)}
+                className={cn(
+                  "rounded-full border px-4 py-2.5 text-sm font-medium transition-all active:scale-95",
+                  "min-h-[44px]",
+                  "border-border bg-card text-foreground hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5"
+                )}
+              >
+                {tag.label}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 

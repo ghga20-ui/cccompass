@@ -321,6 +321,18 @@ function RoadmapContent() {
     );
   }, [semesterConfigs, getSemesterCredits]);
 
+  // Per-grade totals (for 고1: 고2/고3 분리 표시)
+  const gradeTotals = useMemo(() => {
+    const byGrade: Record<number, { selected: number; expected: number }> = {};
+    semesterConfigs.forEach(({ grade, semester }) => {
+      if (!byGrade[grade]) byGrade[grade] = { selected: 0, expected: 0 };
+      const c = getSemesterCredits(grade, semester);
+      byGrade[grade].selected += c.total;
+      byGrade[grade].expected += c.totalExpected;
+    });
+    return byGrade;
+  }, [semesterConfigs, getSemesterCredits]);
+
   // Interest labels for display
   const interestLabels = useMemo(() => {
     return interests
@@ -382,7 +394,49 @@ function RoadmapContent() {
         <p className="text-xs text-muted-foreground leading-relaxed">
           학교지정 과목은 자동으로 포함됩니다. 선택과목군에서 원하는 과목을 골라 나만의 커리큘럼을 완성하세요.
         </p>
+      </div>
 
+      {/* Sticky 학점 요약 바 */}
+      <div className="sticky top-[49px] z-20 -mx-0 px-4 py-2 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="mx-auto max-w-lg flex items-center justify-center gap-3">
+          {cohort === "2026" ? (
+            // 고1: 고2/고3 학점 별도 표시
+            <>
+              {[2, 3].map((grade) => {
+                const gt = gradeTotals[grade];
+                if (!gt) return null;
+                const isComplete = gt.selected === gt.expected;
+                return (
+                  <div key={grade} className={cn(
+                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium",
+                    isComplete ? "bg-emerald-50 text-emerald-700" : "bg-muted/50 text-muted-foreground"
+                  )}>
+                    <span>고{grade}</span>
+                    <span className="font-bold">{gt.selected}/{gt.expected}</span>
+                    <span>학점</span>
+                    {isComplete && <span>{"\u2713"}</span>}
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            // 고2: 고3 학점만
+            <div className={cn(
+              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium",
+              grandTotal.selected === grandTotal.expected
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-muted/50 text-muted-foreground"
+            )}>
+              <span>고3 전체</span>
+              <span className="font-bold">{grandTotal.selected}/{grandTotal.expected}</span>
+              <span>학점</span>
+              {grandTotal.selected === grandTotal.expected && <span>{"\u2713"}</span>}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-lg px-4 pt-3 space-y-5 pb-6">
         {/* Semester sections */}
         {semesterConfigs.map(({ grade, semester, label }) => {
           const designated = getDesignatedSubjects(cohort, grade, semester);
@@ -468,42 +522,6 @@ function RoadmapContent() {
           );
         })}
 
-        {/* Grand total summary */}
-        <div
-          className={cn(
-            "rounded-xl p-4 text-center space-y-1",
-            grandTotal.selected === grandTotal.expected
-              ? "bg-emerald-50 ring-1 ring-emerald-200"
-              : "bg-muted/50 ring-1 ring-border"
-          )}
-        >
-          <p className="text-xs text-muted-foreground">
-            {cohort === "2025" ? "고3" : "고2~고3"} 전체 학점
-          </p>
-          <p
-            className={cn(
-              "text-2xl font-bold",
-              grandTotal.selected === grandTotal.expected
-                ? "text-emerald-700"
-                : "text-foreground"
-            )}
-          >
-            {grandTotal.selected}
-            <span className="text-sm font-normal text-muted-foreground ml-1">
-              / {grandTotal.expected}학점
-            </span>
-          </p>
-          {grandTotal.selected === grandTotal.expected && (
-            <p className="text-xs text-emerald-600 font-medium">
-              모든 선택이 완료되었습니다!
-            </p>
-          )}
-          {grandTotal.selected < grandTotal.expected && grandTotal.selected > 0 && (
-            <p className="text-xs text-muted-foreground">
-              {grandTotal.expected - grandTotal.selected}학점 더 선택해주세요
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );

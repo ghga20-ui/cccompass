@@ -16,6 +16,37 @@ import { getCohortData } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { getDepartmentRecommendation } from "@/data/search-index";
 
+// ========== 권장 역량 접이식 컴포넌트 ==========
+function CompetencyAccordion({ items }: { items: string[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl border border-border bg-card mb-4">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3.5 py-3 text-left"
+      >
+        <p className="text-xs font-semibold text-[var(--primary)]">권장 역량</p>
+        <span className="text-xs text-muted-foreground ml-auto mr-1">{items.length}개</span>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-3.5 pb-3.5">
+          <ul className="space-y-1.5">
+            {items.map((text, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                <CheckCircle2 className="h-4 w-4 text-[var(--cta)] shrink-0 mt-0.5" />
+                <span>{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /**
  * 앞으로 선택해야 할 과목 → 개설 학기 매핑
  * 2025(현 고2): 고3 선택과목만 / 2026(현 고1): 고2+고3 선택과목
@@ -247,21 +278,9 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
             </p>
           </div>
 
-          {/* Recommended students */}
+          {/* 권장 역량 (접이식) */}
           {deptData.department.recommendedStudents.length > 0 && (
-            <div className="rounded-xl border border-border bg-card p-3.5 mb-4">
-              <p className="text-xs font-semibold text-[var(--primary)] mb-2">
-                이런 학생에게 추천
-              </p>
-              <ul className="space-y-1.5">
-                {deptData.department.recommendedStudents.map((text, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
-                    <CheckCircle2 className="h-4 w-4 text-[var(--cta)] shrink-0 mt-0.5" />
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <CompetencyAccordion items={deptData.department.recommendedStudents} />
           )}
         </div>
 

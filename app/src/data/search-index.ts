@@ -4,7 +4,7 @@ import { getSubjectPriorityScores } from "./university-requirements";
 
 // ========== Types ==========
 export interface SearchResult {
-  type: "department" | "career";
+  type: "department";
   label: string;           // display name
   departmentName: string;  // the department this maps to
   fieldName: string;       // e.g., "보건·의약학 분야"
@@ -28,7 +28,6 @@ interface JsonDepartment {
     "진로선택": string[];
     "융합선택": string[];
   };
-  careers?: string[];
 }
 
 interface JsonTrack {
@@ -47,13 +46,10 @@ const fields = careerData.fields as JsonField[];
 
 // Track department names we've already added (for dedup)
 const addedDepartments = new Set<string>();
-// Track (career + departmentName) pairs to dedup careers mapping to same dept
-const addedCareerDeptPairs = new Set<string>();
 
 fields.forEach((field) => {
   field.tracks.forEach((track) => {
     track.departments.forEach((dept) => {
-      // Add department entry
       if (!addedDepartments.has(dept.name)) {
         addedDepartments.add(dept.name);
         searchIndex.push({
@@ -65,24 +61,6 @@ fields.forEach((field) => {
           lowerLabel: dept.name.toLowerCase(),
         });
       }
-
-      // Add career entries
-      if (dept.careers) {
-        dept.careers.forEach((career) => {
-          const key = `${career}__${dept.name}`;
-          if (addedCareerDeptPairs.has(key)) return;
-          addedCareerDeptPairs.add(key);
-
-          searchIndex.push({
-            type: "career",
-            label: career,
-            departmentName: dept.name,
-            fieldName: field.name,
-            trackName: track.name,
-            lowerLabel: career.toLowerCase(),
-          });
-        });
-      }
     });
   });
 });
@@ -92,42 +70,23 @@ export function searchDeptAndCareers(query: string): SearchResult[] {
   const q = query.trim().toLowerCase();
   if (q.length === 0) return [];
 
-  const deptMatches: SearchResult[] = [];
-  const careerMatches: SearchResult[] = [];
-  const seenCareerDepts = new Set<string>();
+  const matches: SearchResult[] = [];
 
   for (const entry of searchIndex) {
     if (!entry.lowerLabel.includes(q)) continue;
 
-    if (entry.type === "department") {
-      deptMatches.push({
-        type: entry.type,
-        label: entry.label,
-        departmentName: entry.departmentName,
-        fieldName: entry.fieldName,
-        trackName: entry.trackName,
-      });
-    } else {
-      // Deduplicate: only keep one career per department
-      const dedupKey = `${entry.label}__${entry.departmentName}`;
-      if (seenCareerDepts.has(dedupKey)) continue;
-      seenCareerDepts.add(dedupKey);
+    matches.push({
+      type: "department",
+      label: entry.label,
+      departmentName: entry.departmentName,
+      fieldName: entry.fieldName,
+      trackName: entry.trackName,
+    });
 
-      careerMatches.push({
-        type: entry.type,
-        label: entry.label,
-        departmentName: entry.departmentName,
-        fieldName: entry.fieldName,
-        trackName: entry.trackName,
-      });
-    }
-
-    // Early exit if we have enough
-    if (deptMatches.length + careerMatches.length >= 10) break;
+    if (matches.length >= 10) break;
   }
 
-  // Department matches first, then career matches, max 10
-  return [...deptMatches, ...careerMatches].slice(0, 10);
+  return matches;
 }
 
 // ========== Department recommendation ==========
