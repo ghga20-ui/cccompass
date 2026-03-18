@@ -645,11 +645,225 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   );
 }
 
+// ========== Compare view ==========
+function CompareContent({ deptNames }: { deptNames: string[] }) {
+  const { cohort } = useCohort();
+  const selectableMap = useMemo(() => buildSelectableSubjectMap(cohort), [cohort]);
+  const excludedNames = useMemo(() => buildExcludedNames(cohort), [cohort]);
+
+  // Per-dept subject sets (available subjects only)
+  const deptData = useMemo(() => {
+    return deptNames.map((name) => {
+      const data = getDepartmentRecommendation(name);
+      if (!data) return { name, subjects: new Set<string>() };
+      const subjects = new Set<string>();
+      (["일반선택", "진로선택", "융합선택"] as const).forEach((cat) => {
+        data.subjects[cat].forEach((subjectName) => {
+          if (!excludedNames.has(subjectName) && selectableMap.has(subjectName)) {
+            subjects.add(subjectName);
+          }
+        });
+      });
+      return { name, subjects };
+    });
+  }, [deptNames, excludedNames, selectableMap]);
+
+  // Build union: subjectName → set of deptNames that recommend it
+  const subjectCoverage = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    deptData.forEach(({ name, subjects }) => {
+      subjects.forEach((s) => {
+        if (!map.has(s)) map.set(s, new Set());
+        map.get(s)!.add(name);
+      });
+    });
+    return map;
+  }, [deptData]);
+
+  // Common subjects (all depts recommend)
+  const commonSubjects = useMemo(() => {
+    const result: string[] = [];
+    subjectCoverage.forEach((depts, name) => {
+      if (depts.size === deptNames.length) result.push(name);
+    });
+    return result;
+  }, [subjectCoverage, deptNames.length]);
+
+  // Subjects exclusive to each dept
+  const exclusiveSubjects = useMemo(() => {
+    const result: Record<string, string[]> = {};
+    deptNames.forEach((name) => (result[name] = []));
+    subjectCoverage.forEach((depts, subjectName) => {
+      if (depts.size < deptNames.length) {
+        depts.forEach((deptName) => {
+          if (result[deptName]) result[deptName].push(subjectName);
+        });
+      }
+    });
+    return result;
+  }, [subjectCoverage, deptNames]);
+
+  const [showExclusive, setShowExclusive] = useState<Record<string, boolean>>({});
+
+  const toggleExclusive = (name: string) =>
+    setShowExclusive((prev) => ({ ...prev, [name]: !prev[name] }));
+
+  const getCategory = (name: string) => getSubjectByName(name)?.category ?? "";
+
+  const catColor: Record<string, string> = {
+    "일반선택": "bg-blue-100 text-blue-700",
+    "진로선택": "bg-purple-100 text-purple-700",
+    "융합선택": "bg-teal-100 text-teal-700",
+  };
+
+  return (
+    <div className="min-h-dvh pb-4">
+      {/* Header */}
+      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3">
+        <div className="mx-auto flex max-w-lg items-center gap-3">
+          <Link href="/" className="shrink-0 p-1">
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </Link>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-semibold text-foreground">학과 비교</h1>
+            <p className="text-[11px] text-muted-foreground">
+              효자고등학교 · {cohort === "2025" ? "고2" : "고1"}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-lg px-4 pt-4">
+        {/* Dept chips */}
+        <div className="mb-4 flex flex-wrap gap-2">
+          {deptNames.map((name) => (
+            <Badge key={name} className="bg-[var(--primary)]/10 text-[var(--primary)] text-sm px-3 py-1">
+              {name}
+            </Badge>
+          ))}
+        </div>
+
+        {/* Common subjects */}
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="h-3 w-3 rounded-full bg-emerald-500" />
+            <h2 className="text-sm font-bold text-foreground">
+              공통 추천 과목
+            </h2>
+            <span className="text-xs text-muted-foreground ml-auto">
+              {commonSubjects.length}개
+            </span>
+          </div>
+          {commonSubjects.length === 0 ? (
+            <p className="text-sm text-muted-foreground px-1">공통 추천 과목이 없습니다</p>
+          ) : (
+            <div className="space-y-2">
+              {commonSubjects.map((name) => {
+                const cat = getCategory(name);
+                return (
+                  <div
+                    key={name}
+                    className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 px-3 py-2.5"
+                  >
+                    <span className="flex-1 text-sm font-medium text-foreground">
+                      {name}
+                    </span>
+                    {cat && (
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${catColor[cat] ?? ""}`}>
+                        {cat}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Per-dept exclusive subjects */}
+        {deptNames.map((deptName) => {
+          const excl = exclusiveSubjects[deptName] || [];
+          if (excl.length === 0) return null;
+          const isOpen = showExclusive[deptName];
+          return (
+            <section key={deptName} className="mb-3">
+              <button
+                onClick={() => toggleExclusive(deptName)}
+                className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 bg-muted/50 border border-border/50 transition-colors hover:bg-muted/80"
+              >
+                <span className="text-sm font-medium text-foreground truncate">{deptName} 전용</span>
+                <span className="text-xs text-muted-foreground ml-auto mr-1">{excl.length}개</span>
+                <ChevronDown
+                  className={`h-4 w-4 text-muted-foreground transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {isOpen && (
+                <div className="mt-2 space-y-1.5 px-1">
+                  {excl.map((name) => {
+                    const cat = getCategory(name);
+                    return (
+                      <div
+                        key={name}
+                        className="flex items-center gap-2.5 rounded-lg border border-border/50 bg-card px-3 py-2"
+                      >
+                        <span className="flex-1 text-sm text-foreground">{name}</span>
+                        {cat && (
+                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${catColor[cat] ?? ""}`}>
+                            {cat}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          );
+        })}
+
+        {/* CTAs */}
+        <div className="mt-5 space-y-2">
+          {commonSubjects.length > 0 && (
+            <Link href={`/roadmap?dept=${encodeURIComponent(deptNames[0])}`}>
+              <Button className="w-full h-12 rounded-xl text-base font-semibold bg-[var(--cta)] hover:bg-[var(--cta)]/90 text-white shadow-lg shadow-[var(--cta)]/25">
+                공통 과목 기반 로드맵 만들기
+                <ArrowRight className="ml-1.5 h-4 w-4" />
+              </Button>
+            </Link>
+          )}
+          {deptNames.map((name) => (
+            <Link key={name} href={`/roadmap?dept=${encodeURIComponent(name)}`}>
+              <Button variant="outline" className="w-full h-11 rounded-xl text-sm font-medium mt-1">
+                {name} 로드맵 만들기
+                <ArrowRight className="ml-1.5 h-4 w-4" />
+              </Button>
+            </Link>
+          ))}
+          <Link href="/">
+            <Button variant="outline" className="w-full h-11 rounded-xl text-sm font-medium mt-1">
+              다른 학과 검색하기
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ========== Router component ==========
 function RecommendContent() {
   const searchParams = useSearchParams();
   const deptName = searchParams.get("dept");
+  const compare = searchParams.get("compare");
   const interests = searchParams.get("interests")?.split(",") ?? [];
+
+  // Compare mode
+  if (compare) {
+    const deptNames = compare.split(",").filter(Boolean).slice(0, 3);
+    if (deptNames.length >= 2) {
+      return <CompareContent deptNames={deptNames} />;
+    }
+  }
 
   // Department-based mode
   if (deptName) {

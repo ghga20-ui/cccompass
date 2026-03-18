@@ -1,9 +1,9 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState, useCallback, Suspense } from "react";
+import { useMemo, useState, useCallback, useRef, Suspense } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, GraduationCap } from "lucide-react";
+import { ArrowLeft, BookOpen, GraduationCap, Share2, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,88 @@ interface SemesterConfig {
   label: string;
 }
 
+// ========== URL 인코딩/디코딩 ==========
+
+function encodeSelections(
+  selections: Record<string, string[]>,
+  cohort: string
+): string {
+  const configs =
+    cohort === "2025"
+      ? [
+          { grade: 3, semester: 1 },
+          { grade: 3, semester: 2 },
+        ]
+      : [
+          { grade: 2, semester: 1 },
+          { grade: 2, semester: 2 },
+          { grade: 3, semester: 1 },
+          { grade: 3, semester: 2 },
+        ];
+
+  const parts: string[] = [];
+  configs.forEach(({ grade, semester }) => {
+    getSelectionGroups(cohort, grade, semester).forEach((group) => {
+      const selected = selections[group.id] || [];
+      const indices = selected
+        .map((name) => group.options.indexOf(name))
+        .filter((i) => i >= 0)
+        .sort((a, b) => a - b);
+      parts.push(indices.join(","));
+    });
+  });
+
+  const raw = parts.join("|");
+  return btoa(raw).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeSelections(
+  encoded: string,
+  cohort: string
+): Record<string, string[]> {
+  try {
+    const raw = atob(encoded.replace(/-/g, "+").replace(/_/g, "/"));
+
+    const configs =
+      cohort === "2025"
+        ? [
+            { grade: 3, semester: 1 },
+            { grade: 3, semester: 2 },
+          ]
+        : [
+            { grade: 2, semester: 1 },
+            { grade: 2, semester: 2 },
+            { grade: 3, semester: 1 },
+            { grade: 3, semester: 2 },
+          ];
+
+    const parts = raw.split("|");
+    const result: Record<string, string[]> = {};
+    let partIdx = 0;
+
+    configs.forEach(({ grade, semester }) => {
+      getSelectionGroups(cohort, grade, semester).forEach((group) => {
+        const part = parts[partIdx++] || "";
+        if (!part) {
+          result[group.id] = [];
+          return;
+        }
+        const indices = part
+          .split(",")
+          .map(Number)
+          .filter((n) => !isNaN(n) && n >= 0);
+        result[group.id] = indices
+          .map((idx) => group.options[idx])
+          .filter(Boolean) as string[];
+      });
+    });
+
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 // ========== Helper: build recommended subject names set ==========
 
 function buildRecommendedNames(interests: string[]): Set<string> {
@@ -43,14 +125,13 @@ function buildRecommendedNames(interests: string[]): Set<string> {
 }
 
 // 분야별 핵심 교과 area (자동 선택 우선순위용)
-// 핵심 교과에 해당하는 과목이 먼저 자동 선택됨
 const fieldCoreAreas: Record<string, string[]> = {
   health_medicine: ["과학", "수학"],
   engineering: ["수학", "과학", "정보"],
   natural_sciences: ["과학", "수학"],
   social_sciences: ["사회", "수학"],
   humanities: ["국어", "사회", "영어"],
-  education: ["교양"],  // 교육의 이해 등
+  education: ["교양"],
   arts_sports: ["예술", "체육"],
   interdisciplinary: [],
 };
@@ -58,7 +139,6 @@ const fieldCoreAreas: Record<string, string[]> = {
 function getDeptFieldId(deptName: string): string | null {
   const deptData = getDepartmentRecommendation(deptName);
   if (!deptData) return null;
-  // fieldName에서 field id 역추적
   const fieldNameMap: Record<string, string> = {
     "인문 분야": "humanities",
     "사회 분야": "social_sciences",
@@ -79,12 +159,10 @@ function sortByPriority(
   coreAreas: string[]
 ): string[] {
   return [...subjectNames].sort((a, b) => {
-    // 1순위: 대입 반영 점수 (높을수록 우선)
     const scoreA = uniScores.get(a) || 0;
     const scoreB = uniScores.get(b) || 0;
     if (scoreA !== scoreB) return scoreB - scoreA;
 
-    // 2순위: 핵심 교과 area fallback
     const subA = getSubjectByName(a);
     const subB = getSubjectByName(b);
     const aIsCore = subA ? coreAreas.includes(subA.area) : false;
@@ -95,28 +173,27 @@ function sortByPriority(
   });
 }
 
-// 태그별 핵심 교과 area
 const tagCoreAreas: Record<string, string[]> = {
-  "medical": ["과학", "수학"],
+  medical: ["과학", "수학"],
   "nursing-health": ["과학", "수학"],
   "cs-ai": ["수학", "정보", "과학"],
   "mechanical-elec": ["수학", "과학"],
-  "architecture": ["수학", "과학"],
-  "biotech": ["과학", "수학"],
+  architecture: ["수학", "과학"],
+  biotech: ["과학", "수학"],
   "natural-science": ["과학", "수학"],
   "bio-earth": ["과학", "수학"],
-  "business": ["사회", "수학"],
+  business: ["사회", "수학"],
   "law-politics": ["사회"],
   "media-comm": ["사회", "국어"],
   "psychology-social": ["사회"],
-  "literature": ["국어", "영어"],
-  "humanities": ["국어", "사회"],
-  "global": ["영어", "사회"],
-  "education": ["교양"],
+  literature: ["국어", "영어"],
+  humanities: ["국어", "사회"],
+  global: ["영어", "사회"],
+  education: ["교양"],
   "art-design": ["예술"],
   "music-perform": ["예술"],
-  "sports": ["체육"],
-  "environment": ["과학", "사회"],
+  sports: ["체육"],
+  environment: ["과학", "사회"],
   "food-nutrition": ["과학"],
 };
 
@@ -146,18 +223,26 @@ function RoadmapContent() {
   const searchParams = useSearchParams();
   const deptName = searchParams.get("dept");
   const interests = searchParams.get("interests")?.split(",").filter(Boolean) ?? [];
+  const sParam = searchParams.get("s");
+  const cohortFromUrl = searchParams.get("c") as "2025" | "2026" | null;
   const { cohort } = useCohort();
+
+  const captureRef = useRef<HTMLDivElement>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2500);
+  }, []);
 
   // Determine which semesters to show based on cohort
   const semesterConfigs: SemesterConfig[] = useMemo(() => {
     if (cohort === "2025") {
-      // 현 고2: only show 고3 selections
       return [
         { grade: 3, semester: 1, label: "3학년 1학기" },
         { grade: 3, semester: 2, label: "3학년 2학기" },
       ];
     }
-    // 현 고1 (2026): show 고2 + 고3
     return [
       { grade: 2, semester: 1, label: "2학년 1학기" },
       { grade: 2, semester: 2, label: "2학년 2학기" },
@@ -172,37 +257,54 @@ function RoadmapContent() {
     return buildRecommendedNames(interests);
   }, [deptName, interests]);
 
-  // Selection state: Record<groupId, selectedNames[]>
-  // Auto-select recommended subjects as initial state
+  // Selection state — 공유 링크의 s 파라미터가 있으면 복원, 없으면 자동 추천
   const [selections, setSelections] = useState<Record<string, string[]>>(() => {
+    // 1. URL에 s 파라미터가 있으면 디코딩하여 복원
+    if (sParam) {
+      const decodeCohort =
+        cohortFromUrl === "2025" || cohortFromUrl === "2026"
+          ? cohortFromUrl
+          : cohort;
+      const decoded = decodeSelections(sParam, decodeCohort);
+      if (Object.keys(decoded).length > 0) return decoded;
+    }
+
+    // 2. 없으면 자동 추천 로직
     const recNames = deptName
       ? buildRecommendedNamesFromDept(deptName)
       : buildRecommendedNames(interests);
 
     if (recNames.size === 0) return {};
 
-    // 대입 반영 점수 + 핵심 교과 area 결정
     let uniScores = new Map<string, number>();
     let coreAreas: string[] = [];
 
     if (deptName) {
       uniScores = getSubjectPriorityScores(deptName);
       const fieldId = getDeptFieldId(deptName);
-      coreAreas = fieldId ? (fieldCoreAreas[fieldId] || []) : [];
+      coreAreas = fieldId ? fieldCoreAreas[fieldId] || [] : [];
     } else if (interests.length > 0) {
       uniScores = getSubjectPriorityScoresByInterests(interests);
       coreAreas = getCoreAreasFromInterests(interests);
     }
 
     const init: Record<string, string[]> = {};
-    const configs = cohort === "2025"
-      ? [{ grade: 3, semester: 1 }, { grade: 3, semester: 2 }]
-      : [{ grade: 2, semester: 1 }, { grade: 2, semester: 2 }, { grade: 3, semester: 1 }, { grade: 3, semester: 2 }];
+    const configs =
+      cohort === "2025"
+        ? [
+            { grade: 3, semester: 1 },
+            { grade: 3, semester: 2 },
+          ]
+        : [
+            { grade: 2, semester: 1 },
+            { grade: 2, semester: 2 },
+            { grade: 3, semester: 1 },
+            { grade: 3, semester: 2 },
+          ];
 
     configs.forEach(({ grade, semester }) => {
       const groups = getSelectionGroups(cohort, grade, semester);
 
-      // 이전에 선택된 과목 수집 (같은 학년 1학기 + 이전 학년 전체)
       const prevSelected = new Set<string>();
       if (semester === 2) {
         const s1Groups = getSelectionGroups(cohort, grade, 1);
@@ -210,7 +312,6 @@ function RoadmapContent() {
           (init[g.id] || []).forEach((n) => prevSelected.add(n));
         });
       }
-      // 이전 학년에서 선택된 과목 (예: 2학년 수강 → 3학년 불가)
       if (grade > 2) {
         for (let pg = 2; pg < grade; pg++) {
           for (const ps of [1, 2]) {
@@ -222,14 +323,14 @@ function RoadmapContent() {
         }
       }
 
-      // 같은 학기 내 이미 선택된 과목 추적 (선택군 간 중복 방지)
       const sameSemSelected = new Set<string>();
 
       groups.forEach((group) => {
-        const recommended = group.options.filter((opt) =>
-          recNames.has(opt) &&
-          !prevSelected.has(opt) &&
-          !sameSemSelected.has(opt)
+        const recommended = group.options.filter(
+          (opt) =>
+            recNames.has(opt) &&
+            !prevSelected.has(opt) &&
+            !sameSemSelected.has(opt)
         );
         const sorted = sortByPriority(recommended, uniScores, coreAreas);
         const picked = sorted.slice(0, group.choose);
@@ -241,13 +342,12 @@ function RoadmapContent() {
     return init;
   });
 
-  // ========== 충돌 감지: 같은 학기 내 다른 선택군 + 같은 학년 이전 학기 ==========
+  // ========== 충돌 감지 ==========
   const getConflictsForGroup = useCallback(
     (targetGroupId: string, grade: number, semester: number): Map<string, string> => {
       const conflicts = new Map<string, string>();
       const allGroups = getSelectionGroups(cohort, grade, semester);
 
-      // 1) 같은 학기 내 다른 선택군에서 선택된 과목 → 중복 수강 불가
       allGroups.forEach((g) => {
         if (g.id === targetGroupId) return;
         const sel = selections[g.id] || [];
@@ -256,7 +356,6 @@ function RoadmapContent() {
         });
       });
 
-      // 2) 같은 학년 이전 학기에서 선택된 과목 → 중복 수강 불가
       if (semester === 2) {
         const s1Groups = getSelectionGroups(cohort, grade, 1);
         s1Groups.forEach((g) => {
@@ -267,7 +366,6 @@ function RoadmapContent() {
         });
       }
 
-      // 3) 이전 학년에서 선택된 과목 → 중복 수강 불가 (예: 2학년 수강 → 3학년 불가)
       if (grade > 2) {
         for (let prevGrade = 2; prevGrade < grade; prevGrade++) {
           for (const prevSem of [1, 2]) {
@@ -294,16 +392,13 @@ function RoadmapContent() {
         const isRadio = choose === 1;
 
         if (current.includes(subjectName)) {
-          // Deselect
           return { ...prev, [groupId]: current.filter((n) => n !== subjectName) };
         }
 
         if (isRadio) {
-          // Radio: replace selection
           return { ...prev, [groupId]: [subjectName] };
         }
 
-        // Checkbox: add if under limit
         if (current.length < choose) {
           return { ...prev, [groupId]: [...current, subjectName] };
         }
@@ -314,7 +409,7 @@ function RoadmapContent() {
     []
   );
 
-  // Credit calculation per semester
+  // Credit calculation
   const getSemesterCredits = useCallback(
     (grade: number, semester: number) => {
       const designated = getDesignatedSubjects(cohort, grade, semester);
@@ -326,14 +421,19 @@ function RoadmapContent() {
         return sum + sel.length * g.creditsEach;
       }, 0);
 
-      const totalExpected = designatedCredits + groups.reduce((sum, g) => sum + g.totalCredits, 0);
+      const totalExpected =
+        designatedCredits + groups.reduce((sum, g) => sum + g.totalCredits, 0);
 
-      return { designatedCredits, selectionCredits, total: designatedCredits + selectionCredits, totalExpected };
+      return {
+        designatedCredits,
+        selectionCredits,
+        total: designatedCredits + selectionCredits,
+        totalExpected,
+      };
     },
     [cohort, selections]
   );
 
-  // Grand total across all visible semesters
   const grandTotal = useMemo(() => {
     return semesterConfigs.reduce(
       (acc, { grade, semester }) => {
@@ -347,7 +447,6 @@ function RoadmapContent() {
     );
   }, [semesterConfigs, getSemesterCredits]);
 
-  // Per-grade totals (for 고1: 고2/고3 분리 표시)
   const gradeTotals = useMemo(() => {
     const byGrade: Record<number, { selected: number; expected: number }> = {};
     semesterConfigs.forEach(({ grade, semester }) => {
@@ -359,12 +458,55 @@ function RoadmapContent() {
     return byGrade;
   }, [semesterConfigs, getSemesterCredits]);
 
-  // Interest labels for display
   const interestLabels = useMemo(() => {
     return interests
       .map((id) => interestTags.find((t) => t.id === id)?.label)
       .filter(Boolean) as string[];
   }, [interests]);
+
+  // ========== 공유하기 ==========
+  const handleShare = useCallback(async () => {
+    const encoded = encodeSelections(selections, cohort);
+    const params = new URLSearchParams();
+    params.set("c", cohort);
+    if (deptName) params.set("dept", deptName);
+    if (interests.length > 0) params.set("interests", interests.join(","));
+    params.set("s", encoded);
+    const url = `${window.location.origin}/roadmap?${params.toString()}`;
+
+    try {
+      await navigator.share({ title: "효자고 수강 로드맵", url });
+    } catch {
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast("링크가 복사되었습니다!");
+      } catch {
+        showToast("공유 실패 — 주소창에서 URL을 복사해 주세요");
+      }
+    }
+  }, [selections, cohort, deptName, interests, showToast]);
+
+  // ========== 이미지 저장 ==========
+  const handleExportImage = useCallback(async () => {
+    if (!captureRef.current) return;
+    showToast("이미지 생성 중...");
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(captureRef.current, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const link = document.createElement("a");
+      link.download = `효자고_로드맵_${cohort}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      setToastMsg(null);
+    } catch {
+      showToast("이미지 저장에 실패했습니다");
+    }
+  }, [cohort, showToast]);
 
   return (
     <div className="min-h-dvh pb-safe">
@@ -372,8 +514,13 @@ function RoadmapContent() {
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3">
         <div className="mx-auto flex max-w-lg items-center gap-3">
           <Link
-            href={deptName ? `/recommend?dept=${encodeURIComponent(deptName)}` :
-                  interests.length > 0 ? `/recommend?interests=${interests.join(",")}` : "/"}
+            href={
+              deptName
+                ? `/recommend?dept=${encodeURIComponent(deptName)}`
+                : interests.length > 0
+                ? `/recommend?interests=${interests.join(",")}`
+                : "/"
+            }
             className="shrink-0 p-1"
           >
             <ArrowLeft className="h-5 w-5 text-foreground" />
@@ -389,56 +536,29 @@ function RoadmapContent() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-lg px-4 pt-4 space-y-5 pb-6">
-        {/* Department context header */}
-        {deptName && (
-          <div className="flex items-center gap-2 bg-[var(--cta)]/10 rounded-xl px-4 py-3 border border-[var(--cta)]/20">
-            <GraduationCap className="h-4 w-4 text-[var(--cta)]" />
-            <span className="text-sm font-medium text-[var(--cta)]">
-              {deptName} 추천 기반 로드맵
-            </span>
-          </div>
-        )}
-
-        {/* Interest tags display */}
-        {!deptName && interestLabels.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-muted-foreground mr-0.5">관심 분야:</span>
-            {interestLabels.map((label) => (
-              <Badge
-                key={label}
-                variant="secondary"
-                className="text-[10px] px-2 py-0 h-5 bg-[var(--cta)]/10 text-[var(--cta)] border-0"
-              >
-                {label}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        {/* Guide text */}
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          학교지정 과목은 자동으로 포함됩니다. 선택과목군에서 원하는 과목을 골라 나만의 커리큘럼을 완성하세요.
-        </p>
-      </div>
-
       {/* Sticky 학점 요약 바 */}
       <div className="sticky top-[49px] z-20 px-4 py-3 mt-1 bg-background/95 backdrop-blur-md border-b border-border/50">
         <div className="mx-auto max-w-lg flex items-center justify-center gap-4">
           {cohort === "2026" ? (
-            // 고1: 고2/고3 학점 별도 표시
             <>
               {[2, 3].map((grade) => {
                 const gt = gradeTotals[grade];
                 if (!gt) return null;
                 const isComplete = gt.selected === gt.expected;
                 return (
-                  <div key={grade} className={cn(
-                    "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
-                    isComplete ? "bg-emerald-50 text-emerald-700" : "bg-muted/60 text-muted-foreground"
-                  )}>
+                  <div
+                    key={grade}
+                    className={cn(
+                      "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
+                      isComplete
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-muted/60 text-muted-foreground"
+                    )}
+                  >
                     <span className="font-semibold">고{grade}</span>
-                    <span className="text-base font-bold">{gt.selected}/{gt.expected}</span>
+                    <span className="text-base font-bold">
+                      {gt.selected}/{gt.expected}
+                    </span>
                     <span>학점</span>
                     {isComplete && <span>{"\u2713"}</span>}
                   </div>
@@ -446,109 +566,194 @@ function RoadmapContent() {
               })}
             </>
           ) : (
-            // 고2: 고3 학점만
-            <div className={cn(
-              "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
-              grandTotal.selected === grandTotal.expected
-                ? "bg-emerald-50 text-emerald-700"
-                : "bg-muted/60 text-muted-foreground"
-            )}>
+            <div
+              className={cn(
+                "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
+                grandTotal.selected === grandTotal.expected
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-muted/60 text-muted-foreground"
+              )}
+            >
               <span className="font-semibold">고3 전체</span>
-              <span className="text-base font-bold">{grandTotal.selected}/{grandTotal.expected}</span>
+              <span className="text-base font-bold">
+                {grandTotal.selected}/{grandTotal.expected}
+              </span>
               <span>학점</span>
-              {grandTotal.selected === grandTotal.expected && <span>{"\u2713"}</span>}
+              {grandTotal.selected === grandTotal.expected && (
+                <span>{"\u2713"}</span>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 pt-3 space-y-5 pb-6">
-        {/* Semester sections */}
-        {semesterConfigs.map(({ grade, semester, label }) => {
-          const designated = getDesignatedSubjects(cohort, grade, semester);
-          const groups = getSelectionGroups(cohort, grade, semester);
-          const credits = getSemesterCredits(grade, semester);
-          const isGrade2 = grade === 2;
+      {/* 캡처 영역 시작 */}
+      <div ref={captureRef} className="bg-white">
+        {/* 캡처용 타이틀 */}
+        <div className="mx-auto max-w-lg px-4 pt-4 space-y-3 pb-2">
+          <div className="flex items-center gap-2 pb-1">
+            <div>
+              <p className="text-xs font-bold text-foreground">효자고등학교</p>
+              <p className="text-[10px] text-muted-foreground">
+                {cohort === "2025" ? "고2 (2025학번)" : "고1 (2026학번)"} 수강 로드맵
+              </p>
+            </div>
+          </div>
 
-          return (
-            <section
-              key={`${grade}-${semester}`}
-              className={cn(
-                "rounded-xl border-l-[3px] pl-0",
-                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
-              )}
-            >
-              {/* Semester title */}
-              <div className="flex items-center gap-2 px-3 pb-2">
-                {isGrade2 ? (
-                  <BookOpen className="h-4 w-4 text-[var(--primary)]" />
-                ) : (
-                  <GraduationCap className="h-4 w-4 text-[var(--cta)]" />
-                )}
-                <h2 className="text-sm font-bold text-foreground">{label}</h2>
-              </div>
+          {/* Department context */}
+          {deptName && (
+            <div className="flex items-center gap-2 bg-[var(--cta)]/10 rounded-xl px-4 py-3 border border-[var(--cta)]/20">
+              <GraduationCap className="h-4 w-4 text-[var(--cta)]" />
+              <span className="text-sm font-medium text-[var(--cta)]">
+                {deptName} 추천 기반 로드맵
+              </span>
+            </div>
+          )}
 
-              <div className="space-y-3 px-3">
-                {/* Designated subjects - compact chips */}
-                {designated.length > 0 && (
-                  <div className="space-y-1.5">
-                    <h3 className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
-                      학교지정 과목
-                    </h3>
-                    <div className="flex flex-wrap gap-1.5">
-                      {designated.map((d, idx) => (
-                        <span
-                          key={`${d.subject}-${idx}`}
-                          className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-1 text-xs text-muted-foreground"
-                        >
-                          {d.subject === "논술↔생태와 환경" ? (
-                            <span className="text-[11px]">논술/생태와 환경</span>
-                          ) : (
-                            d.subject
-                          )}
-                          <span className="text-[10px] opacity-60">{d.credits}학점</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Selection groups */}
-                {groups.map((group) => (
-                  <Card key={group.id} className="border-border/50 shadow-none">
-                    <CardContent className="p-3">
-                      <SelectionGroup
-                        group={group}
-                        selected={selections[group.id] || []}
-                        onToggle={(name) => handleToggle(group.id, group.choose, name)}
-                        recommendedSubjects={recommendedNames}
-                        conflictSubjects={getConflictsForGroup(group.id, grade, semester)}
-                      />
-                    </CardContent>
-                  </Card>
-                ))}
-
-                {/* Semester credit summary */}
-                <div
-                  className={cn(
-                    "flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium",
-                    credits.total === credits.totalExpected
-                      ? "bg-emerald-50 text-emerald-700"
-                      : "bg-muted/50 text-muted-foreground"
-                  )}
+          {/* Interest tags */}
+          {!deptName && interestLabels.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] text-muted-foreground mr-0.5">
+                관심 분야:
+              </span>
+              {interestLabels.map((label) => (
+                <Badge
+                  key={label}
+                  variant="secondary"
+                  className="text-[10px] px-2 py-0 h-5 bg-[var(--cta)]/10 text-[var(--cta)] border-0"
                 >
-                  <span>학기 학점 합계</span>
-                  <span>
-                    {credits.total} / {credits.totalExpected}학점
-                    {credits.total === credits.totalExpected && " \u2713"}
-                  </span>
-                </div>
-              </div>
-            </section>
-          );
-        })}
+                  {label}
+                </Badge>
+              ))}
+            </div>
+          )}
 
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            학교지정 과목은 자동으로 포함됩니다. 선택과목군에서 원하는 과목을 골라 나만의 커리큘럼을 완성하세요.
+          </p>
+        </div>
+
+        <div className="mx-auto max-w-lg px-4 pt-1 space-y-5 pb-6">
+          {/* Semester sections */}
+          {semesterConfigs.map(({ grade, semester, label }) => {
+            const designated = getDesignatedSubjects(cohort, grade, semester);
+            const groups = getSelectionGroups(cohort, grade, semester);
+            const credits = getSemesterCredits(grade, semester);
+            const isGrade2 = grade === 2;
+
+            return (
+              <section
+                key={`${grade}-${semester}`}
+                className={cn(
+                  "rounded-xl border-l-[3px] pl-0",
+                  isGrade2
+                    ? "border-l-[var(--primary)]"
+                    : "border-l-[var(--cta)]"
+                )}
+              >
+                <div className="flex items-center gap-2 px-3 pb-2">
+                  {isGrade2 ? (
+                    <BookOpen className="h-4 w-4 text-[var(--primary)]" />
+                  ) : (
+                    <GraduationCap className="h-4 w-4 text-[var(--cta)]" />
+                  )}
+                  <h2 className="text-sm font-bold text-foreground">{label}</h2>
+                </div>
+
+                <div className="space-y-3 px-3">
+                  {designated.length > 0 && (
+                    <div className="space-y-1.5">
+                      <h3 className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+                        학교지정 과목
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5">
+                        {designated.map((d, idx) => (
+                          <span
+                            key={`${d.subject}-${idx}`}
+                            className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-1 text-xs text-muted-foreground"
+                          >
+                            {d.subject === "논술↔생태와 환경" ? (
+                              <span className="text-[11px]">논술/생태와 환경</span>
+                            ) : (
+                              d.subject
+                            )}
+                            <span className="text-[10px] opacity-60">
+                              {d.credits}학점
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {groups.map((group) => (
+                    <Card key={group.id} className="border-border/50 shadow-none">
+                      <CardContent className="p-3">
+                        <SelectionGroup
+                          group={group}
+                          selected={selections[group.id] || []}
+                          onToggle={(name) =>
+                            handleToggle(group.id, group.choose, name)
+                          }
+                          recommendedSubjects={recommendedNames}
+                          conflictSubjects={getConflictsForGroup(
+                            group.id,
+                            grade,
+                            semester
+                          )}
+                        />
+                      </CardContent>
+                    </Card>
+                  ))}
+
+                  <div
+                    className={cn(
+                      "flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium",
+                      credits.total === credits.totalExpected
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-muted/50 text-muted-foreground"
+                    )}
+                  >
+                    <span>학기 학점 합계</span>
+                    <span>
+                      {credits.total} / {credits.totalExpected}학점
+                      {credits.total === credits.totalExpected && " \u2713"}
+                    </span>
+                  </div>
+                </div>
+              </section>
+            );
+          })}
+        </div>
       </div>
+      {/* 캡처 영역 끝 */}
+
+      {/* 공유 / 이미지 저장 버튼 */}
+      <div className="mx-auto max-w-lg px-4 pb-8 pt-2 flex gap-3">
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm active:scale-[0.98] transition-transform"
+        >
+          <Share2 className="h-4 w-4" />
+          공유하기
+        </button>
+        <button
+          type="button"
+          onClick={handleExportImage}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm active:scale-[0.98] transition-transform"
+        >
+          <Download className="h-4 w-4" />
+          이미지 저장
+        </button>
+      </div>
+
+      {/* Toast */}
+      {toastMsg && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-lg">
+          {toastMsg}
+        </div>
+      )}
     </div>
   );
 }

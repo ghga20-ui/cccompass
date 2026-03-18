@@ -33,7 +33,7 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedDept, setSelectedDept] = useState<SearchResult | null>(null);
+  const [selectedDepts, setSelectedDepts] = useState<SearchResult[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
 
   // 2-level: 선택된 태그의 학과 목록
@@ -66,20 +66,22 @@ export default function HomePage() {
   }, []);
 
   const handleSelectSearchResult = useCallback((result: SearchResult) => {
-    setSelectedDept(result);
+    setSelectedDepts((prev) => {
+      if (prev.some((d) => d.departmentName === result.departmentName)) return prev;
+      if (prev.length >= 3) return prev;
+      return [...prev, result];
+    });
     setSearchQuery("");
     setShowDropdown(false);
-    // Clear interest tags when search is used
     setSelectedTags([]);
     setSelectedTagDept(null);
   }, []);
 
-  const handleClearDept = useCallback(() => {
-    setSelectedDept(null);
-    setSearchQuery("");
+  const handleRemoveDept = useCallback((deptName: string) => {
+    setSelectedDepts((prev) => prev.filter((d) => d.departmentName !== deptName));
   }, []);
 
-  const isSearchMode = selectedDept !== null;
+  const isSearchMode = selectedDepts.length > 0;
 
   const toggleTag = (tagId: string) => {
     setSelectedTags((prev) => {
@@ -91,16 +93,22 @@ export default function HomePage() {
       // Single select: replace previous
       setSelectedTagDept(null);
       // Clear search mode when tag is selected
-      setSelectedDept(null);
+      setSelectedDepts([]);
       setSearchQuery("");
       return [tagId];
     });
   };
 
   const handleNext = () => {
-    if (isSearchMode && selectedDept) {
+    if (selectedDepts.length >= 2) {
       const params = new URLSearchParams();
-      params.set("dept", selectedDept.departmentName);
+      params.set("compare", selectedDepts.map((d) => d.departmentName).join(","));
+      router.push(`/recommend?${params.toString()}`);
+      return;
+    }
+    if (selectedDepts.length === 1) {
+      const params = new URLSearchParams();
+      params.set("dept", selectedDepts[0].departmentName);
       router.push(`/recommend?${params.toString()}`);
       return;
     }
@@ -211,11 +219,11 @@ export default function HomePage() {
                   if (searchResults.length > 0) setShowDropdown(true);
                 }}
                 placeholder="학과를 검색해봐! (예: 컴퓨터공학과, 간호학과)"
-                disabled={isSearchMode}
+                disabled={selectedDepts.length >= 3}
                 className={cn(
                   "w-full min-h-[44px] rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all",
                   "focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20",
-                  isSearchMode && "opacity-50 pointer-events-none"
+                  selectedDepts.length >= 3 && "opacity-50 pointer-events-none"
                 )}
               />
             </div>
@@ -244,21 +252,38 @@ export default function HomePage() {
             )}
           </div>
 
-          {/* Selected department chip */}
-          {selectedDept && (
-            <div className="mt-3 flex items-center gap-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--primary)] bg-[var(--primary)]/10 px-4 py-2 min-h-[44px]">
-                <span className="text-sm">{"\uD83C\uDF93"}</span>
-                <span className="text-sm font-medium text-[var(--primary)]">
-                  {selectedDept.label}
-                </span>
-                <button
-                  onClick={handleClearDept}
-                  className="ml-1 rounded-full p-0.5 hover:bg-[var(--primary)]/20 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
-                >
-                  <X className="h-3.5 w-3.5 text-[var(--primary)]" />
-                </button>
+          {/* Selected department chips */}
+          {selectedDepts.length > 0 && (
+            <div className="mt-3 space-y-2">
+              <div className="flex flex-wrap gap-2">
+                {selectedDepts.map((dept) => (
+                  <div
+                    key={dept.departmentName}
+                    className="inline-flex items-center gap-2 rounded-full border border-[var(--primary)] bg-[var(--primary)]/10 px-4 py-2 min-h-[44px]"
+                  >
+                    <span className="text-sm">{"\uD83C\uDF93"}</span>
+                    <span className="text-sm font-medium text-[var(--primary)]">
+                      {dept.label}
+                    </span>
+                    <button
+                      onClick={() => handleRemoveDept(dept.departmentName)}
+                      className="ml-1 rounded-full p-0.5 hover:bg-[var(--primary)]/20 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
+                    >
+                      <X className="h-3.5 w-3.5 text-[var(--primary)]" />
+                    </button>
+                  </div>
+                ))}
               </div>
+              {selectedDepts.length === 1 && (
+                <p className="text-xs text-muted-foreground pl-1">
+                  학과를 하나 더 추가하면 <span className="font-medium text-[var(--primary)]">비교 모드</span>로 진행해요
+                </p>
+              )}
+              {selectedDepts.length >= 2 && (
+                <p className="text-xs text-muted-foreground pl-1">
+                  {selectedDepts.length}개 학과 비교 준비됨{selectedDepts.length < 3 ? " (최대 3개)" : ""}
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -274,7 +299,7 @@ export default function HomePage() {
       {/* Tag selector */}
       <section className={cn(
         "flex-1 px-5 pt-4 pb-6 transition-all",
-        isSearchMode && "opacity-40 pointer-events-none"
+        selectedDepts.length > 0 && "opacity-40 pointer-events-none"
       )}>
         <div className="mx-auto max-w-lg">
           <div className="mb-3 flex items-center justify-between">
@@ -384,7 +409,7 @@ export default function HomePage() {
                 : "bg-muted text-muted-foreground"
             )}
           >
-            맞춤 과목 추천받기
+            {selectedDepts.length >= 2 ? "학과 비교하기" : "맞춤 과목 추천받기"}
             <ArrowRight className="ml-1.5 h-4 w-4" />
           </Button>
         </div>
