@@ -493,18 +493,23 @@ function RoadmapContent() {
     try {
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(captureRef.current, {
+        allowTaint: true,
         useCORS: true,
-        scale: 2,
+        scale: 1,
         backgroundColor: "#ffffff",
         logging: false,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.scrollWidth,
       });
       const link = document.createElement("a");
       link.download = `효자고_로드맵_${cohort}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
       setToastMsg(null);
-    } catch {
-      showToast("이미지 저장에 실패했습니다");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      showToast(`저장 실패: ${msg.slice(0, 40)}`);
     }
   }, [cohort, showToast]);
 
