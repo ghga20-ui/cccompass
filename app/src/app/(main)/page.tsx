@@ -169,7 +169,7 @@ export default function HomePage() {
                     <CardContent className="p-3.5">
                       <p
                         className={cn(
-                          "text-base font-semibold",
+                          "text-2xl font-bold",
                           isSelected ? "text-white" : "text-foreground"
                         )}
                       >
