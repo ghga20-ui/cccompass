@@ -491,20 +491,15 @@ function RoadmapContent() {
     if (!captureRef.current) return;
     showToast("이미지 생성 중...");
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(captureRef.current, {
-        allowTaint: true,
-        useCORS: true,
-        scale: 1,
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(captureRef.current, {
+        quality: 1,
         backgroundColor: "#ffffff",
-        logging: false,
-        scrollX: 0,
-        scrollY: -window.scrollY,
-        windowWidth: document.documentElement.scrollWidth,
+        pixelRatio: 1,
       });
       const link = document.createElement("a");
       link.download = `효자고_로드맵_${cohort}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.href = dataUrl;
       link.click();
       setToastMsg(null);
     } catch (err) {
