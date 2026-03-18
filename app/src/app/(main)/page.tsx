@@ -156,7 +156,7 @@ export default function HomePage() {
                 <button
                   key={opt.year}
                   onClick={() => setCohort(opt.year)}
-                  className="text-left"
+                  className="text-center"
                 >
                   <Card
                     className={cn(
