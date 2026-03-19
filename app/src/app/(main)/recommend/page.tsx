@@ -246,8 +246,8 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
             <h1 className="text-base font-semibold text-foreground">
               학과별 추천 과목
             </h1>
-            <p className="text-[11px] text-muted-foreground">
-              효자고등학교 · {cohort === "2025" ? "고2" : "고1"}
+            <p className="text-[11px] text-muted-foreground truncate">
+              {deptName} · {cohort === "2025" ? "고2" : "고1"}
             </p>
           </div>
         </div>

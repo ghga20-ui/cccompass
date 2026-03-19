@@ -738,7 +738,7 @@ function RoadmapContent() {
               나의 수강 로드맵
             </h1>
             <p className="text-[11px] text-muted-foreground truncate">
-              {cohort === "2025" ? "고2" : "고1"} &middot; 효자고등학교
+              {deptName ? `${deptName} · ` : ""}{cohort === "2025" ? "고2" : "고1"} &middot; 효자고등학교
             </p>
           </div>
         </div>
