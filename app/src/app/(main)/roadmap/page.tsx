@@ -587,8 +587,8 @@ function RoadmapContent() {
         </div>
       </div>
 
-      {/* 캡처 영역 시작 */}
-      <div ref={captureRef} className="bg-white">
+      {/* 메인 콘텐츠 (캡처 제외) */}
+      <div className="bg-white">
         {/* 캡처용 타이틀 */}
         <div className="mx-auto max-w-lg px-4 pt-4 space-y-3 pb-2">
           <div className="flex items-center gap-2 pb-1">
@@ -726,8 +726,6 @@ function RoadmapContent() {
           })}
         </div>
       </div>
-      {/* 캡처 영역 끝 */}
-
       {/* 공유 / 이미지 저장 버튼 */}
       <div className="mx-auto max-w-lg px-4 pb-8 pt-2 flex gap-3">
         <button
@@ -747,6 +745,107 @@ function RoadmapContent() {
           이미지 저장
         </button>
       </div>
+
+      {/* ===== 이미지 저장용 off-screen 카드 ===== */}
+      <div
+        ref={captureRef}
+        style={{
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          width: "400px",
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          backgroundColor: "#ffffff",
+          padding: "28px 24px 22px",
+        }}
+      >
+        {/* 헤더 */}
+        <div style={{ paddingBottom: "14px", marginBottom: "16px", borderBottom: "1.5px solid #e5e7eb" }}>
+          <div style={{ fontSize: "20px", fontWeight: 800, color: "#111827", letterSpacing: "-0.3px" }}>
+            효자고등학교
+          </div>
+          <div style={{ fontSize: "13px", color: "#6b7280", marginTop: "2px" }}>
+            {cohort === "2025" ? "고2 (2025학번)" : "고1 (2026학번)"} 수강 로드맵
+          </div>
+          {deptName && (
+            <div style={{ marginTop: "8px", display: "inline-flex", alignItems: "center", gap: "6px", background: "#ede9fe", color: "#7c3aed", padding: "4px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: 600 }}>
+              🎓 {deptName}
+            </div>
+          )}
+          {!deptName && interestLabels.length > 0 && (
+            <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
+              {interestLabels.map((label) => (
+                <span key={label} style={{ background: "#ede9fe", color: "#7c3aed", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 600 }}>
+                  {label}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 학기별 섹션 */}
+        {semesterConfigs.map(({ grade, semester, label }) => {
+          const designated = getDesignatedSubjects(cohort, grade, semester);
+          const groups = getSelectionGroups(cohort, grade, semester);
+          const selected = groups.flatMap((g) => selections[g.id] || []);
+          const credits = getSemesterCredits(grade, semester);
+          const isGrade2 = grade === 2;
+          const accent = isGrade2 ? "#2563eb" : "#7c3aed";
+          const chipBg = isGrade2 ? "#eff6ff" : "#f5f3ff";
+
+          return (
+            <div key={`${grade}-${semester}`} style={{ marginBottom: "14px" }}>
+              {/* 학기 레이블 */}
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "7px" }}>
+                <div style={{ width: "3px", height: "14px", background: accent, borderRadius: "2px" }} />
+                <span style={{ fontSize: "12px", fontWeight: 700, color: accent }}>{label}</span>
+                <span style={{ marginLeft: "auto", fontSize: "11px", color: "#9ca3af" }}>
+                  {credits.total}/{credits.totalExpected}학점{credits.total === credits.totalExpected ? " ✓" : ""}
+                </span>
+              </div>
+              {/* 과목 chip 목록 */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                {designated.map((d, i) => (
+                  <span key={i} style={{ background: "#f3f4f6", color: "#6b7280", fontSize: "11px", padding: "3px 9px", borderRadius: "6px" }}>
+                    {d.subject === "논술↔생태와 환경" ? "논술/생태와환경" : d.subject}
+                  </span>
+                ))}
+                {selected.map((name) => (
+                  <span key={name} style={{ background: chipBg, color: accent, fontSize: "11px", padding: "3px 9px", borderRadius: "6px", fontWeight: 600 }}>
+                    {name}
+                  </span>
+                ))}
+                {selected.length === 0 && (
+                  <span style={{ fontSize: "11px", color: "#d1d5db" }}>선택 없음</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* 하단 학점 요약 */}
+        <div style={{ borderTop: "1.5px solid #e5e7eb", paddingTop: "12px", marginTop: "4px", display: "flex", alignItems: "center", gap: "12px" }}>
+          {cohort === "2026" ? (
+            <>
+              {[2, 3].map((grade) => {
+                const gt = gradeTotals[grade];
+                if (!gt) return null;
+                return (
+                  <span key={grade} style={{ fontSize: "12px", fontWeight: 600, color: gt.selected === gt.expected ? "#059669" : "#6b7280" }}>
+                    고{grade} {gt.selected}/{gt.expected}학점{gt.selected === gt.expected ? " ✓" : ""}
+                  </span>
+                );
+              })}
+            </>
+          ) : (
+            <span style={{ fontSize: "12px", fontWeight: 600, color: grandTotal.selected === grandTotal.expected ? "#059669" : "#6b7280" }}>
+              고3 {grandTotal.selected}/{grandTotal.expected}학점{grandTotal.selected === grandTotal.expected ? " ✓" : ""}
+            </span>
+          )}
+          <span style={{ marginLeft: "auto", fontSize: "11px", color: "#d1d5db" }}>효자고 선택과목 도우미</span>
+        </div>
+      </div>
+      {/* ===== off-screen 카드 끝 ===== */}
 
       {/* Toast */}
       {toastMsg && (
