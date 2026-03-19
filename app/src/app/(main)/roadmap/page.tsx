@@ -490,19 +490,33 @@ function RoadmapContent() {
   const handleExportImage = useCallback(async () => {
     if (!captureRef.current) return;
     showToast("이미지 생성 중...");
+    const el = captureRef.current;
     try {
       const { toPng } = await import("html-to-image");
-      const dataUrl = await toPng(captureRef.current, {
+
+      // 브라우저가 렌더링하도록 뷰포트 안으로 이동 (시각적으로 보이지 않게)
+      el.style.left = "0";
+      el.style.opacity = "0.001";
+      await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+
+      const dataUrl = await toPng(el, {
         quality: 1,
         backgroundColor: "#ffffff",
-        pixelRatio: 1,
+        pixelRatio: 2,
       });
+
+      // 복원
+      el.style.left = "-9999px";
+      el.style.opacity = "0";
+
       const link = document.createElement("a");
       link.download = `효자고_로드맵_${cohort}.png`;
       link.href = dataUrl;
       link.click();
       setToastMsg(null);
     } catch (err) {
+      el.style.left = "-9999px";
+      el.style.opacity = "0";
       const msg = err instanceof Error ? err.message : String(err);
       showToast(`저장 실패: ${msg.slice(0, 40)}`);
     }
@@ -753,6 +767,8 @@ function RoadmapContent() {
           position: "fixed",
           left: "-9999px",
           top: 0,
+          opacity: 0,
+          pointerEvents: "none",
           width: "400px",
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
           backgroundColor: "#ffffff",
