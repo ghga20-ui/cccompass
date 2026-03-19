@@ -68,7 +68,7 @@ export default function HomePage() {
   const handleSelectSearchResult = useCallback((result: SearchResult) => {
     setSelectedDepts((prev) => {
       if (prev.some((d) => d.departmentName === result.departmentName)) return prev;
-      if (prev.length >= 3) return prev;
+      if (prev.length >= 1) return prev; // 비교 기능 비활성화: 단일 선택만
       return [...prev, result];
     });
     setSearchQuery("");
@@ -100,12 +100,13 @@ export default function HomePage() {
   };
 
   const handleNext = () => {
-    if (selectedDepts.length >= 2) {
-      const params = new URLSearchParams();
-      params.set("compare", selectedDepts.map((d) => d.departmentName).join(","));
-      router.push(`/recommend?${params.toString()}`);
-      return;
-    }
+    // 비교 기능 비활성화 (코드 유지)
+    // if (selectedDepts.length >= 2) {
+    //   const params = new URLSearchParams();
+    //   params.set("compare", selectedDepts.map((d) => d.departmentName).join(","));
+    //   router.push(`/recommend?${params.toString()}`);
+    //   return;
+    // }
     if (selectedDepts.length === 1) {
       const params = new URLSearchParams();
       params.set("dept", selectedDepts[0].departmentName);
@@ -219,7 +220,7 @@ export default function HomePage() {
                   if (searchResults.length > 0) setShowDropdown(true);
                 }}
                 placeholder="학과를 검색해봐! (예: 컴퓨터공학과, 간호학과)"
-                disabled={selectedDepts.length >= 3}
+                disabled={selectedDepts.length >= 1}
                 className={cn(
                   "w-full min-h-[44px] rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all",
                   "focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20",
@@ -274,16 +275,6 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              {selectedDepts.length === 1 && (
-                <p className="text-xs text-muted-foreground pl-1">
-                  학과를 하나 더 추가하면 <span className="font-medium text-[var(--primary)]">비교 모드</span>로 진행해요
-                </p>
-              )}
-              {selectedDepts.length >= 2 && (
-                <p className="text-xs text-muted-foreground pl-1">
-                  {selectedDepts.length}개 학과 비교 준비됨{selectedDepts.length < 3 ? " (최대 3개)" : ""}
-                </p>
-              )}
             </div>
           )}
         </div>
@@ -409,7 +400,7 @@ export default function HomePage() {
                 : "bg-muted text-muted-foreground"
             )}
           >
-            {selectedDepts.length >= 2 ? "학과 비교하기" : "맞춤 과목 추천받기"}
+            {"맞춤 과목 추천받기"}
             <ArrowRight className="ml-1.5 h-4 w-4" />
           </Button>
         </div>

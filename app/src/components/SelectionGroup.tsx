@@ -5,6 +5,20 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { SelectionGroup as SelectionGroupType } from "@/data/school";
+import { getSubjectByName } from "@/data/subjects";
+
+const categoryLabel: Record<string, string> = {
+  "일반선택": "일반",
+  "진로선택": "진로",
+  "융합선택": "융합",
+};
+const categoryStyle: Record<string, string> = {
+  "일반선택": "bg-sky-100 text-sky-600",
+  "진로선택": "bg-emerald-100 text-emerald-600",
+  "융합선택": "bg-violet-100 text-violet-600",
+};
+const evalLabel = (cat: string) =>
+  cat === "일반선택" ? "9등급" : "A·B·C";
 
 export interface SelectionGroupProps {
   group: SelectionGroupType;
@@ -52,6 +66,8 @@ export default function SelectionGroup({
           const conflictReason = conflictSubjects?.get(name);
           const isConflict = !!conflictReason && !isSelected;
           const isDisabled = isConflict || (!isSelected && isFull);
+          const subjectData = getSubjectByName(name);
+          const cat = subjectData?.category;
 
           return (
             <button
@@ -82,15 +98,26 @@ export default function SelectionGroup({
                 {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
               </span>
 
-              {/* Subject name */}
-              <span
-                className={cn(
-                  "flex-1 text-sm",
-                  isSelected ? "font-medium text-foreground" : "text-foreground/80",
-                  isDisabled && "opacity-40"
+              {/* Subject name + info labels */}
+              <span className={cn("flex-1 min-w-0", isDisabled && "opacity-40")}>
+                <span
+                  className={cn(
+                    "text-sm",
+                    isSelected ? "font-medium text-foreground" : "text-foreground/80",
+                  )}
+                >
+                  {name}
+                </span>
+                {cat && cat !== "공통" && (
+                  <span className="ml-1.5 inline-flex items-center gap-1">
+                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[cat] ?? "bg-muted text-muted-foreground")}>
+                      {categoryLabel[cat] ?? cat}
+                    </span>
+                    <span className="rounded bg-muted px-1 py-0 text-[10px] font-medium leading-[16px] text-muted-foreground">
+                      {evalLabel(cat)}
+                    </span>
+                  </span>
                 )}
-              >
-                {name}
               </span>
 
               {/* Badges */}
