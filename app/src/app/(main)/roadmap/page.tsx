@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState, useCallback, useRef, Suspense } from "react";
+import { useMemo, useState, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, GraduationCap, Share2, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -227,7 +227,6 @@ function RoadmapContent() {
   const cohortFromUrl = searchParams.get("c") as "2025" | "2026" | null;
   const { cohort } = useCohort();
 
-  const captureRef = useRef<HTMLDivElement>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -486,41 +485,236 @@ function RoadmapContent() {
     }
   }, [selections, cohort, deptName, interests, showToast]);
 
-  // ========== 이미지 저장 ==========
-  const handleExportImage = useCallback(async () => {
-    if (!captureRef.current) return;
+  // ========== 이미지 저장 (Canvas 2D 직접 드로잉) ==========
+  const handleExportImage = useCallback(() => {
     showToast("이미지 생성 중...");
-    const el = captureRef.current;
     try {
-      const { toPng } = await import("html-to-image");
+      const DPR = 2;
+      const W = 400;
+      const PAD = 24;
+      const FONT = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 
-      // 브라우저가 렌더링하도록 뷰포트 안으로 이동 (시각적으로 보이지 않게)
-      el.style.left = "0";
-      el.style.opacity = "0.001";
-      await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+      // ---- 높이 사전 계산 ----
+      const tmpCanvas = document.createElement("canvas");
+      tmpCanvas.width = W * DPR;
+      tmpCanvas.height = 1;
+      const tmp = tmpCanvas.getContext("2d")!;
 
-      const dataUrl = await toPng(el, {
-        quality: 1,
-        backgroundColor: "#ffffff",
-        pixelRatio: 2,
+      let totalH = PAD;
+      totalH += 28; // school name
+      totalH += 20; // cohort
+      if (deptName) totalH += 32;
+      else if (interestLabels.length > 0) totalH += 28;
+      totalH += 20; // divider + spacing
+
+      const contentW = W - PAD * 2;
+      const CHIP_H = 22;
+      const CHIP_PAD_H = 9;
+      const CHIP_GAP = 4;
+
+      semesterConfigs.forEach(({ grade, semester }) => {
+        const designated = getDesignatedSubjects(cohort, grade, semester);
+        const groups = getSelectionGroups(cohort, grade, semester);
+        const selected = groups.flatMap((g) => selections[g.id] || []);
+        const allChips = [
+          ...designated.map((d) =>
+            d.subject === "논술↔생태와 환경" ? "논술/생태와환경" : d.subject
+          ),
+          ...selected,
+        ];
+
+        totalH += 20 + 7; // sem label
+        tmp.font = `400 11px ${FONT}`;
+        let rowX = 0;
+        let rows = 1;
+        allChips.forEach((text) => {
+          const chipW = tmp.measureText(text).width + CHIP_PAD_H * 2;
+          if (rowX > 0 && rowX + chipW > contentW) {
+            rows++;
+            rowX = 0;
+          }
+          rowX += chipW + CHIP_GAP;
+        });
+        totalH += rows * (CHIP_H + CHIP_GAP) + 10; // chips + sem margin
       });
 
-      // 복원
-      el.style.left = "-9999px";
-      el.style.opacity = "0";
+      totalH += 20 + 20 + PAD; // footer divider + credits + bottom pad
 
+      // ---- 실제 드로잉 ----
+      const canvas = document.createElement("canvas");
+      canvas.width = W * DPR;
+      canvas.height = totalH * DPR;
+      const ctx = canvas.getContext("2d")!;
+      ctx.scale(DPR, DPR);
+
+      // 배경
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, totalH);
+
+      const rr = (
+        x: number, y: number, w: number, h: number, r: number
+      ) => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      };
+
+      let cy = PAD;
+
+      // 학교명
+      ctx.font = `800 20px ${FONT}`;
+      ctx.fillStyle = "#111827";
+      ctx.fillText("효자고등학교", PAD, cy + 20);
+      cy += 26;
+
+      // 학번
+      ctx.font = `400 13px ${FONT}`;
+      ctx.fillStyle = "#6b7280";
+      ctx.fillText(
+        cohort === "2025" ? "고2 (2025학번) 수강 로드맵" : "고1 (2026학번) 수강 로드맵",
+        PAD, cy + 14
+      );
+      cy += 18;
+
+      // 학과 또는 관심분야
+      if (deptName) {
+        cy += 8;
+        ctx.font = `600 12px ${FONT}`;
+        const txt = `\uD83C\uDF93 ${deptName}`;
+        const cw = ctx.measureText(txt).width + 20;
+        ctx.fillStyle = "#ede9fe";
+        rr(PAD, cy, cw, 22, 11); ctx.fill();
+        ctx.fillStyle = "#7c3aed";
+        ctx.fillText(txt, PAD + 10, cy + 15);
+        cy += 30;
+      } else if (interestLabels.length > 0) {
+        cy += 8;
+        ctx.font = `600 11px ${FONT}`;
+        let fx = PAD;
+        interestLabels.forEach((label) => {
+          const cw = ctx.measureText(label).width + 16;
+          ctx.fillStyle = "#ede9fe";
+          rr(fx, cy, cw, 20, 10); ctx.fill();
+          ctx.fillStyle = "#7c3aed";
+          ctx.fillText(label, fx + 8, cy + 14);
+          fx += cw + 6;
+        });
+        cy += 28;
+      }
+
+      // 구분선
+      cy += 8;
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(PAD, cy); ctx.lineTo(W - PAD, cy); ctx.stroke();
+      cy += 14;
+
+      // 학기별 섹션
+      semesterConfigs.forEach(({ grade, semester, label }) => {
+        const designated = getDesignatedSubjects(cohort, grade, semester);
+        const groups = getSelectionGroups(cohort, grade, semester);
+        const selected = groups.flatMap((g) => selections[g.id] || []);
+        const credits = getSemesterCredits(grade, semester);
+        const isGrade2 = grade === 2;
+        const accent = isGrade2 ? "#2563eb" : "#7c3aed";
+        const chipBg = isGrade2 ? "#eff6ff" : "#f5f3ff";
+
+        // 학기 레이블
+        ctx.fillStyle = accent;
+        ctx.fillRect(PAD, cy, 3, 14);
+        ctx.font = `700 12px ${FONT}`;
+        ctx.fillStyle = accent;
+        ctx.fillText(label, PAD + 9, cy + 12);
+
+        const creditTxt = `${credits.total}/${credits.totalExpected}학점${credits.total === credits.totalExpected ? " \u2713" : ""}`;
+        ctx.font = `400 11px ${FONT}`;
+        ctx.fillStyle = "#9ca3af";
+        ctx.fillText(creditTxt, W - PAD - ctx.measureText(creditTxt).width, cy + 12);
+        cy += 27;
+
+        // 과목 칩
+        const allChips: { text: string; sel: boolean }[] = [
+          ...designated.map((d) => ({
+            text: d.subject === "논술↔생태와 환경" ? "논술/생태와환경" : d.subject,
+            sel: false,
+          })),
+          ...selected.map((n) => ({ text: n, sel: true })),
+        ];
+
+        if (allChips.length === 0) {
+          ctx.font = `400 11px ${FONT}`;
+          ctx.fillStyle = "#d1d5db";
+          ctx.fillText("선택 없음", PAD, cy + 15);
+          cy += CHIP_H + CHIP_GAP;
+        } else {
+          let chipX = PAD;
+          allChips.forEach(({ text, sel }) => {
+            ctx.font = sel ? `600 11px ${FONT}` : `400 11px ${FONT}`;
+            const chipW = ctx.measureText(text).width + CHIP_PAD_H * 2;
+            if (chipX > PAD && chipX + chipW > W - PAD) {
+              chipX = PAD;
+              cy += CHIP_H + CHIP_GAP;
+            }
+            ctx.fillStyle = sel ? chipBg : "#f3f4f6";
+            rr(chipX, cy, chipW, CHIP_H, 6); ctx.fill();
+            ctx.fillStyle = sel ? accent : "#6b7280";
+            ctx.fillText(text, chipX + CHIP_PAD_H, cy + 15);
+            chipX += chipW + CHIP_GAP;
+          });
+          cy += CHIP_H + CHIP_GAP;
+        }
+        cy += 10;
+      });
+
+      // 푸터 구분선
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(PAD, cy); ctx.lineTo(W - PAD, cy); ctx.stroke();
+      cy += 12;
+
+      // 학점 요약
+      ctx.font = `600 12px ${FONT}`;
+      if (cohort === "2026") {
+        let fx = PAD;
+        [2, 3].forEach((grade) => {
+          const gt = gradeTotals[grade];
+          if (!gt) return;
+          const t = `고${grade} ${gt.selected}/${gt.expected}학점${gt.selected === gt.expected ? " \u2713" : ""}`;
+          ctx.fillStyle = gt.selected === gt.expected ? "#059669" : "#6b7280";
+          ctx.fillText(t, fx, cy + 14);
+          fx += ctx.measureText(t).width + 16;
+        });
+      } else {
+        const t = `고3 ${grandTotal.selected}/${grandTotal.expected}학점${grandTotal.selected === grandTotal.expected ? " \u2713" : ""}`;
+        ctx.fillStyle = grandTotal.selected === grandTotal.expected ? "#059669" : "#6b7280";
+        ctx.fillText(t, PAD, cy + 14);
+      }
+
+      // 워터마크
+      ctx.font = `400 11px ${FONT}`;
+      ctx.fillStyle = "#d1d5db";
+      const wm = "효자고 선택과목 도우미";
+      ctx.fillText(wm, W - PAD - ctx.measureText(wm).width, cy + 14);
+
+      // 다운로드
       const link = document.createElement("a");
       link.download = `효자고_로드맵_${cohort}.png`;
-      link.href = dataUrl;
+      link.href = canvas.toDataURL("image/png");
       link.click();
       setToastMsg(null);
     } catch (err) {
-      el.style.left = "-9999px";
-      el.style.opacity = "0";
       const msg = err instanceof Error ? err.message : String(err);
       showToast(`저장 실패: ${msg.slice(0, 40)}`);
     }
-  }, [cohort, showToast]);
+  }, [cohort, deptName, interestLabels, semesterConfigs, selections, gradeTotals, grandTotal, getSemesterCredits, showToast]);
 
   return (
     <div className="min-h-dvh pb-safe">
@@ -760,108 +954,6 @@ function RoadmapContent() {
         </button>
       </div>
 
-      {/* ===== 이미지 저장용 off-screen 카드 ===== */}
-      <div
-        ref={captureRef}
-        style={{
-          position: "fixed",
-          left: "-9999px",
-          top: 0,
-          opacity: 0,
-          pointerEvents: "none",
-          width: "400px",
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          backgroundColor: "#ffffff",
-          padding: "28px 24px 22px",
-        }}
-      >
-        {/* 헤더 */}
-        <div style={{ paddingBottom: "14px", marginBottom: "16px", borderBottom: "1.5px solid #e5e7eb" }}>
-          <div style={{ fontSize: "20px", fontWeight: 800, color: "#111827", letterSpacing: "-0.3px" }}>
-            효자고등학교
-          </div>
-          <div style={{ fontSize: "13px", color: "#6b7280", marginTop: "2px" }}>
-            {cohort === "2025" ? "고2 (2025학번)" : "고1 (2026학번)"} 수강 로드맵
-          </div>
-          {deptName && (
-            <div style={{ marginTop: "8px", display: "inline-flex", alignItems: "center", gap: "6px", background: "#ede9fe", color: "#7c3aed", padding: "4px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: 600 }}>
-              🎓 {deptName}
-            </div>
-          )}
-          {!deptName && interestLabels.length > 0 && (
-            <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-              {interestLabels.map((label) => (
-                <span key={label} style={{ background: "#ede9fe", color: "#7c3aed", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 600 }}>
-                  {label}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 학기별 섹션 */}
-        {semesterConfigs.map(({ grade, semester, label }) => {
-          const designated = getDesignatedSubjects(cohort, grade, semester);
-          const groups = getSelectionGroups(cohort, grade, semester);
-          const selected = groups.flatMap((g) => selections[g.id] || []);
-          const credits = getSemesterCredits(grade, semester);
-          const isGrade2 = grade === 2;
-          const accent = isGrade2 ? "#2563eb" : "#7c3aed";
-          const chipBg = isGrade2 ? "#eff6ff" : "#f5f3ff";
-
-          return (
-            <div key={`${grade}-${semester}`} style={{ marginBottom: "14px" }}>
-              {/* 학기 레이블 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "7px" }}>
-                <div style={{ width: "3px", height: "14px", background: accent, borderRadius: "2px" }} />
-                <span style={{ fontSize: "12px", fontWeight: 700, color: accent }}>{label}</span>
-                <span style={{ marginLeft: "auto", fontSize: "11px", color: "#9ca3af" }}>
-                  {credits.total}/{credits.totalExpected}학점{credits.total === credits.totalExpected ? " ✓" : ""}
-                </span>
-              </div>
-              {/* 과목 chip 목록 */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                {designated.map((d, i) => (
-                  <span key={i} style={{ background: "#f3f4f6", color: "#6b7280", fontSize: "11px", padding: "3px 9px", borderRadius: "6px" }}>
-                    {d.subject === "논술↔생태와 환경" ? "논술/생태와환경" : d.subject}
-                  </span>
-                ))}
-                {selected.map((name) => (
-                  <span key={name} style={{ background: chipBg, color: accent, fontSize: "11px", padding: "3px 9px", borderRadius: "6px", fontWeight: 600 }}>
-                    {name}
-                  </span>
-                ))}
-                {selected.length === 0 && (
-                  <span style={{ fontSize: "11px", color: "#d1d5db" }}>선택 없음</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
-
-        {/* 하단 학점 요약 */}
-        <div style={{ borderTop: "1.5px solid #e5e7eb", paddingTop: "12px", marginTop: "4px", display: "flex", alignItems: "center", gap: "12px" }}>
-          {cohort === "2026" ? (
-            <>
-              {[2, 3].map((grade) => {
-                const gt = gradeTotals[grade];
-                if (!gt) return null;
-                return (
-                  <span key={grade} style={{ fontSize: "12px", fontWeight: 600, color: gt.selected === gt.expected ? "#059669" : "#6b7280" }}>
-                    고{grade} {gt.selected}/{gt.expected}학점{gt.selected === gt.expected ? " ✓" : ""}
-                  </span>
-                );
-              })}
-            </>
-          ) : (
-            <span style={{ fontSize: "12px", fontWeight: 600, color: grandTotal.selected === grandTotal.expected ? "#059669" : "#6b7280" }}>
-              고3 {grandTotal.selected}/{grandTotal.expected}학점{grandTotal.selected === grandTotal.expected ? " ✓" : ""}
-            </span>
-          )}
-          <span style={{ marginLeft: "auto", fontSize: "11px", color: "#d1d5db" }}>효자고 선택과목 도우미</span>
-        </div>
-      </div>
-      {/* ===== off-screen 카드 끝 ===== */}
 
       {/* Toast */}
       {toastMsg && (
