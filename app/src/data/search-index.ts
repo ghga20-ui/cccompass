@@ -33,6 +33,11 @@ interface JsonDepartment {
 interface JsonTrack {
   id: string;
   name: string;
+  recommendedSubjects: {
+    "일반선택": string[];
+    "진로선택": string[];
+    "융합선택": string[];
+  };
   departments: JsonDepartment[];
 }
 
@@ -108,11 +113,16 @@ export function getDepartmentRecommendation(deptName: string): {
     for (const track of field.tracks) {
       for (const dept of track.departments) {
         if (dept.name === deptName) {
-          // career-mapping 기반 과목
+          // career-mapping 기반 과목: dept 레벨 + track 레벨 병합 (dedup)
+          const mergeUnique = (primary: string[], secondary: string[]): string[] => {
+            const seen = new Set(primary);
+            return [...primary, ...secondary.filter(x => !seen.has(x))];
+          };
+          const trackSubjects = track.recommendedSubjects;
           const cmSubjects = {
-            일반선택: [...dept.recommendedSubjects["일반선택"]],
-            진로선택: [...dept.recommendedSubjects["진로선택"]],
-            융합선택: [...dept.recommendedSubjects["융합선택"]],
+            일반선택: mergeUnique(dept.recommendedSubjects["일반선택"], trackSubjects["일반선택"]),
+            진로선택: mergeUnique(dept.recommendedSubjects["진로선택"], trackSubjects["진로선택"]),
+            융합선택: mergeUnique(dept.recommendedSubjects["융합선택"], trackSubjects["융합선택"]),
           };
 
           // university-requirements 기반 과목 보강
