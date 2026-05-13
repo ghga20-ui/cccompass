@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Search, School, Filter } from "lucide-react";
 import SubjectCard from "@/components/SubjectCard";
-import { subjects, subjectAreas, type Subject } from "@/data/subjects";
+import { subjects, subjectAreaMatches, subjectAreas, type Subject } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ export default function SubjectsPage() {
         (s.relatedCareers?.some((c) => c.includes(search)) ?? false) ||
         (s.keyContents?.some((k) => k.includes(search)) ?? false);
 
-      const matchArea = selectedArea === "전체" || s.area === selectedArea;
+      const matchArea = subjectAreaMatches(s.area, selectedArea);
 
       const matchCategory =
         selectedCategory === "전체" || s.category === selectedCategory;

@@ -84,6 +84,23 @@ export const subjectAreas = [
 
 export type SubjectArea = (typeof subjectAreas)[number];
 
+export function subjectAreaMatches(subjectArea: string, selectedArea: string): boolean {
+  if (selectedArea === "전체") return true;
+  if (subjectArea === selectedArea) return true;
+
+  if (selectedArea === "사회") {
+    return subjectArea === "사회(역사/도덕 포함)";
+  }
+  if (selectedArea === "정보" || selectedArea === "기술·가정") {
+    return subjectArea === "기술·가정/정보";
+  }
+  if (selectedArea === "제2외국어" || selectedArea === "한문") {
+    return subjectArea === "제2외국어/한문";
+  }
+
+  return false;
+}
+
 export function getSubjectById(id: string): Subject | undefined {
   return subjectById.get(id);
 }
@@ -93,7 +110,7 @@ export function getSubjectByName(name: string): Subject | undefined {
 }
 
 export function getSubjectsByArea(area: string): Subject[] {
-  return subjects.filter((s) => s.area === area);
+  return subjects.filter((s) => subjectAreaMatches(s.area, area));
 }
 
 export function getSubjectsByCategory(category: Subject["category"]): Subject[] {
