@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { SelectionGroup as SelectionGroupType } from "@/data/school";
 import { getSubjectByName } from "@/data/subjects";
+import { getAssessmentBadge } from "@/data/assessment";
 
 const categoryLabel: Record<string, string> = {
   "일반선택": "일반",
@@ -16,9 +17,8 @@ const categoryStyle: Record<string, string> = {
   "일반선택": "bg-sky-100 text-sky-600",
   "진로선택": "bg-emerald-100 text-emerald-600",
   "융합선택": "bg-violet-100 text-violet-600",
+  "교양": "bg-gray-100 text-gray-600",
 };
-const evalLabel = (cat: string) =>
-  cat === "일반선택" ? "9등급" : "A·B·C";
 
 export interface SelectionGroupProps {
   group: SelectionGroupType;
@@ -68,6 +68,8 @@ export default function SelectionGroup({
           const isDisabled = isConflict || (!isSelected && isFull);
           const subjectData = getSubjectByName(name);
           const cat = subjectData?.category;
+          const typeLabel = subjectData?.area === "교양" ? "교양" : cat;
+          const assessment = subjectData ? getAssessmentBadge(subjectData) : null;
 
           return (
             <button
@@ -108,13 +110,13 @@ export default function SelectionGroup({
                 >
                   {name}
                 </span>
-                {cat && cat !== "공통" && (
+                {subjectData && typeLabel && cat !== "공통" && (
                   <span className="ml-1.5 inline-flex items-center gap-1">
-                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[cat] ?? "bg-muted text-muted-foreground")}>
-                      {categoryLabel[cat] ?? cat}
+                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[typeLabel] ?? "bg-muted text-muted-foreground")}>
+                      {categoryLabel[typeLabel] ?? typeLabel}
                     </span>
-                    <span className="rounded bg-muted px-1 py-0 text-[10px] font-medium leading-[16px] text-muted-foreground">
-                      {evalLabel(cat)}
+                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", assessment?.color ?? "bg-muted text-muted-foreground")}>
+                      {assessment?.label}
                     </span>
                   </span>
                 )}

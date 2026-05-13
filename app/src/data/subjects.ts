@@ -54,7 +54,7 @@ const additionalSubjects: Subject[] = [
   { id: "art_drawing", name: "드로잉", category: "진로선택", area: "예술", credits: "3", description: "드로잉의 기초와 표현 기법을 학습합니다." },
   { id: "soc_modern_world_change", name: "현대 세계의 변화", category: "진로선택", area: "사회", credits: "3", description: "현대 세계의 정치, 경제, 사회적 변화를 탐구합니다." },
   { id: "lib_critical_question_solution", name: "비판적 질문과 창의적 해결", category: "융합선택", area: "교양", credits: "2", description: "비판적 질문과 창의적 문제 해결 역량을 기르는 과목입니다." },
-  { id: "info_ai_ethics", name: "인공지능 윤리", category: "융합선택", area: "정보", credits: "2", description: "인공지능 활용과 관련된 윤리적 쟁점을 탐구하는 과목입니다." },
+  { id: "info_ai_ethics", name: "인공지능 윤리", category: "융합선택", area: "교양", credits: "2", description: "인공지능 활용과 관련된 윤리적 쟁점을 탐구하는 교양 과목입니다." },
   // 논술, 생태와 환경은 기존 JSON에 있을 수 있으나, school.json에서 "논술↔생태와 환경"으로 묶여 있어 개별 항목으로도 제공
   { id: "lib_essay_alt", name: "논술", category: "융합선택", area: "교양", credits: "2~3", description: "논리적 글쓰기와 비판적 사고를 학습합니다." },
   { id: "lib_eco_alt", name: "생태와 환경", category: "일반선택", area: "교양", credits: "2~3", description: "생태계와 환경 문제를 학습합니다." },
