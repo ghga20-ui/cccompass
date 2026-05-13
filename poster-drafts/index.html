@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>선택과목 홍보 포스터 시안</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800;900&display=swap");
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #e8e8e8;
+      font-family: "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    body {
+      padding: 40px;
+    }
+
+    body.export {
+      padding: 0;
+      background: var(--bg, #ffffff);
+    }
+
+    body.export .poster {
+      display: none;
+      margin: 0;
+    }
+
+    body.export .poster.is-export {
+      display: block;
+    }
+
+    .poster {
+      position: relative;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      margin: 0 auto 40px;
+      background: var(--bg);
+      color: var(--ink);
+      isolation: isolate;
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 54px 54px;
+      opacity: 0.35;
+      z-index: -2;
+    }
+
+    .poster::after {
+      content: "";
+      position: absolute;
+      right: -190px;
+      top: -170px;
+      width: 620px;
+      height: 620px;
+      border-radius: 50%;
+      background: var(--orb);
+      opacity: 0.95;
+      z-index: -1;
+    }
+
+    .poster-inner {
+      height: 100%;
+      padding: 50px 76px 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
+
+    .school {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .badge {
+      border: 2px solid var(--line);
+      color: var(--ink);
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 22px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.44);
+    }
+
+    .subject {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 840px;
+      font-size: 78px;
+      line-height: 1.03;
+      letter-spacing: 0;
+      font-weight: 900;
+      word-break: keep-all;
+    }
+
+    .hook {
+      margin-top: 22px;
+      max-width: 810px;
+      font-size: 30px;
+      line-height: 1.42;
+      font-weight: 600;
+      color: var(--soft);
+      word-break: keep-all;
+    }
+
+    .visual {
+      position: relative;
+      height: 148px;
+      margin: 28px 0 22px;
+    }
+
+    .visual .plate {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 42px;
+      height: 68px;
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.38);
+      border: 2px solid var(--line);
+    }
+
+    .chip {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 132px;
+      height: 132px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--chip-ink);
+      font-size: 19px;
+      line-height: 1.2;
+      text-align: center;
+      font-weight: 900;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.14);
+      word-break: keep-all;
+    }
+
+    .chip:nth-child(2) {
+      left: 70px;
+      top: 0;
+    }
+
+    .chip:nth-child(3) {
+      left: 50%;
+      top: 12px;
+      transform: translateX(-50%);
+    }
+
+    .chip:nth-child(4) {
+      right: 70px;
+      top: 0;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      min-height: 168px;
+      border-radius: 26px;
+      padding: 24px 34px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 2px solid var(--line);
+    }
+
+    .label {
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .panel ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .panel li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: var(--ink);
+      word-break: keep-all;
+    }
+
+    .panel li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 13px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .career {
+      margin-top: 72px;
+      border-radius: 34px;
+      padding: 22px 34px 20px;
+      background: var(--career-bg);
+      color: var(--career-ink);
+    }
+
+    .career .label {
+      margin-bottom: 14px;
+      color: var(--career-label);
+    }
+
+    .career-text {
+      font-size: 27px;
+      line-height: 1.35;
+      font-weight: 900;
+      word-break: keep-all;
+    }
+
+    .source {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .economics {
+      --bg: #f7efe2;
+      --ink: #1e2522;
+      --soft: #4e5c54;
+      --muted: #6f756f;
+      --accent: #176b54;
+      --line: rgba(23, 107, 84, 0.22);
+      --orb: #d9f0b6;
+      --chip: #176b54;
+      --chip-ink: #ffffff;
+      --career-bg: #176b54;
+      --career-ink: #ffffff;
+      --career-label: #ccefcf;
+    }
+
+    .programming {
+      --bg: #ecf4ff;
+      --ink: #142033;
+      --soft: #425066;
+      --muted: #6e7a8c;
+      --accent: #245bd6;
+      --line: rgba(36, 91, 214, 0.22);
+      --orb: #b9dcff;
+      --chip: #245bd6;
+      --chip-ink: #ffffff;
+      --career-bg: #142033;
+      --career-ink: #ffffff;
+      --career-label: #9fc3ff;
+    }
+
+    .ai-ethics {
+      --bg: #f2eefc;
+      --ink: #211c2c;
+      --soft: #544c63;
+      --muted: #776d86;
+      --accent: #7446bd;
+      --line: rgba(116, 70, 189, 0.24);
+      --orb: #ffd2dc;
+      --chip: #7446bd;
+      --chip-ink: #ffffff;
+      --career-bg: #211c2c;
+      --career-ink: #ffffff;
+      --career-label: #d8c4ff;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="poster economics" id="economics">
+      <div class="poster-inner">
+        <div class="topline">
+          <div class="school">효자고 선택과목</div>
+          <div class="badge">사회 · 진로 선택</div>
+        </div>
+        <div class="subject">경제</div>
+        <h1>돈 얘기 말고,<br />선택의 기술</h1>
+        <p class="hook">왜 가격은 오르고, 환율은 흔들리고, 사람들은 다르게 선택할까?</p>
+        <div class="visual" aria-hidden="true">
+          <div class="plate"></div>
+          <div class="chip">합리적<br />선택</div>
+          <div class="chip">수요와<br />공급</div>
+          <div class="chip">환율과<br />무역</div>
+        </div>
+        <div class="section-grid">
+          <div class="panel">
+            <div class="label">이런 걸 배워요</div>
+            <ul>
+              <li>합리적 선택</li>
+              <li>시장의 수요와 공급</li>
+              <li>환율과 국제 거래</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <div class="label">이런 학생에게</div>
+            <ul>
+              <li>뉴스를 그냥 넘기지 못하는 학생</li>
+              <li>돈, 소비, 사회 변화가 궁금한 학생</li>
+            </ul>
+          </div>
+        </div>
+        <div class="career">
+          <div class="label">진로 연결</div>
+          <div class="career-text">경제학과 · 경영학과 · 국제통상 · 금융 · 회계</div>
+        </div>
+        <div class="source">Source: 2022개정 고등학교 과목 선택 안내자료, 효자고 선택과목 데이터</div>
+      </div>
+    </section>
+
+    <section class="poster programming" id="programming">
+      <div class="poster-inner">
+        <div class="topline">
+          <div class="school">효자고 선택과목</div>
+          <div class="badge">정보·통신 · 진로 선택</div>
+        </div>
+        <div class="subject">프로그래밍</div>
+        <h1>생각을<br />실행시키는 언어</h1>
+        <p class="hook">아이디어가 머릿속에만 있지 않게, 코드로 움직이게 만드는 과목.</p>
+        <div class="visual" aria-hidden="true">
+          <div class="plate"></div>
+          <div class="chip">변수와<br />자료형</div>
+          <div class="chip">제어<br />구조</div>
+          <div class="chip">디버깅과<br />테스트</div>
+        </div>
+        <div class="section-grid">
+          <div class="panel">
+            <div class="label">이런 걸 배워요</div>
+            <ul>
+              <li>변수와 자료형</li>
+              <li>제어 구조</li>
+              <li>디버깅과 테스트</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <div class="label">이런 학생에게</div>
+            <ul>
+              <li>문제를 쪼개서 해결하는 게 재밌는 학생</li>
+              <li>앱, 게임, AI, 자동화에 관심 있는 학생</li>
+            </ul>
+          </div>
+        </div>
+        <div class="career">
+          <div class="label">진로 연결</div>
+          <div class="career-text">컴퓨터공학 · 소프트웨어 · 인공지능 · 개발자</div>
+        </div>
+        <div class="source">Source: 2022개정 전문 교과 교육과정, 효자고 선택과목 데이터</div>
+      </div>
+    </section>
+
+    <section class="poster ai-ethics" id="ai-ethics">
+      <div class="poster-inner">
+        <div class="topline">
+          <div class="school">효자고 선택과목</div>
+          <div class="badge">교양 · 고시 외 과목</div>
+        </div>
+        <div class="subject">인공지능 윤리</div>
+        <h1>AI에게 맡기기 전,<br />먼저 물어야 할 것</h1>
+        <p class="hook">편리한 기술이 항상 옳은 선택은 아닐 때, 우리는 무엇을 기준으로 판단할까?</p>
+        <div class="visual" aria-hidden="true">
+          <div class="plate"></div>
+          <div class="chip">데이터와<br />프라이버시</div>
+          <div class="chip">편향과<br />공정성</div>
+          <div class="chip">책임 있는<br />AI</div>
+        </div>
+        <div class="section-grid">
+          <div class="panel">
+            <div class="label">이런 걸 배워요</div>
+            <ul>
+              <li>데이터와 프라이버시</li>
+              <li>편향과 공정성</li>
+              <li>책임 있는 AI 활용</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <div class="label">이런 학생에게</div>
+            <ul>
+              <li>AI를 쓰는 사람으로만 남고 싶지 않은 학생</li>
+              <li>기술이 사회를 바꾸는 방식이 궁금한 학생</li>
+            </ul>
+          </div>
+        </div>
+        <div class="career">
+          <div class="label">진로 연결</div>
+          <div class="career-text">AI · 데이터 · 법과 윤리 · 사회문제 탐구</div>
+        </div>
+        <div class="source">Source: 경기도 고시 외 과목 승인 목록, 효자고 선택과목 데이터</div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const poster = new URLSearchParams(window.location.search).get("poster");
+    if (poster) {
+      document.body.classList.add("export");
+      const selected = document.getElementById(poster);
+      if (selected) {
+        selected.classList.add("is-export");
+        const bg = getComputedStyle(selected).getPropertyValue("--bg");
+        document.body.style.background = bg;
+        document.documentElement.style.background = bg;
+      }
+    }
+  </script>
+</body>
+</html>
