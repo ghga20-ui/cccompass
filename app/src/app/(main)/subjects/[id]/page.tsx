@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { subjects, getSubjectById } from "@/data/subjects";
-import { getCohortData, type SelectionGroup } from "@/data/school";
+import { getCohortData, getExpandedSubjectNames, type SelectionGroup } from "@/data/school";
 import { getUniversitiesRequiringSubject } from "@/data/university-requirements";
 import { useCohort } from "@/contexts/CohortContext";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ export default function SubjectDetailPage() {
 
     // Check designated subjects
     cohortData.designated.forEach((d) => {
-      if (d.subject === subject.name) {
+      if (getExpandedSubjectNames(d.subject).includes(subject.name)) {
         results.push({
           grade: d.grade,
           semester: d.semester,
@@ -60,7 +60,7 @@ export default function SubjectDetailPage() {
 
     // Check selection groups
     cohortData.selections.forEach((group) => {
-      if (group.options.includes(subject.name)) {
+      if (group.options.some((name) => getExpandedSubjectNames(name).includes(subject.name))) {
         results.push({
           grade: group.grade,
           semester: group.semester,

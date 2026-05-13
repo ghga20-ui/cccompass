@@ -41,6 +41,17 @@ export const defaultSchool = school;
 
 // ========== 유틸 함수 ==========
 
+/** school.json의 묶음 과목명을 화면 검색/개설 판정용 개별 과목명으로 확장 */
+export function getExpandedSubjectNames(subjectName: string): string[] {
+  if (subjectName.includes("↔")) {
+    return subjectName
+      .split("↔")
+      .map((name) => name.trim())
+      .filter(Boolean);
+  }
+  return [subjectName];
+}
+
 /** 해당 학년도(cohort)의 데이터를 반환 */
 export function getCohortData(cohortYear: string): CohortData | undefined {
   return school.cohorts[cohortYear];
@@ -80,10 +91,12 @@ export function getAllAvailableSubjectNames(
 ): string[] {
   const names = new Set<string>();
   getDesignatedSubjects(cohortYear, grade, semester).forEach((d) =>
-    names.add(d.subject)
+    getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
   );
   getSelectionGroups(cohortYear, grade, semester).forEach((g) =>
-    g.options.forEach((o) => names.add(o))
+    g.options.forEach((o) =>
+      getExpandedSubjectNames(o).forEach((name) => names.add(name))
+    )
   );
   return Array.from(names);
 }

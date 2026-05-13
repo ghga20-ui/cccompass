@@ -12,7 +12,7 @@ import {
   getRecommendedSubjectsByInterest,
 } from "@/data/career-mapping";
 import { getSubjectByName, type Subject } from "@/data/subjects";
-import { getCohortData } from "@/data/school";
+import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { getDepartmentRecommendation } from "@/data/search-index";
 
@@ -68,10 +68,7 @@ function buildSelectableSubjectMap(cohortYear: string): Map<string, string[]> {
     if (g.grade < minGrade) return;
     const label = `${g.grade}-${g.semester}`;
     g.options.forEach((o) => {
-      addName(o, label);
-      if (o.includes("↔")) {
-        o.split("↔").forEach((s) => addName(s.trim(), label));
-      }
+      getExpandedSubjectNames(o).forEach((name) => addName(name, label));
     });
   });
 
@@ -84,18 +81,12 @@ function buildAllSchoolSubjectNames(cohortYear: string): Set<string> {
   const cohort = getCohortData(cohortYear);
   if (!cohort) return names;
 
-  cohort.designated.forEach((d) => {
-    names.add(d.subject);
-    if (d.subject.includes("↔")) {
-      d.subject.split("↔").forEach((s) => names.add(s.trim()));
-    }
-  });
+  cohort.designated.forEach((d) =>
+    getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
+  );
   cohort.selections.forEach((g) =>
     g.options.forEach((o) => {
-      names.add(o);
-      if (o.includes("↔")) {
-        o.split("↔").forEach((s) => names.add(s.trim()));
-      }
+      getExpandedSubjectNames(o).forEach((name) => names.add(name));
     })
   );
 
@@ -111,12 +102,16 @@ function buildExcludedNames(cohortYear: string): Set<string> {
   const minGrade = cohortYear === "2025" ? 3 : 2;
 
   // 학교지정 과목 전체 (필수라 추천 불필요)
-  cohort.designated.forEach((d) => names.add(d.subject));
+  cohort.designated.forEach((d) =>
+    getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
+  );
 
   // 이미 지난 학년의 선택과목 (고2가 이미 고2에서 선택한 과목)
   cohort.selections.forEach((g) => {
     if (g.grade < minGrade) {
-      g.options.forEach((o) => names.add(o));
+      g.options.forEach((o) =>
+        getExpandedSubjectNames(o).forEach((name) => names.add(name))
+      );
     }
   });
 

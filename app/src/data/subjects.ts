@@ -40,6 +40,8 @@ const additionalSubjects: Subject[] = [
   { id: "common_science_lab_1", name: "과학탐구실험1", category: "공통", area: "과학", credits: "1", description: "과학 탐구 실험의 기초를 학습하는 공통 과목입니다." },
   { id: "common_science_lab_2", name: "과학탐구실험2", category: "공통", area: "과학", credits: "1", description: "과학 탐구 실험을 심화하는 공통 과목입니다." },
   // 제2외국어 개별 과목
+  { id: "lang2_japanese", name: "일본어", category: "일반선택", area: "제2외국어", credits: "3", description: "일본어의 기초 의사소통 능력과 일본 문화를 학습하는 과목입니다." },
+  { id: "lang2_chinese", name: "중국어", category: "일반선택", area: "제2외국어", credits: "3", description: "중국어의 기초 의사소통 능력과 중국 문화를 학습하는 과목입니다." },
   { id: "lang2_japanese_conv", name: "일본어 회화", category: "진로선택", area: "제2외국어", credits: "3", description: "일본어 회화 능력을 기르는 과목입니다." },
   { id: "lang2_japanese_culture", name: "일본 문화", category: "진로선택", area: "제2외국어", credits: "3", description: "일본 문화를 이해하고 탐구하는 과목입니다." },
   { id: "lang2_japanese_tourism", name: "관광 일본어", category: "진로선택", area: "제2외국어", credits: "3", description: "관광 분야에서 활용하는 일본어를 학습하는 과목입니다." },

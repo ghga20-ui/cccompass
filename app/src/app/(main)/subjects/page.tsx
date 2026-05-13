@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Search, School, Filter } from "lucide-react";
 import SubjectCard from "@/components/SubjectCard";
 import { subjects, subjectAreas, type Subject } from "@/data/subjects";
-import { getCohortData } from "@/data/school";
+import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { cn } from "@/lib/utils";
 
@@ -25,9 +25,13 @@ export default function SubjectsPage() {
     const names = new Set<string>();
     const cohortData = getCohortData(cohort);
     if (!cohortData) return names;
-    cohortData.designated.forEach((d) => names.add(d.subject));
+    cohortData.designated.forEach((d) =>
+      getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
+    );
     cohortData.selections.forEach((g) =>
-      g.options.forEach((o) => names.add(o))
+      g.options.forEach((o) =>
+        getExpandedSubjectNames(o).forEach((name) => names.add(name))
+      )
     );
     return names;
   }, [cohort]);
