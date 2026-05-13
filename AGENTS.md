@@ -33,6 +33,8 @@ There is no formal app test suite. Treat `npm run lint` and `npm run build` in `
 
 Recent history uses short Korean summaries and conventional prefixes such as `fix:` and `chore:`. Keep commits focused and imperative, for example `fix: add missing subjects to subjects.json`. Pull requests should describe the changed workflow or dataset, list commands run, link related issues, and include screenshots or rendered previews for UI and video changes.
 
+After making requested repository changes, run the relevant checks, commit the completed work, and push it to the appropriate remote branch immediately unless the user explicitly asks not to. Keep unrelated local changes out of the commit; stage only the files touched for the task.
+
 ## Security & Configuration Tips
 
 Do not commit `.env.local`, API keys, generated caches, or `node_modules`. Treat `data/school.json` as the editable source for school curriculum changes, then sync it into the app. Document source files and scripts used for generated JSON.
