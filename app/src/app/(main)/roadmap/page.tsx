@@ -12,13 +12,12 @@ import {
   getDesignatedSubjects,
   getSelectionGroups,
 } from "@/data/school";
-import { getSubjectByName } from "@/data/subjects";
 import {
   interestTags,
   getRecommendedSubjectsByInterest,
 } from "@/data/career-mapping";
 import { getDepartmentRecommendation } from "@/data/search-index";
-import { getSubjectPriorityScores, getSubjectPriorityScoresByInterests } from "@/data/university-requirements";
+import { getInitialRoadmapSelections } from "@/lib/roadmap-selection-state";
 import SelectionGroup from "@/components/SelectionGroup";
 
 // ========== Types ==========
@@ -124,87 +123,6 @@ function buildRecommendedNames(interests: string[]): Set<string> {
   return names;
 }
 
-// 분야별 핵심 교과 area (자동 선택 우선순위용)
-const fieldCoreAreas: Record<string, string[]> = {
-  health_medicine: ["과학", "수학"],
-  engineering: ["수학", "과학", "정보"],
-  natural_sciences: ["과학", "수학"],
-  social_sciences: ["사회", "수학"],
-  humanities: ["국어", "사회", "영어"],
-  education: ["교양"],
-  arts_sports: ["예술", "체육"],
-  interdisciplinary: [],
-};
-
-function getDeptFieldId(deptName: string): string | null {
-  const deptData = getDepartmentRecommendation(deptName);
-  if (!deptData) return null;
-  const fieldNameMap: Record<string, string> = {
-    "인문 분야": "humanities",
-    "사회 분야": "social_sciences",
-    "자연 분야": "natural_sciences",
-    "공학 분야": "engineering",
-    "보건·의약학 분야": "health_medicine",
-    "교육 분야": "education",
-    "예술·체육 분야": "arts_sports",
-    "자율전공 분야": "interdisciplinary",
-  };
-  return fieldNameMap[deptData.department.fieldName] || null;
-}
-
-/** 추천 과목을 대입 반영 점수 → 핵심 교과 순으로 정렬 */
-function sortByPriority(
-  subjectNames: string[],
-  uniScores: Map<string, number>,
-  coreAreas: string[]
-): string[] {
-  return [...subjectNames].sort((a, b) => {
-    const scoreA = uniScores.get(a) || 0;
-    const scoreB = uniScores.get(b) || 0;
-    if (scoreA !== scoreB) return scoreB - scoreA;
-
-    const subA = getSubjectByName(a);
-    const subB = getSubjectByName(b);
-    const aIsCore = subA ? coreAreas.includes(subA.area) : false;
-    const bIsCore = subB ? coreAreas.includes(subB.area) : false;
-    if (aIsCore && !bIsCore) return -1;
-    if (!aIsCore && bIsCore) return 1;
-    return 0;
-  });
-}
-
-const tagCoreAreas: Record<string, string[]> = {
-  medical: ["과학", "수학"],
-  "nursing-health": ["과학", "수학"],
-  "cs-ai": ["수학", "정보", "과학"],
-  "mechanical-elec": ["수학", "과학"],
-  architecture: ["수학", "과학"],
-  biotech: ["과학", "수학"],
-  "natural-science": ["과학", "수학"],
-  "bio-earth": ["과학", "수학"],
-  business: ["사회", "수학"],
-  "law-politics": ["사회"],
-  "media-comm": ["사회", "국어"],
-  "psychology-social": ["사회"],
-  literature: ["국어", "영어"],
-  humanities: ["국어", "사회"],
-  global: ["영어", "사회"],
-  education: ["교양"],
-  "art-design": ["예술"],
-  "music-perform": ["예술"],
-  sports: ["체육"],
-  environment: ["과학", "사회"],
-  "food-nutrition": ["과학"],
-};
-
-function getCoreAreasFromInterests(interests: string[]): string[] {
-  const areas = new Set<string>();
-  interests.forEach((id) => {
-    (tagCoreAreas[id] || []).forEach((a) => areas.add(a));
-  });
-  return Array.from(areas);
-}
-
 function buildRecommendedNamesFromDept(deptName: string): Set<string> {
   const names = new Set<string>();
   const deptData = getDepartmentRecommendation(deptName);
@@ -222,9 +140,13 @@ function buildRecommendedNamesFromDept(deptName: string): Set<string> {
 function RoadmapContent() {
   const searchParams = useSearchParams();
   const deptName = searchParams.get("dept");
-  const interests = searchParams.get("interests")?.split(",").filter(Boolean) ?? [];
+  const interestParam = searchParams.get("interests");
+  const interests = useMemo(
+    () => interestParam?.split(",").filter(Boolean) ?? [],
+    [interestParam]
+  );
   const sParam = searchParams.get("s");
-  const cohortFromUrl = searchParams.get("c") as "2025" | "2026" | null;
+  const cohortFromUrl = searchParams.get("c");
   const { cohort } = useCohort();
 
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -256,89 +178,14 @@ function RoadmapContent() {
     return buildRecommendedNames(interests);
   }, [deptName, interests]);
 
-  // Selection state — 공유 링크의 s 파라미터가 있으면 복원, 없으면 자동 추천
+  // Selection state — 공유 링크의 s 파라미터가 있으면 복원, 추천 진입은 라벨만 표시
   const [selections, setSelections] = useState<Record<string, string[]>>(() => {
-    // 1. URL에 s 파라미터가 있으면 디코딩하여 복원
-    if (sParam) {
-      const decodeCohort =
-        cohortFromUrl === "2025" || cohortFromUrl === "2026"
-          ? cohortFromUrl
-          : cohort;
-      const decoded = decodeSelections(sParam, decodeCohort);
-      if (Object.keys(decoded).length > 0) return decoded;
-    }
-
-    // 2. 없으면 자동 추천 로직
-    const recNames = deptName
-      ? buildRecommendedNamesFromDept(deptName)
-      : buildRecommendedNames(interests);
-
-    if (recNames.size === 0) return {};
-
-    let uniScores = new Map<string, number>();
-    let coreAreas: string[] = [];
-
-    if (deptName) {
-      uniScores = getSubjectPriorityScores(deptName);
-      const fieldId = getDeptFieldId(deptName);
-      coreAreas = fieldId ? fieldCoreAreas[fieldId] || [] : [];
-    } else if (interests.length > 0) {
-      uniScores = getSubjectPriorityScoresByInterests(interests);
-      coreAreas = getCoreAreasFromInterests(interests);
-    }
-
-    const init: Record<string, string[]> = {};
-    const configs =
-      cohort === "2025"
-        ? [
-            { grade: 3, semester: 1 },
-            { grade: 3, semester: 2 },
-          ]
-        : [
-            { grade: 2, semester: 1 },
-            { grade: 2, semester: 2 },
-            { grade: 3, semester: 1 },
-            { grade: 3, semester: 2 },
-          ];
-
-    configs.forEach(({ grade, semester }) => {
-      const groups = getSelectionGroups(cohort, grade, semester);
-
-      const prevSelected = new Set<string>();
-      if (semester === 2) {
-        const s1Groups = getSelectionGroups(cohort, grade, 1);
-        s1Groups.forEach((g) => {
-          (init[g.id] || []).forEach((n) => prevSelected.add(n));
-        });
-      }
-      if (grade > 2) {
-        for (let pg = 2; pg < grade; pg++) {
-          for (const ps of [1, 2]) {
-            const pgGroups = getSelectionGroups(cohort, pg, ps);
-            pgGroups.forEach((g) => {
-              (init[g.id] || []).forEach((n) => prevSelected.add(n));
-            });
-          }
-        }
-      }
-
-      const sameSemSelected = new Set<string>();
-
-      groups.forEach((group) => {
-        const recommended = group.options.filter(
-          (opt) =>
-            recNames.has(opt) &&
-            !prevSelected.has(opt) &&
-            !sameSemSelected.has(opt)
-        );
-        const sorted = sortByPriority(recommended, uniScores, coreAreas);
-        const picked = sorted.slice(0, group.choose);
-        init[group.id] = picked;
-        picked.forEach((n) => sameSemSelected.add(n));
-      });
+    return getInitialRoadmapSelections({
+      encodedSelections: sParam,
+      encodedCohort: cohortFromUrl,
+      currentCohort: cohort,
+      decodeSelections,
     });
-
-    return init;
   });
 
   // ========== 충돌 감지 ==========
