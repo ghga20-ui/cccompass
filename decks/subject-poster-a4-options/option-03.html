@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A4 Option 03 - Signal Poster</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 794px;
+      height: 1123px;
+      overflow: hidden;
+      background: #0f261f;
+      color: #f4f1e8;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+    }
+    .poster {
+      width: 794px;
+      height: 1123px;
+      padding: 54px;
+      position: relative;
+    }
+    .ring {
+      position: absolute;
+      right: -154px;
+      top: 86px;
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      border: 52px solid #cbff70;
+      opacity: 0.92;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #cbff70;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 126px 0 0;
+      width: 620px;
+      font-size: 84px;
+      line-height: 1.02;
+      letter-spacing: -2.5px;
+      font-weight: 950;
+    }
+    .question {
+      position: relative;
+      z-index: 1;
+      margin: 34px 0 0;
+      width: 520px;
+      font-size: 29px;
+      line-height: 1.42;
+      font-weight: 760;
+      color: #dce8d8;
+      word-break: keep-all;
+    }
+    .signal-title {
+      position: absolute;
+      right: 54px;
+      top: 620px;
+      text-align: right;
+      font-size: 42px;
+      line-height: 1.04;
+      font-weight: 950;
+      color: #cbff70;
+    }
+    .steps {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      bottom: 130px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .step {
+      border-top: 5px solid #cbff70;
+      background: rgba(255, 255, 255, 0.08);
+      min-height: 150px;
+      padding: 18px;
+    }
+    .step span {
+      display: block;
+      color: #96c85b;
+      font-size: 15px;
+      font-weight: 900;
+      margin-bottom: 20px;
+    }
+    .step strong {
+      font-size: 28px;
+      line-height: 1.15;
+      font-weight: 950;
+    }
+    .career {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      bottom: 54px;
+      font-size: 22px;
+      font-weight: 850;
+      color: #cbff70;
+    }
+  </style>
+</head>
+<body>
+  <section class="poster">
+    <div class="ring" aria-hidden="true"></div>
+    <div class="meta">
+      <span>효자고 선택과목</span>
+      <span>경제 · 사회 · 진로 선택</span>
+    </div>
+    <h1>경제는<br />선택을 보는<br />레이더</h1>
+    <p class="question">돈의 흐름을 외우는 과목이 아니라, 사람들이 왜 그렇게 선택하는지 읽는 과목.</p>
+    <div class="signal-title">진로를<br />향한<br />신호</div>
+    <section class="steps">
+      <div class="step"><span>01</span><strong>합리적<br />선택</strong></div>
+      <div class="step"><span>02</span><strong>수요와<br />공급</strong></div>
+      <div class="step"><span>03</span><strong>환율과<br />국제 거래</strong></div>
+    </section>
+    <div class="career">경제학과 · 경영학과 · 국제통상 · 금융 · 회계</div>
+  </section>
+</body>
+</html>
+
