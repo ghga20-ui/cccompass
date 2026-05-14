@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bold Youth</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 720pt;
+      height: 405pt;
+      overflow: hidden;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+      background: #ffec3d;
+      color: #121212;
+    }
+    .slide {
+      width: 720pt;
+      height: 405pt;
+      position: relative;
+      padding: 34pt 42pt;
+    }
+    .slash {
+      position: absolute;
+      right: -60pt;
+      top: 0;
+      width: 310pt;
+      height: 405pt;
+      background: #ff5b2e;
+      transform: skewX(-12deg);
+      transform-origin: top;
+    }
+    .top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22pt;
+      font-size: 12pt;
+      font-weight: 900;
+    }
+    .pill {
+      background: #121212;
+      color: #ffec3d;
+      padding: 8pt 12pt;
+      border-radius: 999pt;
+    }
+    h1 {
+      position: relative;
+      margin: 0;
+      max-width: 520pt;
+      font-size: 64pt;
+      line-height: 0.96;
+      letter-spacing: -1.8pt;
+      font-weight: 900;
+    }
+    .question {
+      position: relative;
+      width: 420pt;
+      margin: 18pt 0 0;
+      font-size: 18pt;
+      line-height: 1.34;
+      font-weight: 900;
+    }
+    .sticker {
+      position: absolute;
+      right: 55pt;
+      top: 145pt;
+      width: 145pt;
+      height: 145pt;
+      border-radius: 30pt;
+      background: #121212;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(7deg);
+      font-size: 22pt;
+      line-height: 1.15;
+      text-align: center;
+      font-weight: 900;
+      box-shadow: 10pt 10pt 0 #ffffff;
+    }
+    .bottom {
+      position: absolute;
+      left: 42pt;
+      right: 42pt;
+      bottom: 34pt;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10pt;
+    }
+    .box {
+      background: #ffffff;
+      padding: 14pt;
+      min-height: 74pt;
+      border: 3pt solid #121212;
+    }
+    .box small {
+      display: block;
+      font-size: 9pt;
+      font-weight: 900;
+      color: #ff5b2e;
+      margin-bottom: 7pt;
+    }
+    .box strong {
+      font-size: 15pt;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+  <section class="slide">
+    <div class="slash" aria-hidden="true"></div>
+    <div class="top">
+      <span>OPTION 04 · BOLD YOUTH</span>
+      <span class="pill">경제 / 사회 / 진로 선택</span>
+    </div>
+    <h1>돈 얘기 말고,<br />선택의 기술</h1>
+    <p class="question">가격이 오르는 이유? 환율이 흔들리는 이유? 결국 사람들의 선택을 읽는 일.</p>
+    <div class="sticker">뉴스가<br />읽히기<br />시작함</div>
+    <div class="bottom">
+      <div class="box"><small>배우는 것</small><strong>합리적 선택</strong></div>
+      <div class="box"><small>배우는 것</small><strong>수요와 공급</strong></div>
+      <div class="box"><small>진로 연결</small><strong>경제 · 금융 · 경영</strong></div>
+    </div>
+  </section>
+</body>
+</html>
+

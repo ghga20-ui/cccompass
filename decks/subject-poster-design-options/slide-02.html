@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Campus Notice</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 720pt;
+      height: 405pt;
+      overflow: hidden;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+      background: #ffffff;
+      color: #202020;
+    }
+    .slide {
+      width: 720pt;
+      height: 405pt;
+      padding: 34pt 42pt;
+      position: relative;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3pt solid #202020;
+      padding-bottom: 16pt;
+      margin-bottom: 24pt;
+    }
+    .school {
+      font-size: 14pt;
+      font-weight: 800;
+    }
+    .badge {
+      font-size: 11pt;
+      font-weight: 800;
+      padding: 7pt 11pt;
+      border: 1.5pt solid #202020;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 220pt;
+      gap: 34pt;
+    }
+    h1 {
+      margin: 0 0 18pt;
+      font-size: 50pt;
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: -1pt;
+    }
+    .question {
+      margin: 0;
+      font-size: 18pt;
+      line-height: 1.42;
+      font-weight: 700;
+      color: #3f3f3f;
+      max-width: 390pt;
+    }
+    .notice {
+      border: 2pt solid #202020;
+      padding: 20pt 20pt 18pt;
+      min-height: 220pt;
+    }
+    .notice h2 {
+      margin: 0 0 14pt;
+      font-size: 18pt;
+      font-weight: 900;
+      color: #0b6b52;
+    }
+    ul {
+      margin: 0;
+      padding-left: 17pt;
+    }
+    li {
+      margin-bottom: 9pt;
+      font-size: 13.5pt;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+    .career {
+      position: absolute;
+      left: 42pt;
+      right: 42pt;
+      bottom: 34pt;
+      display: grid;
+      grid-template-columns: 130pt 1fr;
+      border-top: 1.5pt solid #202020;
+      padding-top: 16pt;
+      align-items: start;
+    }
+    .career strong {
+      font-size: 15pt;
+      color: #0b6b52;
+    }
+    .career span {
+      font-size: 16pt;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <section class="slide">
+    <div class="header">
+      <div class="school">효자고 선택과목 안내</div>
+      <div class="badge">경제 · 사회 · 진로 선택</div>
+    </div>
+    <div class="grid">
+      <main>
+        <h1>돈 얘기 말고,<br />선택의 기술</h1>
+        <p class="question">가격, 환율, 시장, 정부. 뉴스에서 자주 보던 말들을 내 삶의 선택과 연결해 봅니다.</p>
+      </main>
+      <aside class="notice">
+        <h2>이런 걸 배워요</h2>
+        <ul>
+          <li>합리적 선택</li>
+          <li>시장의 수요와 공급</li>
+          <li>경제 성장과 정책</li>
+          <li>환율과 국제 거래</li>
+        </ul>
+      </aside>
+    </div>
+    <div class="career">
+      <strong>진로 연결</strong>
+      <span>경제학과 · 경영학과 · 국제통상 · 금융 · 회계</span>
+    </div>
+  </section>
+</body>
+</html>
+
