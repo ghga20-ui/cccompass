@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, ArrowRight, GraduationCap, Search, X, ChevronDown } from "lucide-react";
+import { ArrowRight, GraduationCap, Search, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,6 @@ export default function HomePage() {
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDepts, setSelectedDepts] = useState<SearchResult[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -42,16 +41,9 @@ export default function HomePage() {
     return getDepartmentsByTagId(selectedTags[0]);
   }, [selectedTags]);
 
-  // Search as user types
-  useEffect(() => {
-    if (searchQuery.trim().length === 0) {
-      setSearchResults([]);
-      setShowDropdown(false);
-      return;
-    }
-    const results = searchDeptAndCareers(searchQuery);
-    setSearchResults(results.slice(0, 8));
-    setShowDropdown(results.length > 0);
+  const searchResults = useMemo(() => {
+    if (searchQuery.trim().length === 0) return [];
+    return searchDeptAndCareers(searchQuery).slice(0, 8);
   }, [searchQuery]);
 
   // Close dropdown when clicking outside
@@ -215,7 +207,10 @@ export default function HomePage() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowDropdown(e.target.value.trim().length > 0);
+                }}
                 onFocus={() => {
                   if (searchResults.length > 0) setShowDropdown(true);
                 }}
