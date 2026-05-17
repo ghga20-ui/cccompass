@@ -141,10 +141,25 @@ def split_bullets(value: Any) -> list[str]:
     items: list[str] = []
     for line in text.split("\n"):
         item = line.strip()
-        item = re.sub(r"^[·•\-\u2022]\s*", "", item).strip()
+        item = re.sub(r"^[\u2022\u2023\u2043\u2219\u25e6\u30fb\uff65·•∙ㆍ・\-]\s*", "", item).strip()
         if item:
             items.append(item)
     return items
+
+
+def build_exploration_activities(data: dict[str, Any]) -> list[dict[str, Any]]:
+    activities: list[dict[str, Any]] = []
+    for i in range(1, 5):
+        task = clean_text(data.get(f"주제탐구과제{i}"))
+        examples = unique(split_bullets(data.get(f"활동사례{i}")))
+        if task or examples:
+            activities.append(
+                {
+                    "task": task,
+                    "activityExamples": examples,
+                }
+            )
+    return activities
 
 
 def unique(items: list[str]) -> list[str]:
@@ -292,10 +307,11 @@ def normal_subject_from_row(
         learning_activities.extend(split_bullets(data.get(f"주요 학습활동{i}")))
 
     interest_fields = unique([clean_text(data.get(f"관심분야{i}")) for i in range(1, 5)])
-    exploration_tasks = unique([clean_text(data.get(f"주제탐구과제{i}")) for i in range(1, 5)])
+    exploration_activities = build_exploration_activities(data)
+    exploration_tasks = unique([item["task"] for item in exploration_activities])
     activity_examples: list[str] = []
-    for i in range(1, 5):
-        activity_examples.extend(split_bullets(data.get(f"활동사례{i}")))
+    for item in exploration_activities:
+        activity_examples.extend(item["activityExamples"])
 
     keywords = re.findall(r"#[^\s#]+", clean_text(data.get("주요 키워드")))
     recommended_for = split_bullets(data.get("이런학생 추천"))
@@ -318,6 +334,7 @@ def normal_subject_from_row(
         "relatedDepartments": interest_fields,
         "relatedCareers": [],
         "explorationTasks": exploration_tasks,
+        "explorationActivities": exploration_activities,
         "activityExamples": unique(activity_examples),
         "recommendedFor": recommended_for,
         "assessment": parse_assessment(data),
