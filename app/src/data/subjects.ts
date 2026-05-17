@@ -1,5 +1,10 @@
 import subjectsData from "./json/subjects.json";
 
+export interface ExplorationActivity {
+  task: string;
+  activityExamples: string[];
+}
+
 export interface Subject {
   id: string;
   name: string;
@@ -16,6 +21,7 @@ export interface Subject {
   relatedCareers?: string[];
   relatedDepartments?: string[];
   explorationTasks?: string[];
+  explorationActivities?: ExplorationActivity[];
   activityExamples?: string[];
   recommendedFor?: string[];
   professionalArea?: string;

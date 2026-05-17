@@ -10,11 +10,12 @@ import {
   School,
   CheckCircle2,
   XCircle,
+  ListChecks,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { subjects, getSubjectById } from "@/data/subjects";
-import { getCohortData, type SelectionGroup } from "@/data/school";
+import { getSubjectById } from "@/data/subjects";
+import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { getUniversitiesRequiringSubject } from "@/data/university-requirements";
 import { useCohort } from "@/contexts/CohortContext";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,7 @@ export default function SubjectDetailPage() {
 
     // Check designated subjects
     cohortData.designated.forEach((d) => {
-      if (d.subject === subject.name) {
+      if (getExpandedSubjectNames(d.subject).includes(subject.name)) {
         results.push({
           grade: d.grade,
           semester: d.semester,
@@ -60,7 +61,7 @@ export default function SubjectDetailPage() {
 
     // Check selection groups
     cohortData.selections.forEach((group) => {
-      if (group.options.includes(subject.name)) {
+      if (group.options.some((name) => getExpandedSubjectNames(name).includes(subject.name))) {
         results.push({
           grade: group.grade,
           semester: group.semester,
@@ -105,6 +106,13 @@ export default function SubjectDetailPage() {
   }
 
   const isAvailable = schoolAvailability.length > 0;
+  const explorationActivities =
+    subject.explorationActivities && subject.explorationActivities.length > 0
+      ? subject.explorationActivities
+      : (subject.explorationTasks ?? []).map((task) => ({
+          task,
+          activityExamples: [] as string[],
+        }));
 
   return (
     <div className="min-h-dvh pb-6">
@@ -178,6 +186,45 @@ export default function SubjectDetailPage() {
                   </li>
                 ))}
               </ul>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Exploration activities */}
+        {explorationActivities.length > 0 && (
+          <Card className="border-border/60">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <ListChecks className="h-4 w-4 text-[var(--primary)]" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  주제 탐구 활동
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {explorationActivities.map((activity, i) => (
+                  <div
+                    key={`${activity.task}-${i}`}
+                    className="rounded-md border border-border/60 bg-muted/20 p-3"
+                  >
+                    <p className="text-xs font-semibold leading-relaxed text-foreground">
+                      {activity.task || `탐구 주제 ${i + 1}`}
+                    </p>
+                    {activity.activityExamples.length > 0 && (
+                      <ul className="mt-2 space-y-1.5">
+                        {activity.activityExamples.map((example, exampleIndex) => (
+                          <li
+                            key={exampleIndex}
+                            className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground"
+                          >
+                            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]/40" />
+                            <span>{example}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         )}
