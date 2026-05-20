@@ -140,6 +140,31 @@ function SubjectDetailContent() {
           </CardContent>
         </Card>
 
+        {/* Recommended students */}
+        {subject.recommendedFor && subject.recommendedFor.length > 0 && (
+          <Card className="border-border/60">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <CheckCircle2 className="h-4 w-4 text-[var(--cta)]" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  이 과목을 들으면 좋은 학생
+                </h3>
+              </div>
+              <ul className="space-y-2">
+                {subject.recommendedFor.map((item, i) => (
+                  <li
+                    key={`${item}-${i}`}
+                    className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground"
+                  >
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--cta)]/50" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Key contents */}
         {subject.keyContents && subject.keyContents.length > 0 && (
           <Card className="border-border/60">
