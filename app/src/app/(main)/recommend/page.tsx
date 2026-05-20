@@ -12,7 +12,7 @@ import {
   getRecommendedSubjectsByInterest,
 } from "@/data/career-mapping";
 import { getSubjectByName, type Subject } from "@/data/subjects";
-import { getCohortData } from "@/data/school";
+import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { getDepartmentRecommendation } from "@/data/search-index";
 
@@ -68,10 +68,7 @@ function buildSelectableSubjectMap(cohortYear: string): Map<string, string[]> {
     if (g.grade < minGrade) return;
     const label = `${g.grade}-${g.semester}`;
     g.options.forEach((o) => {
-      addName(o, label);
-      if (o.includes("↔")) {
-        o.split("↔").forEach((s) => addName(s.trim(), label));
-      }
+      getExpandedSubjectNames(o).forEach((name) => addName(name, label));
     });
   });
 
@@ -84,18 +81,12 @@ function buildAllSchoolSubjectNames(cohortYear: string): Set<string> {
   const cohort = getCohortData(cohortYear);
   if (!cohort) return names;
 
-  cohort.designated.forEach((d) => {
-    names.add(d.subject);
-    if (d.subject.includes("↔")) {
-      d.subject.split("↔").forEach((s) => names.add(s.trim()));
-    }
-  });
+  cohort.designated.forEach((d) =>
+    getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
+  );
   cohort.selections.forEach((g) =>
     g.options.forEach((o) => {
-      names.add(o);
-      if (o.includes("↔")) {
-        o.split("↔").forEach((s) => names.add(s.trim()));
-      }
+      getExpandedSubjectNames(o).forEach((name) => names.add(name));
     })
   );
 
@@ -111,12 +102,16 @@ function buildExcludedNames(cohortYear: string): Set<string> {
   const minGrade = cohortYear === "2025" ? 3 : 2;
 
   // 학교지정 과목 전체 (필수라 추천 불필요)
-  cohort.designated.forEach((d) => names.add(d.subject));
+  cohort.designated.forEach((d) =>
+    getExpandedSubjectNames(d.subject).forEach((name) => names.add(name))
+  );
 
   // 이미 지난 학년의 선택과목 (고2가 이미 고2에서 선택한 과목)
   cohort.selections.forEach((g) => {
     if (g.grade < minGrade) {
-      g.options.forEach((o) => names.add(o));
+      g.options.forEach((o) =>
+        getExpandedSubjectNames(o).forEach((name) => names.add(name))
+      );
     }
   });
 
@@ -220,6 +215,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
   const availableCount = Array.from(bySemester.values()).reduce(
     (sum, items) => sum + items.length, 0
   );
+  const detailReturnPath = `/recommend?dept=${encodeURIComponent(deptName)}`;
 
   if (!deptData) {
     return (
@@ -296,23 +292,18 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
           const items = bySemester.get(sem) || [];
           if (items.length === 0) return null;
           const [g, s] = sem.split("-");
-          const isGrade2 = g === "2";
           const semLabel = `${g}학년 ${s}학기`;
 
           return (
             <section
               key={sem}
-              className={`mb-3 rounded-xl border-l-[3px] ${
-                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
-              }`}
+              className="mb-3 rounded-xl border border-border/50 bg-card/60"
             >
               <button
                 onClick={() => toggleSemester(sem)}
                 className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
               >
-                <h2 className={`text-sm font-bold ${
-                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
-                }`}>
+                <h2 className="text-sm font-bold text-foreground">
                   {semLabel}
                 </h2>
                 <span className="text-xs text-muted-foreground ml-auto mr-1">
@@ -332,6 +323,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                       subject={item.subject}
                       suneung={item.suneung}
                       semesters={item.semesters}
+                      detailReturnPath={detailReturnPath}
                     />
                   ))}
                 </div>
@@ -367,6 +359,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                     key={item.subject.id}
                     subject={item.subject}
                     suneung={item.suneung}
+                    detailReturnPath={detailReturnPath}
                   />
                 ))}
               </div>
@@ -491,6 +484,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   const availableCount = Array.from(bySemester.values()).reduce(
     (sum, items) => sum + items.length, 0
   );
+  const detailReturnPath = `/recommend?interests=${interests.join(",")}`;
 
   if (interests.length === 0) {
     return (
@@ -553,23 +547,18 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
           const items = bySemester.get(sem) || [];
           if (items.length === 0) return null;
           const [g, s] = sem.split("-");
-          const isGrade2 = g === "2";
           const semLabel = `${g}학년 ${s}학기`;
 
           return (
             <section
               key={sem}
-              className={`mb-3 rounded-xl border-l-[3px] ${
-                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
-              }`}
+              className="mb-3 rounded-xl border border-border/50 bg-card/60"
             >
               <button
                 onClick={() => toggleSemester(sem)}
                 className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
               >
-                <h2 className={`text-sm font-bold ${
-                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
-                }`}>
+                <h2 className="text-sm font-bold text-foreground">
                   {semLabel}
                 </h2>
                 <span className="text-xs text-muted-foreground ml-auto mr-1">
@@ -589,6 +578,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       subject={item.subject}
                       suneung={item.suneung}
                       semesters={item.semesters}
+                      detailReturnPath={detailReturnPath}
                     />
                   ))}
                 </div>
@@ -624,6 +614,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                     key={item.subject.id}
                     subject={item.subject}
                     suneung={item.suneung}
+                    detailReturnPath={detailReturnPath}
                   />
                 ))}
               </div>

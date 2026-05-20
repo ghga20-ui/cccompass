@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Subject } from "@/data/subjects";
+import { getAssessmentBadge } from "@/data/assessment";
+import { buildSubjectDetailHref } from "@/lib/subject-navigation";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 interface SubjectCardProps {
@@ -15,30 +17,7 @@ interface SubjectCardProps {
   isAvailable?: boolean;
   suneung?: boolean;
   semesters?: string[]; // e.g. ["2-1", "3-2"]
-}
-
-/** 성적처리 방식 판단 (2022 개정 교육과정) */
-function getGradeType(subject: Subject): { label: string; color: string } {
-  const { category, area, name } = subject;
-
-  // 교양 → P/F
-  if (area === "교양") {
-    return { label: "P/F", color: "bg-gray-100 text-gray-600" };
-  }
-  // 체육, 예술 → 3단계 성취도(A-C), 등급 없음
-  if (area === "체육" || area === "예술") {
-    return { label: "3단계(A-C)", color: "bg-amber-50 text-amber-700" };
-  }
-  // 과학탐구실험 → 3단계 성취도(A-C), 등급 없음
-  if (name.includes("과학탐구실험")) {
-    return { label: "3단계(A-C)", color: "bg-amber-50 text-amber-700" };
-  }
-  // 사회/과학 교과의 융합선택 → 5단계 성취도(A-E), 등급 없음
-  if (category === "융합선택" && (area === "사회" || area === "사회(역사/도덕 포함)" || area === "과학")) {
-    return { label: "5단계(A-E)", color: "bg-sky-50 text-sky-700" };
-  }
-  // 나머지 일반/진로/융합 → 5단계 성취도(A-E) + 등급
-  return { label: "5단계·등급", color: "bg-rose-50 text-rose-700" };
+  detailReturnPath?: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -62,13 +41,15 @@ export default function SubjectCard({
   isAvailable,
   suneung,
   semesters,
+  detailReturnPath,
 }: SubjectCardProps) {
   const showAvailability = isAvailable !== undefined;
   const unavailable = showAvailability && !isAvailable;
-  const gradeType = getGradeType(subject);
+  const gradeType = getAssessmentBadge(subject);
+  const detailHref = buildSubjectDetailHref(subject.id, detailReturnPath);
 
   return (
-    <Link href={`/subjects/${subject.id}`}>
+    <Link href={detailHref}>
       <Card
         className={cn(
           "cursor-pointer border-border/60 transition-all active:scale-[0.98]",

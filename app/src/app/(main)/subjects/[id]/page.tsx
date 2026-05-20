@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, notFound } from "next/navigation";
+import { useParams, useSearchParams, notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -16,10 +16,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSubjectById } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
-import { getUniversitiesRequiringSubject } from "@/data/university-requirements";
 import { useCohort } from "@/contexts/CohortContext";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { getInternalReturnPath } from "@/lib/subject-navigation";
+import { Suspense, useMemo } from "react";
 
 const categoryColors: Record<string, string> = {
   공통: "bg-gray-100 text-gray-700",
@@ -35,10 +35,12 @@ interface SchoolAvailability {
   type: "designated" | "selection";
 }
 
-export default function SubjectDetailPage() {
+function SubjectDetailContent() {
   const params = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const subject = getSubjectById(params.id);
   const { cohort } = useCohort();
+  const backHref = getInternalReturnPath(searchParams.get("from"));
 
   // Find school availability for this subject
   const schoolAvailability = useMemo((): SchoolAvailability[] => {
@@ -74,33 +76,6 @@ export default function SubjectDetailPage() {
     return results;
   }, [subject, cohort]);
 
-  // University requirements for this subject
-  const universityResults = useMemo(() => {
-    if (!subject) return [];
-    // Try both by area and by exact name
-    const byArea = getUniversitiesRequiringSubject(subject.area);
-    const byName = getUniversitiesRequiringSubject(subject.name);
-    // Deduplicate by university+department
-    const seen = new Set<string>();
-    const merged: { field: string; department: string; university: string }[] =
-      [];
-    [...byName, ...byArea].forEach((r) => {
-      const key = `${r.university}__${r.department}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        merged.push(r);
-      }
-    });
-    return merged;
-  }, [subject]);
-
-  // Unique university names for summary display
-  const uniqueUniversities = useMemo(() => {
-    const names = new Set<string>();
-    universityResults.forEach((r) => names.add(r.university));
-    return Array.from(names);
-  }, [universityResults]);
-
   if (!subject) {
     notFound();
   }
@@ -118,7 +93,7 @@ export default function SubjectDetailPage() {
     <div className="min-h-dvh pb-6">
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3">
         <div className="mx-auto flex max-w-lg items-center gap-3">
-          <Link href="/subjects" className="shrink-0 p-1">
+          <Link href={backHref} className="shrink-0 p-1">
             <ArrowLeft className="h-5 w-5 text-foreground" />
           </Link>
           <h1 className="text-base font-semibold text-foreground truncate">
@@ -322,43 +297,21 @@ export default function SubjectDetailPage() {
           </CardContent>
         </Card>
 
-        {/* University requirements */}
-        {universityResults.length > 0 && (
-          <Card className="border-border/60">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <GraduationCap className="h-4 w-4 text-indigo-500" />
-                <h3 className="text-sm font-semibold text-foreground">
-                  대학 반영 정보
-                </h3>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                이 과목 교과영역({subject.area})을 반영하는 대학이{" "}
-                <span className="font-semibold text-foreground">
-                  {uniqueUniversities.length}개교
-                </span>{" "}
-                있습니다.
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {uniqueUniversities.slice(0, 12).map((uni) => (
-                  <Badge
-                    key={uni}
-                    variant="outline"
-                    className="text-[10px] px-1.5 py-0 font-normal border-indigo-200 text-indigo-600 bg-indigo-50"
-                  >
-                    {uni}
-                  </Badge>
-                ))}
-                {uniqueUniversities.length > 12 && (
-                  <span className="text-[10px] text-indigo-400 self-center">
-                    +{uniqueUniversities.length - 12}개교
-                  </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
+  );
+}
+
+export default function SubjectDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-dvh items-center justify-center">
+          <p className="text-muted-foreground">로딩 중...</p>
+        </div>
+      }
+    >
+      <SubjectDetailContent />
+    </Suspense>
   );
 }

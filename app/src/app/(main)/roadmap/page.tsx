@@ -187,6 +187,18 @@ function RoadmapContent() {
       decodeSelections,
     });
   });
+  const detailReturnPath = useMemo(() => {
+    const params = new URLSearchParams();
+    if (deptName) params.set("dept", deptName);
+    if (!deptName && interests.length > 0) {
+      params.set("interests", interests.join(","));
+    }
+    params.set("c", cohort);
+    params.set("s", encodeSelections(selections, cohort));
+
+    const query = params.toString();
+    return query ? `/roadmap?${query}` : "/roadmap";
+  }, [cohort, deptName, interests, selections]);
 
   // ========== 충돌 감지 ==========
   const getConflictsForGroup = useCallback(
@@ -470,16 +482,11 @@ function RoadmapContent() {
         const groups = getSelectionGroups(cohort, grade, semester);
         const selected = groups.flatMap((g) => selections[g.id] || []);
         const credits = getSemesterCredits(grade, semester);
-        const isGrade2 = grade === 2;
-        const accent = isGrade2 ? "#2563eb" : "#7c3aed";
-        const chipBg = isGrade2 ? "#eff6ff" : "#f5f3ff";
 
         // 학기 레이블
-        ctx.fillStyle = accent;
-        ctx.fillRect(PAD, cy, 3, 14);
         ctx.font = `700 12px ${FONT}`;
-        ctx.fillStyle = accent;
-        ctx.fillText(label, PAD + 9, cy + 12);
+        ctx.fillStyle = "#111827";
+        ctx.fillText(label, PAD, cy + 12);
 
         const creditTxt = `${credits.total}/${credits.totalExpected}학점${credits.total === credits.totalExpected ? " \u2713" : ""}`;
         ctx.font = `400 11px ${FONT}`;
@@ -510,9 +517,9 @@ function RoadmapContent() {
               chipX = PAD;
               cy += CHIP_H + CHIP_GAP;
             }
-            ctx.fillStyle = sel ? chipBg : "#f3f4f6";
+            ctx.fillStyle = sel ? "#eef2ff" : "#f3f4f6";
             rr(chipX, cy, chipW, CHIP_H, 6); ctx.fill();
-            ctx.fillStyle = sel ? accent : "#6b7280";
+            ctx.fillStyle = sel ? "#3730a3" : "#6b7280";
             ctx.fillText(text, chipX + CHIP_PAD_H, cy + 15);
             chipX += chipW + CHIP_GAP;
           });
@@ -694,23 +701,17 @@ function RoadmapContent() {
             const designated = getDesignatedSubjects(cohort, grade, semester);
             const groups = getSelectionGroups(cohort, grade, semester);
             const credits = getSemesterCredits(grade, semester);
-            const isGrade2 = grade === 2;
 
             return (
               <section
                 key={`${grade}-${semester}`}
-                className={cn(
-                  "rounded-xl border-l-[3px] pl-0",
-                  isGrade2
-                    ? "border-l-[var(--primary)]"
-                    : "border-l-[var(--cta)]"
-                )}
+                className="rounded-xl border border-border/50 bg-card/60"
               >
                 <div className="flex items-center gap-2 px-3 pb-2">
-                  {isGrade2 ? (
-                    <BookOpen className="h-4 w-4 text-[var(--primary)]" />
+                  {grade === 2 ? (
+                    <BookOpen className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <GraduationCap className="h-4 w-4 text-[var(--cta)]" />
+                    <GraduationCap className="h-4 w-4 text-muted-foreground" />
                   )}
                   <h2 className="text-sm font-bold text-foreground">{label}</h2>
                 </div>
@@ -756,6 +757,7 @@ function RoadmapContent() {
                             grade,
                             semester
                           )}
+                          detailReturnPath={detailReturnPath}
                         />
                       </CardContent>
                     </Card>

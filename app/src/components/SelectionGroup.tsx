@@ -1,11 +1,14 @@
 "use client";
 
 import { useCallback } from "react";
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { SelectionGroup as SelectionGroupType } from "@/data/school";
 import { getSubjectByName } from "@/data/subjects";
+import { getAssessmentBadge } from "@/data/assessment";
+import { buildSubjectDetailHref } from "@/lib/subject-navigation";
 
 const categoryLabel: Record<string, string> = {
   "일반선택": "일반",
@@ -16,9 +19,8 @@ const categoryStyle: Record<string, string> = {
   "일반선택": "bg-sky-100 text-sky-600",
   "진로선택": "bg-emerald-100 text-emerald-600",
   "융합선택": "bg-violet-100 text-violet-600",
+  "교양": "bg-gray-100 text-gray-600",
 };
-const evalLabel = (cat: string) =>
-  cat === "일반선택" ? "9등급" : "A·B·C";
 
 export interface SelectionGroupProps {
   group: SelectionGroupType;
@@ -27,6 +29,7 @@ export interface SelectionGroupProps {
   recommendedSubjects?: Set<string>;
   /** 다른 선택군 또는 다른 학기에서 이미 수강한 과목 (중복 수강 불가) */
   conflictSubjects?: Map<string, string>;  // subjectName -> reason
+  detailReturnPath?: string;
 }
 
 export default function SelectionGroup({
@@ -35,6 +38,7 @@ export default function SelectionGroup({
   onToggle,
   recommendedSubjects,
   conflictSubjects,
+  detailReturnPath,
 }: SelectionGroupProps) {
   const isRadio = group.choose === 1;
   const isFull = selected.length >= group.choose;
@@ -68,38 +72,59 @@ export default function SelectionGroup({
           const isDisabled = isConflict || (!isSelected && isFull);
           const subjectData = getSubjectByName(name);
           const cat = subjectData?.category;
+          const typeLabel = subjectData?.area === "교양" ? "교양" : cat;
+          const assessment = subjectData ? getAssessmentBadge(subjectData) : null;
+          const detailHref = subjectData
+            ? buildSubjectDetailHref(subjectData.id, detailReturnPath)
+            : null;
 
           return (
-            <button
+            <div
               key={name}
-              type="button"
-              disabled={isDisabled}
-              onClick={() => handleToggle(name)}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-lg px-3 min-h-[44px] text-left transition-all",
+                "flex w-full items-stretch gap-2.5 rounded-lg border border-transparent min-h-[48px] text-left transition-all",
                 isSelected
-                  ? "bg-[var(--primary)]/8 ring-1 ring-[var(--primary)]/30"
+                  ? "bg-[var(--primary)]/8 ring-1 ring-[var(--primary)]/35"
                   : "bg-muted/30 hover:bg-muted/60",
-                isDisabled && "cursor-not-allowed",
-                isRecommended && !isSelected && "ring-1 ring-[var(--cta)]/20"
+                isRecommended &&
+                  "border-[var(--cta)]/55 bg-[var(--cta)]/10 shadow-sm shadow-[var(--cta)]/10 ring-1 ring-[var(--cta)]/20"
               )}
             >
               {/* Radio/Checkbox indicator */}
-              <span
+              <button
+                type="button"
+                disabled={isDisabled}
+                onClick={() => handleToggle(name)}
                 className={cn(
-                  "flex shrink-0 items-center justify-center rounded-full transition-colors",
-                  isRadio ? "h-[18px] w-[18px]" : "h-[18px] w-[18px] rounded-[4px]",
-                  isSelected
-                    ? "bg-[var(--primary)] text-white"
-                    : "border-2 border-muted-foreground/30 bg-white",
-                  isDisabled && "opacity-40"
+                  "flex w-10 shrink-0 items-center justify-center rounded-l-lg transition-colors",
+                  isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
                 )}
+                aria-label={`${name} 선택`}
               >
-                {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
-              </span>
+                <span
+                  className={cn(
+                    "flex h-[18px] w-[18px] items-center justify-center rounded-full transition-colors",
+                    !isRadio && "rounded-[4px]",
+                    isSelected
+                      ? "bg-[var(--primary)] text-white"
+                      : "border-2 border-muted-foreground/30 bg-white"
+                  )}
+                >
+                  {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
+                </span>
+              </button>
 
               {/* Subject name + info labels */}
-              <span className={cn("flex-1 min-w-0", isDisabled && "opacity-40")}>
+              <Link
+                href={detailHref ?? "#"}
+                aria-disabled={!detailHref}
+                className={cn(
+                  "flex min-w-0 flex-1 items-center py-2 pr-2",
+                  isDisabled && "opacity-60",
+                  !detailHref && "pointer-events-none"
+                )}
+              >
+              <span className="min-w-0 flex-1">
                 <span
                   className={cn(
                     "text-sm",
@@ -108,13 +133,13 @@ export default function SelectionGroup({
                 >
                   {name}
                 </span>
-                {cat && cat !== "공통" && (
+                {subjectData && typeLabel && cat !== "공통" && (
                   <span className="ml-1.5 inline-flex items-center gap-1">
-                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[cat] ?? "bg-muted text-muted-foreground")}>
-                      {categoryLabel[cat] ?? cat}
+                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[typeLabel] ?? "bg-muted text-muted-foreground")}>
+                      {categoryLabel[typeLabel] ?? typeLabel}
                     </span>
-                    <span className="rounded bg-muted px-1 py-0 text-[10px] font-medium leading-[16px] text-muted-foreground">
-                      {evalLabel(cat)}
+                    <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", assessment?.color ?? "bg-muted text-muted-foreground")}>
+                      {assessment?.label}
                     </span>
                   </span>
                 )}
@@ -133,13 +158,17 @@ export default function SelectionGroup({
                 {isRecommended && !isConflict && (
                   <Badge
                     variant="secondary"
-                    className="border-0 bg-[var(--cta)]/10 px-1.5 py-0 text-[10px] font-semibold text-[var(--cta)] h-4"
+                    className="border border-[var(--cta)]/25 bg-[var(--cta)] px-1.5 py-0 text-[10px] font-semibold text-white h-4"
                   >
                     추천
                   </Badge>
                 )}
+                {detailHref && (
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60" />
+                )}
               </span>
-            </button>
+              </Link>
+            </div>
           );
         })}
       </div>
