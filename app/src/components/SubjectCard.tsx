@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Subject } from "@/data/subjects";
 import { getAssessmentBadge } from "@/data/assessment";
+import { buildSubjectDetailHref } from "@/lib/subject-navigation";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 interface SubjectCardProps {
@@ -16,6 +17,7 @@ interface SubjectCardProps {
   isAvailable?: boolean;
   suneung?: boolean;
   semesters?: string[]; // e.g. ["2-1", "3-2"]
+  detailReturnPath?: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -39,13 +41,15 @@ export default function SubjectCard({
   isAvailable,
   suneung,
   semesters,
+  detailReturnPath,
 }: SubjectCardProps) {
   const showAvailability = isAvailable !== undefined;
   const unavailable = showAvailability && !isAvailable;
   const gradeType = getAssessmentBadge(subject);
+  const detailHref = buildSubjectDetailHref(subject.id, detailReturnPath);
 
   return (
-    <Link href={`/subjects/${subject.id}`}>
+    <Link href={detailHref}>
       <Card
         className={cn(
           "cursor-pointer border-border/60 transition-all active:scale-[0.98]",

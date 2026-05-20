@@ -215,6 +215,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
   const availableCount = Array.from(bySemester.values()).reduce(
     (sum, items) => sum + items.length, 0
   );
+  const detailReturnPath = `/recommend?dept=${encodeURIComponent(deptName)}`;
 
   if (!deptData) {
     return (
@@ -291,23 +292,18 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
           const items = bySemester.get(sem) || [];
           if (items.length === 0) return null;
           const [g, s] = sem.split("-");
-          const isGrade2 = g === "2";
           const semLabel = `${g}학년 ${s}학기`;
 
           return (
             <section
               key={sem}
-              className={`mb-3 rounded-xl border-l-[3px] ${
-                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
-              }`}
+              className="mb-3 rounded-xl border border-border/50 bg-card/60"
             >
               <button
                 onClick={() => toggleSemester(sem)}
                 className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
               >
-                <h2 className={`text-sm font-bold ${
-                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
-                }`}>
+                <h2 className="text-sm font-bold text-foreground">
                   {semLabel}
                 </h2>
                 <span className="text-xs text-muted-foreground ml-auto mr-1">
@@ -327,6 +323,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                       subject={item.subject}
                       suneung={item.suneung}
                       semesters={item.semesters}
+                      detailReturnPath={detailReturnPath}
                     />
                   ))}
                 </div>
@@ -362,6 +359,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                     key={item.subject.id}
                     subject={item.subject}
                     suneung={item.suneung}
+                    detailReturnPath={detailReturnPath}
                   />
                 ))}
               </div>
@@ -486,6 +484,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   const availableCount = Array.from(bySemester.values()).reduce(
     (sum, items) => sum + items.length, 0
   );
+  const detailReturnPath = `/recommend?interests=${interests.join(",")}`;
 
   if (interests.length === 0) {
     return (
@@ -548,23 +547,18 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
           const items = bySemester.get(sem) || [];
           if (items.length === 0) return null;
           const [g, s] = sem.split("-");
-          const isGrade2 = g === "2";
           const semLabel = `${g}학년 ${s}학기`;
 
           return (
             <section
               key={sem}
-              className={`mb-3 rounded-xl border-l-[3px] ${
-                isGrade2 ? "border-l-[var(--primary)]" : "border-l-[var(--cta)]"
-              }`}
+              className="mb-3 rounded-xl border border-border/50 bg-card/60"
             >
               <button
                 onClick={() => toggleSemester(sem)}
                 className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
               >
-                <h2 className={`text-sm font-bold ${
-                  isGrade2 ? "text-[var(--primary)]" : "text-[var(--cta)]"
-                }`}>
+                <h2 className="text-sm font-bold text-foreground">
                   {semLabel}
                 </h2>
                 <span className="text-xs text-muted-foreground ml-auto mr-1">
@@ -584,6 +578,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       subject={item.subject}
                       suneung={item.suneung}
                       semesters={item.semesters}
+                      detailReturnPath={detailReturnPath}
                     />
                   ))}
                 </div>
@@ -619,6 +614,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                     key={item.subject.id}
                     subject={item.subject}
                     suneung={item.suneung}
+                    detailReturnPath={detailReturnPath}
                   />
                 ))}
               </div>
