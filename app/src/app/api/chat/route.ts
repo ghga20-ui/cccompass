@@ -1,98 +1,28 @@
 import { NextResponse } from "next/server";
-import { careerGroups } from "@/data/career-mapping";
 import schoolData from "@/data/json/school.json";
 import careerData from "@/data/json/career-mapping.json";
-
-interface SchoolCohort {
-  label: string;
-  description: string;
-  selections: {
-    id: string;
-    label: string;
-    grade: number;
-    semester: number;
-    choose: number;
-    creditsEach: number;
-    totalCredits: number;
-    options: string[];
-  }[];
-}
-
-/** 계열→학과→권장과목 매핑을 텍스트로 변환 */
-function buildCareerMappingText(): string {
-  const lines: string[] = [];
-  const fields = careerData.fields as { name: string; tracks: { name: string; recommendedSubjects: { "일반선택": string[]; "진로선택": string[]; "융합선택": string[] }; departments: { name: string; recommendedSubjects: { "일반선택": string[]; "진로선택": string[]; "융합선택": string[] } }[] }[] }[];
-
-  for (const field of fields) {
-    for (const track of field.tracks) {
-      // 계열 수준 권장 과목
-      const trackSubjects = [
-        ...track.recommendedSubjects["일반선택"],
-        ...track.recommendedSubjects["진로선택"],
-        ...track.recommendedSubjects["융합선택"],
-      ];
-      lines.push(`### ${field.name} > ${track.name}`);
-      lines.push(`  권장 과목: ${trackSubjects.slice(0, 15).join(", ")}`);
-
-      // 학과별 권장 과목 (차이가 있는 경우만)
-      for (const dept of track.departments) {
-        const deptSubjects = [
-          ...dept.recommendedSubjects["일반선택"],
-          ...dept.recommendedSubjects["진로선택"],
-          ...dept.recommendedSubjects["융합선택"],
-        ];
-        if (deptSubjects.length > 0) {
-          lines.push(`  - ${dept.name}: ${deptSubjects.slice(0, 12).join(", ")}`);
-        }
-      }
-    }
-  }
-  return lines.join("\n");
-}
-
-/** 선택과목 그룹 정보를 텍스트로 변환 */
-function buildSelectionText(
-  cohort: SchoolCohort,
-  filterGrades?: number[]
-): string {
-  const lines: string[] = [];
-  const filtered = filterGrades
-    ? cohort.selections.filter((s) => filterGrades.includes(s.grade))
-    : cohort.selections;
-
-  for (const sel of filtered) {
-    lines.push(
-      `- ${sel.grade}학년 ${sel.semester}학기 | ${sel.label} | ${sel.choose}개 선택 (각 ${sel.creditsEach}학점)`
-    );
-    lines.push(`  선택지: ${sel.options.join(", ")}`);
-  }
-  return lines.join("\n");
-}
+import { retrieveChatContext } from "@/lib/chat-retrieval";
 
 /** cohort별 시스템 프롬프트 생성 */
-function buildSystemPrompt(cohortYear?: string): string {
-  const cohorts = schoolData.cohorts as Record<string, SchoolCohort>;
-  const cohort2025 = cohorts["2025"];
-  const cohort2026 = cohorts["2026"];
-
-  const cohortContext = cohortYear
-    ? `\n\n현재 상담 대상: ${cohortYear === "2025" ? "2025학번 (현 고2) - 고3 과목 선택 필요" : "2026학번 (현 고1) - 고2+고3 과목 선택 필요"}`
-    : "";
+function buildSystemPrompt(cohortYear?: string, question = ""): string {
+  const retrievedContext = retrieveChatContext({
+    question,
+    cohortYear,
+    careerData,
+    schoolData,
+  });
 
   return `당신은 효자고등학교 학생들을 위한 선택과목 상담 AI입니다.
 
 ## 학교 정보
 - 학교명: 효자고등학교
-- 적용 교육과정: 2022 개정 교육과정${cohortContext}
+- 적용 교육과정: 2022 개정 교육과정
 
-## 2025학년도 입학생 (현 고2) 고3 선택과목
-${buildSelectionText(cohort2025, [3])}
+## 검색된 상담 근거
+아래 근거는 학생 질문과 현재 학번을 기준으로 career-mapping.json과 school.json에서 검색·필터링한 내용입니다.
+전체 데이터가 아니라 질문과 관련된 학과/계열, 효자고 현재 선택 가능 과목, 권장 과목의 개설 여부만 포함합니다.
 
-## 2026학년도 입학생 (현 고1) 고2+고3 선택과목
-${buildSelectionText(cohort2026, [2, 3])}
-
-## 계열별 학과 → 권장 선택과목 매핑 (공식 자료 기반)
-${buildCareerMappingText()}
+${retrievedContext.promptText}
 
 ## 2028 수능 출제 과목
 - 국어: 화법과 언어, 독서와 작문, 문학
@@ -110,13 +40,14 @@ ${buildCareerMappingText()}
 
 ## 상담 원칙
 1. 학생의 진로와 적성을 먼저 파악
-2. 우리 학교에서 개설되는 과목 위주로 안내 (없는 과목 추천 금지!)
-3. 대학 입시 반영 정보를 함께 제공
-4. 수능과 내신 모두 고려
-5. 친근하고 이해하기 쉬운 반말 사용
-6. 구체적인 과목 조합 예시 제공
-7. 답변은 간결하게 (3~5문장, 필요시 목록 활용)
-8. 모르는 내용은 솔직히 말하기
+2. 검색된 상담 근거의 "효자고 개설/선택 가능" 과목을 우선 추천
+3. "효자고 미개설 또는 현재 선택대상 아님" 과목은 확정 추천하지 말고, 필요하면 자료상 권장 과목이지만 현재 선택 가능 여부가 확인되지 않는다고 말하기
+4. 대학 입시 반영 정보를 함께 제공
+5. 수능과 내신 모두 고려
+6. 친근하고 이해하기 쉬운 반말 사용
+7. 구체적인 과목 조합 예시 제공
+8. 답변은 간결하게 (3~5문장, 필요시 목록 활용)
+9. 모르는 내용은 솔직히 말하기
 
 ## 출력 형식 (중요!)
 - 마크다운 문법(**, ##, -, * 등)을 절대 사용하지 마.
@@ -137,7 +68,8 @@ export async function POST(request: Request) {
       cohort?: string;
     };
 
-    const systemPrompt = buildSystemPrompt(cohort);
+    const latestQuestion = messages[messages.length - 1]?.content ?? "";
+    const systemPrompt = buildSystemPrompt(cohort, latestQuestion);
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
