@@ -69,7 +69,13 @@ export default async function SharePage({ params }: SharePageProps) {
     notFound();
   }
 
-  const curriculum = schoolCurriculumSchema.parse(publication.curriculumJson);
+  const validation = schoolCurriculumSchema.safeParse(publication.curriculumJson);
+
+  if (!validation.success) {
+    notFound();
+  }
+
+  const curriculum = validation.data;
   const semesterSummaries = buildSemesterSummaries(curriculum);
   const totalSubjects = semesterSummaries.reduce((total, summary) => total + summary.totalCount, 0);
 

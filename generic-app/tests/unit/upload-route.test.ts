@@ -141,6 +141,7 @@ describe("POST /api/curricula/upload", () => {
     });
     mocks.createDraft.mockResolvedValue({
       id: "draft_test_123",
+      editToken: "edit-token-test",
       schoolName: "테스트고등학교",
     });
   });
@@ -271,12 +272,12 @@ describe("POST /api/curricula/upload", () => {
     expect(response.status).toBe(200);
     expect(body).toEqual({
       draftId: "draft_test_123",
-      reviewUrl: "/review/draft_test_123",
+      reviewUrl: "/edit/edit-token-test",
       schoolName: "테스트고등학교",
       warnings: [],
     });
     expect(body.draftId).toEqual(expect.any(String));
-    expect(String(body.reviewUrl)).toContain("/review/");
+    expect(String(body.reviewUrl)).toContain("/edit/");
     expect(mocks.parse).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: "curriculum.xlsx",

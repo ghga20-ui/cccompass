@@ -135,7 +135,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     draftId: draft.id,
-    reviewUrl: `/review/${draft.id}`,
+    reviewUrl: `/edit/${draft.editToken}`,
     schoolName: validation.data.schoolName,
     warnings: structured.warnings,
   });

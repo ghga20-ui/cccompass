@@ -12,6 +12,7 @@ import type {
 
 type CurriculumReviewFormProps = {
   draftId: string;
+  editToken: string;
   initialCurriculum: SchoolCurriculum;
 };
 
@@ -39,6 +40,7 @@ async function readApiPayload(response: Response): Promise<ApiPayload> {
 
 export function CurriculumReviewForm({
   draftId,
+  editToken,
   initialCurriculum,
 }: CurriculumReviewFormProps) {
   const router = useRouter();
@@ -90,6 +92,7 @@ export function CurriculumReviewForm({
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "x-edit-token": editToken,
         },
         body: JSON.stringify({ curriculum }),
       });
@@ -146,6 +149,9 @@ export function CurriculumReviewForm({
 
       const response = await fetch(`/api/curricula/${draftId}/publish`, {
         method: "POST",
+        headers: {
+          "x-edit-token": editToken,
+        },
       });
       const payload = await readApiPayload(response);
 

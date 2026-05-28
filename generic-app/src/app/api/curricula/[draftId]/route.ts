@@ -22,24 +22,53 @@ const draftReviewSelect = {
 const notFoundResponse = () =>
   NextResponse.json({ error: "검토할 교육과정 초안을 찾을 수 없습니다." }, { status: 404 });
 
-export async function GET(_request: Request, context: RouteContext) {
+function hasMatchingEditToken(request: Request, editToken: string) {
+  return request.headers.get("x-edit-token") === editToken;
+}
+
+export async function GET(request: Request, context: RouteContext) {
   const { draftId } = await context.params;
   const draft = await prisma.curriculumDraft.findUnique({
     where: {
       id: draftId,
     },
-    select: draftReviewSelect,
+    select: {
+      ...draftReviewSelect,
+      editToken: true,
+    },
   });
 
-  if (!draft) {
+  if (!draft || !hasMatchingEditToken(request, draft.editToken)) {
     return notFoundResponse();
   }
 
-  return NextResponse.json(draft);
+  return NextResponse.json({
+    id: draft.id,
+    schoolName: draft.schoolName,
+    status: draft.status,
+    curriculumJson: draft.curriculumJson,
+    warnings: draft.warnings,
+    createdAt: draft.createdAt,
+    updatedAt: draft.updatedAt,
+  });
 }
 
 export async function PUT(request: Request, context: RouteContext) {
   const { draftId } = await context.params;
+  const existingDraft = await prisma.curriculumDraft.findUnique({
+    where: {
+      id: draftId,
+    },
+    select: {
+      id: true,
+      editToken: true,
+    },
+  });
+
+  if (!existingDraft || !hasMatchingEditToken(request, existingDraft.editToken)) {
+    return notFoundResponse();
+  }
+
   let body: unknown;
 
   try {
@@ -64,19 +93,6 @@ export async function PUT(request: Request, context: RouteContext) {
       },
       { status: 422 },
     );
-  }
-
-  const existingDraft = await prisma.curriculumDraft.findUnique({
-    where: {
-      id: draftId,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (!existingDraft) {
-    return notFoundResponse();
   }
 
   try {

@@ -12,7 +12,7 @@ type RouteContext = {
 const missingDraftResponse = () =>
   NextResponse.json({ error: "발행할 교육과정 초안을 찾을 수 없습니다." }, { status: 404 });
 
-export async function POST(_request: Request, context: RouteContext) {
+export async function POST(request: Request, context: RouteContext) {
   const { draftId } = await context.params;
 
   try {
@@ -27,7 +27,7 @@ export async function POST(_request: Request, context: RouteContext) {
       },
     });
 
-    if (!draft) {
+    if (!draft || request.headers.get("x-edit-token") !== draft.editToken) {
       return missingDraftResponse();
     }
 
@@ -76,7 +76,7 @@ export async function POST(_request: Request, context: RouteContext) {
     return NextResponse.json({
       shareUrl: `/s/${publication.shareToken}`,
       editUrl: `/edit/${publication.editToken}`,
-      manageUrl: `/published/${draft.id}`,
+      manageUrl: `/published/${draft.id}?editToken=${encodeURIComponent(publication.editToken)}`,
     });
   } catch (error) {
     console.error("Failed to publish curriculum draft", error);

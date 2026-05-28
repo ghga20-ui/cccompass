@@ -6,10 +6,19 @@ type PublishedPageProps = {
   params: Promise<{
     draftId: string;
   }>;
+  searchParams: Promise<{
+    editToken?: string | string[];
+  }>;
 };
 
-export default async function PublishedPage({ params }: PublishedPageProps) {
+export default async function PublishedPage({ params, searchParams }: PublishedPageProps) {
   const { draftId } = await params;
+  const { editToken } = await searchParams;
+
+  if (typeof editToken !== "string") {
+    notFound();
+  }
+
   const publication = await prisma.curriculumPublication.findUnique({
     where: {
       draftId,
@@ -22,7 +31,7 @@ export default async function PublishedPage({ params }: PublishedPageProps) {
     },
   });
 
-  if (!publication) {
+  if (!publication || publication.editToken !== editToken) {
     notFound();
   }
 
