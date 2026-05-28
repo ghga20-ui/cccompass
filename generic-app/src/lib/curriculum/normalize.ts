@@ -4,8 +4,9 @@ export function normalizeSubjectName(name: string): string {
 
 export function resolveChooseCount(text: string): number | null {
   const normalizedText = normalizeSubjectName(text);
+  const compactedText = normalizedText.replace(/\s+/g, "");
 
-  const compactMatch = normalizedText.match(/^택\s*(\d+)$/);
+  const compactMatch = compactedText.match(/택(\d+)/);
   if (compactMatch) {
     return Number(compactMatch[1]);
   }
