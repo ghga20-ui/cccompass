@@ -4,16 +4,7 @@ This app is separate from the Hyoja High School assistant in `app/`. Keep the ex
 
 ## Local Development
 
-Run commands from `generic-app/`:
-
-```bash
-npm install
-npm run db:generate
-npm run db:push
-npm run dev
-```
-
-The development server starts at `http://localhost:3000` unless Next.js selects another port.
+Run commands from `generic-app/`. Create the environment file first, because database commands need `DATABASE_URL`.
 
 ## Environment Variables
 
@@ -27,6 +18,19 @@ OPENAI_API_KEY=""
 ```
 
 Use the mock parser and structurer providers until real parser and LLM adapters are configured.
+
+Then install dependencies, generate the Prisma client, sync the database tables, and start the app:
+
+```bash
+npm install
+npm run db:generate
+npm run db:push
+npm run dev
+```
+
+`db:generate` creates the Prisma client. `db:push` creates or updates the database tables for this no-migrations setup.
+
+The development server starts at `http://localhost:3000` unless Next.js selects another port.
 
 ## Checks
 
