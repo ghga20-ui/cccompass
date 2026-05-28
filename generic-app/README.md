@@ -9,6 +9,7 @@ Run commands from `generic-app/`:
 ```bash
 npm install
 npm run db:generate
+npm run db:push
 npm run dev
 ```
 
@@ -47,3 +48,5 @@ npm run test:e2e -- tests/e2e/upload-publish.spec.ts
 ## Deployment
 
 Deploy this as its own Vercel project. Set the Vercel project root directory to `generic-app`, configure the required environment variables in that project, and keep the existing Hyoja High School assistant deployment unchanged.
+
+Provision the production Postgres schema before first use. For the current no-migrations setup, run `npm run db:push` against the production `DATABASE_URL` from a trusted environment; replace this with migrations once migration files are introduced.
