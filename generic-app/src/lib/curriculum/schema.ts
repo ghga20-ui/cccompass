@@ -18,17 +18,63 @@ export const curriculumSubjectSchema = z.object({
   confidence: z.number().min(0).max(1).optional(),
 });
 
-export const choiceGroupSchema = z.object({
-  id: z.string().trim().min(1),
-  label: z.string().trim().min(1),
-  choose: z.number().int().positive(),
-  minChoose: z.number().int().positive().optional(),
-  maxChoose: z.number().int().positive().optional(),
-  creditsEach: z.number().positive().optional(),
-  subjects: z.array(curriculumSubjectSchema).min(1),
-  notes: z.array(z.string()).optional(),
-  confidence: z.number().min(0).max(1).optional(),
-});
+export const choiceGroupSchema = z
+  .object({
+    id: z.string().trim().min(1),
+    label: z.string().trim().min(1),
+    choose: z.number().int().positive(),
+    minChoose: z.number().int().positive().optional(),
+    maxChoose: z.number().int().positive().optional(),
+    creditsEach: z.number().positive().optional(),
+    subjects: z.array(curriculumSubjectSchema).min(1),
+    notes: z.array(z.string()).optional(),
+    confidence: z.number().min(0).max(1).optional(),
+  })
+  .superRefine((group, ctx) => {
+    if (group.choose > group.subjects.length) {
+      ctx.addIssue({
+        code: "custom",
+        message: "choose cannot exceed the number of subjects",
+        path: ["choose"],
+      });
+    }
+
+    if (group.minChoose !== undefined && group.minChoose > group.choose) {
+      ctx.addIssue({
+        code: "custom",
+        message: "minChoose cannot exceed choose",
+        path: ["minChoose"],
+      });
+    }
+
+    if (group.maxChoose !== undefined && group.choose > group.maxChoose) {
+      ctx.addIssue({
+        code: "custom",
+        message: "choose cannot exceed maxChoose",
+        path: ["choose"],
+      });
+    }
+
+    if (
+      group.minChoose !== undefined &&
+      group.maxChoose !== undefined &&
+      group.minChoose > group.maxChoose
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "minChoose cannot exceed maxChoose",
+        path: ["minChoose"],
+      });
+    }
+
+    if (group.maxChoose !== undefined && group.maxChoose > group.subjects.length) {
+      ctx.addIssue({
+        code: "custom",
+        message: "maxChoose cannot exceed the number of subjects",
+        path: ["maxChoose"],
+      });
+    }
+  });
 
 export const curriculumSemesterSchema = z.object({
   semester: z.union([z.literal(1), z.literal(2)]),

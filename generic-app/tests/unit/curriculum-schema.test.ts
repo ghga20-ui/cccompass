@@ -107,6 +107,34 @@ describe("curriculum schema", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("rejects a choice count greater than the subject count", () => {
+    const invalidCurriculum = structuredClone(validCurriculum);
+    invalidCurriculum.cohorts[0].grades[0].semesters[0].choiceGroups[0].choose = 3;
+
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
+  });
+
+  it("rejects a min choice greater than the choice count", () => {
+    const invalidCurriculum = structuredClone(validCurriculum);
+    invalidCurriculum.cohorts[0].grades[0].semesters[0].choiceGroups[0].minChoose = 3;
+
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
+  });
+
+  it("rejects a choice count greater than the max choice", () => {
+    const invalidCurriculum = structuredClone(validCurriculum);
+    invalidCurriculum.cohorts[0].grades[0].semesters[0].choiceGroups[0].maxChoose = 1;
+
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
+  });
+
+  it("rejects a max choice greater than the subject count", () => {
+    const invalidCurriculum = structuredClone(validCurriculum);
+    invalidCurriculum.cohorts[0].grades[0].semesters[0].choiceGroups[0].maxChoose = 3;
+
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
+  });
 });
 
 describe("curriculum normalization", () => {
@@ -116,6 +144,10 @@ describe("curriculum normalization", () => {
 
   it("resolves compact choose counts", () => {
     expect(resolveChooseCount("택1")).toBe(1);
+  });
+
+  it("resolves compact choose counts embedded in labels", () => {
+    expect(resolveChooseCount("선택A 택1")).toBe(1);
   });
 
   it("resolves choose counts from descriptive Korean text", () => {
