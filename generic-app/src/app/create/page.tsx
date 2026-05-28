@@ -1,0 +1,116 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { Upload } from "lucide-react";
+
+type UploadResponse = {
+  reviewUrl?: string;
+  error?: string;
+};
+
+const fallbackError = "업로드 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+
+async function readUploadResponse(response: Response): Promise<UploadResponse> {
+  try {
+    const payload: unknown = await response.json();
+
+    if (payload && typeof payload === "object") {
+      return payload as UploadResponse;
+    }
+  } catch {
+    return {};
+  }
+
+  return {};
+}
+
+export default function CreatePage() {
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      const response = await fetch("/api/curricula/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await readUploadResponse(response);
+
+      if (!response.ok) {
+        setError(payload.error || fallbackError);
+        return;
+      }
+
+      if (!payload.reviewUrl) {
+        setError(fallbackError);
+        return;
+      }
+
+      window.location.href = payload.reviewUrl;
+    } catch {
+      setError(fallbackError);
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      <section className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-6 py-16 sm:px-10">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold text-[var(--primary)]">
+            학교 편제표 업로드
+          </p>
+          <h1 className="mt-4 text-4xl font-bold tracking-normal sm:text-5xl">
+            편제표를 올리면 검토 화면으로 이어집니다
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            학교에서 사용하는 편제표 파일을 업로드해 선택과목 안내 초안을
+            준비하세요.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-10 max-w-xl space-y-5">
+            <div className="space-y-2">
+              <label
+                htmlFor="curriculum-file"
+                className="block text-sm font-semibold text-slate-800"
+              >
+                편제표 파일
+              </label>
+              <input
+                id="curriculum-file"
+                name="file"
+                type="file"
+                required
+                accept=".pdf,.hwp,.hwpx,.xlsx,.xlsm,.docx"
+                disabled={isUploading}
+                className="block w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-slate-800 file:mr-4 file:rounded-md file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-800 hover:file:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-70"
+              />
+            </div>
+
+            {error ? (
+              <p className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </p>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={isUploading}
+              aria-busy={isUploading}
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+            >
+              <Upload className="h-4 w-4" aria-hidden="true" />
+              {isUploading ? "분석 중" : "업로드하고 분석하기"}
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+  );
+}
