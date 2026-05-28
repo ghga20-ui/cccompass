@@ -9,6 +9,16 @@ type RouteContext = {
   }>;
 };
 
+const draftReviewSelect = {
+  id: true,
+  schoolName: true,
+  status: true,
+  curriculumJson: true,
+  warnings: true,
+  createdAt: true,
+  updatedAt: true,
+} satisfies Prisma.CurriculumDraftSelect;
+
 const notFoundResponse = () =>
   NextResponse.json({ error: "검토할 교육과정 초안을 찾을 수 없습니다." }, { status: 404 });
 
@@ -18,6 +28,7 @@ export async function GET(_request: Request, context: RouteContext) {
     where: {
       id: draftId,
     },
+    select: draftReviewSelect,
   });
 
   if (!draft) {
@@ -77,6 +88,7 @@ export async function PUT(request: Request, context: RouteContext) {
         schoolName: validation.data.schoolName,
         curriculumJson: validation.data,
       },
+      select: draftReviewSelect,
     });
 
     return NextResponse.json(draft);

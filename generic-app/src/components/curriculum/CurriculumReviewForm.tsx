@@ -84,14 +84,7 @@ export function CurriculumReviewForm({
     });
   }
 
-  async function save() {
-    if (isSaving || isPublishing) {
-      return;
-    }
-
-    setMessage("");
-    setIsSaving(true);
-
+  async function saveDraft(successMessage?: string) {
     try {
       const response = await fetch(`/api/curricula/${draftId}`, {
         method: "PUT",
@@ -105,14 +98,32 @@ export function CurriculumReviewForm({
       if (!response.ok) {
         setMessageType("error");
         setMessage(payload.error || fallbackSaveError);
-        return;
+        return false;
       }
 
-      setMessageType("success");
-      setMessage("교육과정 초안을 저장했습니다.");
+      if (successMessage) {
+        setMessageType("success");
+        setMessage(successMessage);
+      }
+
+      return true;
     } catch {
       setMessageType("error");
       setMessage(fallbackSaveError);
+      return false;
+    }
+  }
+
+  async function save() {
+    if (isSaving || isPublishing) {
+      return;
+    }
+
+    setMessage("");
+    setIsSaving(true);
+
+    try {
+      await saveDraft("교육과정 초안을 저장했습니다.");
     } finally {
       setIsSaving(false);
     }
@@ -127,6 +138,12 @@ export function CurriculumReviewForm({
     setIsPublishing(true);
 
     try {
+      const didSave = await saveDraft();
+
+      if (!didSave) {
+        return;
+      }
+
       const response = await fetch(`/api/curricula/${draftId}/publish`, {
         method: "POST",
       });
