@@ -7,17 +7,30 @@ type ReviewPageProps = {
   params: Promise<{
     draftId: string;
   }>;
+  searchParams: Promise<{
+    editToken?: string | string[];
+  }>;
 };
 
-export default async function ReviewPage({ params }: ReviewPageProps) {
+export default async function ReviewPage({ params, searchParams }: ReviewPageProps) {
   const { draftId } = await params;
+  const { editToken } = await searchParams;
+
+  if (typeof editToken !== "string") {
+    notFound();
+  }
+
   const draft = await prisma.curriculumDraft.findUnique({
     where: {
       id: draftId,
     },
+    select: {
+      editToken: true,
+      curriculumJson: true,
+    },
   });
 
-  if (!draft) {
+  if (!draft || draft.editToken !== editToken) {
     notFound();
   }
 
@@ -37,7 +50,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           </p>
         </div>
 
-        <CurriculumReviewForm draftId={draftId} initialCurriculum={initialCurriculum} />
+        <CurriculumReviewForm
+          draftId={draftId}
+          editToken={editToken}
+          initialCurriculum={initialCurriculum}
+        />
       </section>
     </main>
   );

@@ -22,5 +22,5 @@ export default async function EditPage({ params }: EditPageProps) {
     redirect("/");
   }
 
-  redirect(`/review/${draft.id}`);
+  redirect(`/review/${draft.id}?editToken=${encodeURIComponent(editToken)}`);
 }
