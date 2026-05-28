@@ -8,8 +8,17 @@ const originalStructurerProvider = process.env.CURRICULUM_STRUCTURER_PROVIDER;
 
 describe("curriculum providers", () => {
   afterEach(() => {
-    process.env.CURRICULUM_PARSER_PROVIDER = originalParserProvider;
-    process.env.CURRICULUM_STRUCTURER_PROVIDER = originalStructurerProvider;
+    if (originalParserProvider === undefined) {
+      delete process.env.CURRICULUM_PARSER_PROVIDER;
+    } else {
+      process.env.CURRICULUM_PARSER_PROVIDER = originalParserProvider;
+    }
+
+    if (originalStructurerProvider === undefined) {
+      delete process.env.CURRICULUM_STRUCTURER_PROVIDER;
+    } else {
+      process.env.CURRICULUM_STRUCTURER_PROVIDER = originalStructurerProvider;
+    }
   });
 
   it("returns the mock parser by default", async () => {
