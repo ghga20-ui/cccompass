@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { curriculumSchoolSchema } from "@/lib/curriculum/schema";
+import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
 import { normalizeSubjectName, resolveChooseCount } from "@/lib/curriculum/normalize";
 
 const validCurriculum = {
   schoolName: "서울고등학교",
-  sourceYear: 2026,
+  sourceYear: "2026",
   cohorts: [
     {
-      entranceYear: 2026,
+      entranceYear: "2026",
       label: "2026 입학생",
       grades: [
         {
@@ -45,7 +45,7 @@ const validCurriculum = {
                       credits: 3,
                     },
                   ],
-                  notes: "2과목 선택",
+                  notes: ["2과목 선택"],
                   confidence: 0.9,
                 },
               ],
@@ -58,13 +58,13 @@ const validCurriculum = {
 };
 
 describe("curriculum schema", () => {
-  it("accepts a valid curriculum with required subjects and choice groups", () => {
-    expect(curriculumSchoolSchema.safeParse(validCurriculum).success).toBe(true);
+  it("accepts a valid curriculum with required subjects, choice groups, and notes", () => {
+    expect(schoolCurriculumSchema.safeParse(validCurriculum).success).toBe(true);
   });
 
   it("rejects an empty school name", () => {
     expect(
-      curriculumSchoolSchema.safeParse({
+      schoolCurriculumSchema.safeParse({
         ...validCurriculum,
         schoolName: "",
       }).success,
@@ -75,14 +75,37 @@ describe("curriculum schema", () => {
     const invalidCurriculum = structuredClone(validCurriculum);
     invalidCurriculum.cohorts[0].grades[0].semesters[0].requiredSubjects[0].credits = 0;
 
-    expect(curriculumSchoolSchema.safeParse(invalidCurriculum).success).toBe(false);
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
   });
 
   it("rejects an empty choice group", () => {
     const invalidCurriculum = structuredClone(validCurriculum);
     invalidCurriculum.cohorts[0].grades[0].semesters[0].choiceGroups[0].subjects = [];
 
-    expect(curriculumSchoolSchema.safeParse(invalidCurriculum).success).toBe(false);
+    expect(schoolCurriculumSchema.safeParse(invalidCurriculum).success).toBe(false);
+  });
+
+  it("rejects a numeric source year", () => {
+    expect(
+      schoolCurriculumSchema.safeParse({
+        ...validCurriculum,
+        sourceYear: 2026,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("rejects a numeric entrance year", () => {
+    expect(
+      schoolCurriculumSchema.safeParse({
+        ...validCurriculum,
+        cohorts: [
+          {
+            ...validCurriculum.cohorts[0],
+            entranceYear: 2026,
+          },
+        ],
+      }).success,
+    ).toBe(false);
   });
 });
 
