@@ -20,7 +20,7 @@ export default function Home() {
               href="/create"
               className="inline-flex items-center justify-center rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
-              편제표 업로드 시작
+              새 도우미 만들기
             </Link>
             <span className="text-sm text-slate-600">
               엑셀 또는 학교 자료를 기반으로 안내 초안을 준비합니다.

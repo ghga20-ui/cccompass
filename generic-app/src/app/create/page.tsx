@@ -69,11 +69,8 @@ export default function CreatePage() {
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <section className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-6 py-16 sm:px-10">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold text-[var(--primary)]">
+          <h1 className="text-4xl font-bold tracking-normal sm:text-5xl">
             학교 편제표 업로드
-          </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-normal sm:text-5xl">
-            편제표를 올리면 검토 화면으로 이어집니다
           </h1>
           <p className="mt-6 text-lg leading-8 text-slate-700">
             학교에서 사용하는 편제표 파일을 업로드해 선택과목 안내 초안을
