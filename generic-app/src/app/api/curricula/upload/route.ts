@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getStructurerProvider } from "@/lib/llm";
 import { getParserProvider } from "@/lib/parser";
 import { createShareToken } from "@/lib/tokens";
+import type { CohortMode, StructuringHints } from "@/lib/llm";
 
 const maxUploadBytes = 5 * 1024 * 1024;
 
@@ -38,6 +39,53 @@ function isSupportedUpload(file: File) {
   return allowedExtensions.has(extension) || allowedMimeTypes.has(mimeType);
 }
 
+function getOptionalFormString(formData: FormData, name: string) {
+  const value = formData.get(name);
+
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function getCohortMode(formData: FormData): CohortMode {
+  const value = getOptionalFormString(formData, "cohortMode");
+
+  if (value === "single" || value === "multiple") {
+    return value;
+  }
+
+  return "auto";
+}
+
+function getEntranceYears(formData: FormData) {
+  const raw = getOptionalFormString(formData, "entranceYears");
+
+  if (!raw) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      raw
+        .split(/[\s,，、/]+/)
+        .map((value) => value.trim())
+        .filter((value) => /^\d{4}$/.test(value)),
+    ),
+  );
+}
+
+function getStructuringHints(formData: FormData): StructuringHints {
+  return {
+    schoolName: getOptionalFormString(formData, "schoolName"),
+    cohortMode: getCohortMode(formData),
+    entranceYears: getEntranceYears(formData),
+  };
+}
+
 export async function POST(request: Request) {
   let formData: FormData;
 
@@ -50,6 +98,7 @@ export async function POST(request: Request) {
   }
 
   const file = formData.get("file");
+  const hints = getStructuringHints(formData);
 
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "편제표 파일을 업로드해주세요." }, { status: 400 });
@@ -103,6 +152,7 @@ export async function POST(request: Request) {
     structured = await getStructurerProvider().structure({
       text: parsed.text,
       tables: parsed.tables,
+      hints,
     });
   } catch (error) {
     console.error("Curriculum structurer provider failed", error);

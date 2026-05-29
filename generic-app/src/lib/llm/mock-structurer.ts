@@ -4,14 +4,17 @@ export class MockStructurerProvider implements StructurerProvider {
   async structure(
     document: Parameters<StructurerProvider["structure"]>[0],
   ): Promise<StructuringResult> {
+    const schoolName = document.hints?.schoolName ?? "테스트고등학교";
+    const entranceYear = document.hints?.entranceYears[0] ?? "2026";
+
     return {
       curriculum: {
-        schoolName: "테스트고등학교",
-        sourceYear: "2026",
+        schoolName,
+        sourceYear: entranceYear,
         cohorts: [
           {
-            entranceYear: "2026",
-            label: "2026학년도 입학생",
+            entranceYear,
+            label: `${entranceYear}학년도 입학생`,
             grades: [
               {
                 grade: 2,
@@ -47,7 +50,7 @@ export class MockStructurerProvider implements StructurerProvider {
                             credits: 3,
                           },
                         ],
-                        notes: ["택1"],
+                        notes: ["mock data"],
                         confidence: 1,
                       },
                     ],

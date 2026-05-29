@@ -70,11 +70,24 @@ vi.mock("@/lib/tokens", () => ({
   createShareToken: () => "edit-token-test",
 }));
 
-function createRequest(file?: File) {
+function createRequest(
+  file?: File,
+  fields: {
+    schoolName?: string;
+    cohortMode?: string;
+    entranceYears?: string;
+  } = {},
+) {
   const formData = new FormData();
 
   if (file) {
     formData.set("file", file);
+  }
+
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined) {
+      formData.set(key, value);
+    }
   }
 
   return {
@@ -214,7 +227,13 @@ describe("POST /api/curricula/upload", () => {
       },
     });
 
-    const response = await POST(createRequest(createUploadFile()));
+    const response = await POST(
+      createRequest(createUploadFile(), {
+        schoolName: "효자고등학교",
+        cohortMode: "multiple",
+        entranceYears: "2025, 2026",
+      }),
+    );
 
     expect(response.status).toBe(422);
     expect(await readJson(response)).toEqual({
@@ -226,7 +245,13 @@ describe("POST /api/curricula/upload", () => {
     const { POST } = await import("@/app/api/curricula/upload/route");
     mocks.parse.mockRejectedValueOnce(new Error("parser failed"));
 
-    const response = await POST(createRequest(createUploadFile()));
+    const response = await POST(
+      createRequest(createUploadFile(), {
+        schoolName: "효자고등학교",
+        cohortMode: "multiple",
+        entranceYears: "2025, 2026",
+      }),
+    );
 
     expect(response.status).toBe(502);
     expect(await readJson(response)).toEqual({ error: "문서 분석 중 오류가 발생했습니다." });
@@ -266,7 +291,13 @@ describe("POST /api/curricula/upload", () => {
   it("returns a draft review response and creates a draft for a valid upload", async () => {
     const { POST } = await import("@/app/api/curricula/upload/route");
 
-    const response = await POST(createRequest(createUploadFile()));
+    const response = await POST(
+      createRequest(createUploadFile(), {
+        schoolName: "효자고등학교",
+        cohortMode: "multiple",
+        entranceYears: "2025, 2026",
+      }),
+    );
     const body = await readJson(response);
 
     expect(response.status).toBe(200);
@@ -283,6 +314,17 @@ describe("POST /api/curricula/upload", () => {
         fileName: "curriculum.xlsx",
         mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         buffer: expect.any(Buffer),
+      }),
+    );
+    expect(mocks.structure).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: "테스트고등학교 2026 교육과정",
+        tables: [["학교명", "과목"], ["테스트고등학교", "문학"]],
+        hints: {
+          schoolName: "효자고등학교",
+          cohortMode: "multiple",
+          entranceYears: ["2025", "2026"],
+        },
       }),
     );
     expect(mocks.createDraft).toHaveBeenCalledWith(

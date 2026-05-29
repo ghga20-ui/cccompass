@@ -27,6 +27,7 @@ async function readUploadResponse(response: Response): Promise<UploadResponse> {
 export default function CreatePage() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
+  const [cohortMode, setCohortMode] = useState("auto");
   const errorId = "curriculum-upload-error";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -72,12 +73,72 @@ export default function CreatePage() {
           <h1 className="text-4xl font-bold tracking-normal sm:text-5xl">
             학교 편제표 업로드
           </h1>
-          <p className="mt-6 text-lg leading-8 text-slate-700">
-            학교에서 사용하는 편제표 파일을 업로드해 선택과목 안내 초안을
-            준비하세요.
-          </p>
 
-          <form onSubmit={handleSubmit} className="mt-10 max-w-xl space-y-5">
+          <form onSubmit={handleSubmit} className="mt-10 max-w-2xl space-y-6">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label
+                  htmlFor="school-name"
+                  className="block text-sm font-semibold text-slate-800"
+                >
+                  학교명
+                </label>
+                <input
+                  id="school-name"
+                  name="schoolName"
+                  type="text"
+                  required
+                  placeholder="예: 효자고등학교"
+                  disabled={isUploading}
+                  className="block w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="entrance-years"
+                  className="block text-sm font-semibold text-slate-800"
+                >
+                  입학생 학년도
+                </label>
+                <input
+                  id="entrance-years"
+                  name="entranceYears"
+                  type="text"
+                  placeholder="예: 2025, 2026"
+                  disabled={isUploading}
+                  className="block w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+                />
+              </div>
+            </div>
+
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-semibold text-slate-800">편제 포함 범위</legend>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {[
+                  ["auto", "자동 인식"],
+                  ["single", "한 학년도"],
+                  ["multiple", "여러 학년도"],
+                ].map(([value, label]) => (
+                  <label
+                    key={value}
+                    className="flex cursor-pointer items-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-800"
+                  >
+                    <input
+                      type="radio"
+                      name="cohortMode"
+                      value={value}
+                      checked={cohortMode === value}
+                      onChange={() => setCohortMode(value)}
+                      disabled={isUploading}
+                      className="h-4 w-4"
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="space-y-2">
               <label
                 htmlFor="curriculum-file"

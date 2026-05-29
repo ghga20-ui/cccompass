@@ -4,7 +4,7 @@ import type { StructurerProvider } from "./types";
 
 export { MockStructurerProvider } from "./mock-structurer";
 export { OpenAIStructurerProvider } from "./openai-structurer";
-export type { StructurerProvider, StructuringResult } from "./types";
+export type { CohortMode, StructurerProvider, StructuringHints, StructuringResult } from "./types";
 
 export function getStructurerProvider(): StructurerProvider {
   const provider = process.env.CURRICULUM_STRUCTURER_PROVIDER ?? "mock";

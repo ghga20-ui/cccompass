@@ -1,5 +1,5 @@
 import { schoolCurriculumSchema, subjectCategorySchema } from "@/lib/curriculum/schema";
-import type { StructurerProvider, StructuringResult } from "./types";
+import type { StructurerProvider, StructuringHints, StructuringResult } from "./types";
 
 const defaultModel = "gpt-5.5";
 
@@ -131,7 +131,6 @@ function extractResponseText(body: unknown) {
     output?: Array<{
       content?: Array<{
         text?: unknown;
-        type?: unknown;
       }>;
     }>;
   };
@@ -147,34 +146,6 @@ function extractResponseText(body: unknown) {
       .join("\n")
       .trim() ?? ""
   );
-}
-
-function parseJsonResponse(text: string): StructuringResult {
-  const parsed: unknown = JSON.parse(text);
-
-  if (!parsed || typeof parsed !== "object") {
-    throw new Error("OpenAI returned a non-object JSON response.");
-  }
-
-  const result = parsed as Partial<StructuringResult>;
-  const curriculum = schoolCurriculumSchema.parse(normalizeCurriculumCandidate(result.curriculum));
-
-  if (!Array.isArray(result.warnings) || !result.warnings.every((item) => typeof item === "string")) {
-    throw new Error("OpenAI response is missing a valid warnings array.");
-  }
-
-  if (
-    !Array.isArray(result.sourceSnippets) ||
-    !result.sourceSnippets.every((item) => typeof item === "string")
-  ) {
-    throw new Error("OpenAI response is missing a valid sourceSnippets array.");
-  }
-
-  return {
-    curriculum,
-    warnings: result.warnings,
-    sourceSnippets: result.sourceSnippets,
-  };
 }
 
 function cleanOptionalString(value: unknown) {
@@ -203,7 +174,33 @@ function cleanSubject(subject: unknown) {
   };
 }
 
-function normalizeCurriculumCandidate(curriculum: unknown) {
+function normalizeChoiceGroups(groups: unknown) {
+  if (!Array.isArray(groups)) {
+    return groups;
+  }
+
+  return groups.map((group) => {
+    if (!group || typeof group !== "object") {
+      return group;
+    }
+
+    const candidate = group as Record<string, unknown>;
+
+    return {
+      ...candidate,
+      subjects: Array.isArray(candidate.subjects)
+        ? candidate.subjects.map(cleanSubject)
+        : candidate.subjects,
+      notes: Array.isArray(candidate.notes)
+        ? candidate.notes.filter(
+            (note): note is string => typeof note === "string" && note.trim().length > 0,
+          )
+        : candidate.notes,
+    };
+  });
+}
+
+function normalizeCurriculumCandidate(curriculum: unknown, hints?: StructuringHints) {
   if (!curriculum || typeof curriculum !== "object") {
     return curriculum;
   }
@@ -212,7 +209,10 @@ function normalizeCurriculumCandidate(curriculum: unknown) {
 
   return {
     ...candidate,
-    schoolName: cleanOptionalString(candidate.schoolName) ?? "학교명 미확인",
+    schoolName:
+      cleanOptionalString(hints?.schoolName) ??
+      cleanOptionalString(candidate.schoolName) ??
+      "학교명 미확인",
     sourceYear: cleanOptionalString(candidate.sourceYear),
     cohorts: Array.isArray(candidate.cohorts)
       ? candidate.cohorts.map((cohort) => {
@@ -247,28 +247,7 @@ function normalizeCurriculumCandidate(curriculum: unknown) {
                             requiredSubjects: Array.isArray(semesterCandidate.requiredSubjects)
                               ? semesterCandidate.requiredSubjects.map(cleanSubject)
                               : semesterCandidate.requiredSubjects,
-                            choiceGroups: Array.isArray(semesterCandidate.choiceGroups)
-                              ? semesterCandidate.choiceGroups.map((group) => {
-                                  if (!group || typeof group !== "object") {
-                                    return group;
-                                  }
-
-                                  const groupCandidate = group as Record<string, unknown>;
-
-                                  return {
-                                    ...groupCandidate,
-                                    subjects: Array.isArray(groupCandidate.subjects)
-                                      ? groupCandidate.subjects.map(cleanSubject)
-                                      : groupCandidate.subjects,
-                                    notes: Array.isArray(groupCandidate.notes)
-                                      ? groupCandidate.notes.filter(
-                                          (note): note is string =>
-                                            typeof note === "string" && note.trim().length > 0,
-                                        )
-                                      : groupCandidate.notes,
-                                  };
-                                })
-                              : semesterCandidate.choiceGroups,
+                            choiceGroups: normalizeChoiceGroups(semesterCandidate.choiceGroups),
                           };
                         })
                       : gradeCandidate.semesters,
@@ -279,6 +258,53 @@ function normalizeCurriculumCandidate(curriculum: unknown) {
         })
       : candidate.cohorts,
   };
+}
+
+function parseJsonResponse(text: string, hints?: StructuringHints): StructuringResult {
+  const parsed: unknown = JSON.parse(text);
+
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("OpenAI returned a non-object JSON response.");
+  }
+
+  const result = parsed as Partial<StructuringResult>;
+  const curriculum = schoolCurriculumSchema.parse(
+    normalizeCurriculumCandidate(result.curriculum, hints),
+  );
+
+  if (!Array.isArray(result.warnings) || !result.warnings.every((item) => typeof item === "string")) {
+    throw new Error("OpenAI response is missing a valid warnings array.");
+  }
+
+  if (
+    !Array.isArray(result.sourceSnippets) ||
+    !result.sourceSnippets.every((item) => typeof item === "string")
+  ) {
+    throw new Error("OpenAI response is missing a valid sourceSnippets array.");
+  }
+
+  return {
+    curriculum,
+    warnings: result.warnings,
+    sourceSnippets: result.sourceSnippets,
+  };
+}
+
+function createSystemPrompt() {
+  return [
+    "You convert Korean high-school curriculum tables into strict JSON.",
+    "A school may upload one entrance-year cohort, multiple entrance-year cohorts in separate sections, or multiple cohorts in one table.",
+    "First separate the document by entrance-year cohort, then structure each cohort independently.",
+    "If userHints.entranceYears is not empty, prefer those entrance years and warn when document evidence conflicts.",
+    "If userHints.cohortMode is single, return one cohort unless the document clearly contradicts it.",
+    "If userHints.cohortMode is multiple, actively look for multiple entrance-year cohorts.",
+    "If cohort boundaries are ambiguous, create the most likely cohorts and add explicit warnings.",
+    "Preserve Korean subject names exactly.",
+    "Use warnings for ambiguous grade, semester, credit, category, or choice-group evidence.",
+    "Do not use empty strings for optional fields. Omit unknown optional values.",
+    "Use category only when it is one of: 공통, 일반선택, 진로선택, 융합선택, 전문교과, 기타.",
+    "Return only data that is supported by the supplied text, tables, or user hints.",
+  ].join(" ");
 }
 
 export class OpenAIStructurerProvider implements StructurerProvider {
@@ -297,12 +323,15 @@ export class OpenAIStructurerProvider implements StructurerProvider {
         input: [
           {
             role: "system",
-            content:
-              "You convert Korean high-school curriculum tables into strict JSON. Preserve Korean names exactly. Use warnings for ambiguous grade, semester, credit, or choice-group evidence. Return only data that is supported by the supplied text or tables.",
+            content: createSystemPrompt(),
           },
           {
             role: "user",
             content: JSON.stringify({
+              userHints: document.hints ?? {
+                cohortMode: "auto",
+                entranceYears: [],
+              },
               text: document.text,
               tables: document.tables,
             }),
@@ -333,6 +362,6 @@ export class OpenAIStructurerProvider implements StructurerProvider {
       throw new Error("OpenAI response did not include output text.");
     }
 
-    return parseJsonResponse(text);
+    return parseJsonResponse(text, document.hints);
   }
 }
