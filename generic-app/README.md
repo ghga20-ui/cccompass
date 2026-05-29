@@ -39,7 +39,9 @@ The development server starts at `http://localhost:3000` unless Next.js selects 
 
 ## Parser Worker
 
-Document parsing is intentionally kept outside this Vercel app. Deploy `../parser-worker` as its own service, configure it with a Kordoc-compatible command adapter, then set `PARSER_SERVICE_URL` and `PARSER_SERVICE_TOKEN` here.
+Document parsing is intentionally kept outside this Vercel app. Deploy `../parser-worker` as its own service, configure it with a Kordoc-compatible adapter, then set `PARSER_SERVICE_URL` and `PARSER_SERVICE_TOKEN` here.
+
+Keep uploaded school curriculum files at or below 5MB. Larger PDFs should use a storage-backed flow instead of direct function-to-function JSON transfer.
 
 The app sends uploaded file bytes to `POST /parse` and expects:
 

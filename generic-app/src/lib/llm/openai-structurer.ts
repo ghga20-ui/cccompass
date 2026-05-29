@@ -1,4 +1,4 @@
-import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
+import { schoolCurriculumSchema, subjectCategorySchema } from "@/lib/curriculum/schema";
 import type { StructurerProvider, StructuringResult } from "./types";
 
 const defaultModel = "gpt-5.5";
@@ -157,7 +157,7 @@ function parseJsonResponse(text: string): StructuringResult {
   }
 
   const result = parsed as Partial<StructuringResult>;
-  const curriculum = schoolCurriculumSchema.parse(result.curriculum);
+  const curriculum = schoolCurriculumSchema.parse(normalizeCurriculumCandidate(result.curriculum));
 
   if (!Array.isArray(result.warnings) || !result.warnings.every((item) => typeof item === "string")) {
     throw new Error("OpenAI response is missing a valid warnings array.");
@@ -174,6 +174,110 @@ function parseJsonResponse(text: string): StructuringResult {
     curriculum,
     warnings: result.warnings,
     sourceSnippets: result.sourceSnippets,
+  };
+}
+
+function cleanOptionalString(value: unknown) {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function cleanSubject(subject: unknown) {
+  if (!subject || typeof subject !== "object") {
+    return subject;
+  }
+
+  const candidate = subject as Record<string, unknown>;
+  const category = subjectCategorySchema.safeParse(candidate.category);
+
+  return {
+    ...candidate,
+    area: cleanOptionalString(candidate.area),
+    category: category.success ? category.data : undefined,
+    rawText: cleanOptionalString(candidate.rawText),
+  };
+}
+
+function normalizeCurriculumCandidate(curriculum: unknown) {
+  if (!curriculum || typeof curriculum !== "object") {
+    return curriculum;
+  }
+
+  const candidate = curriculum as Record<string, unknown>;
+
+  return {
+    ...candidate,
+    schoolName: cleanOptionalString(candidate.schoolName) ?? "학교명 미확인",
+    sourceYear: cleanOptionalString(candidate.sourceYear),
+    cohorts: Array.isArray(candidate.cohorts)
+      ? candidate.cohorts.map((cohort) => {
+          if (!cohort || typeof cohort !== "object") {
+            return cohort;
+          }
+
+          const cohortCandidate = cohort as Record<string, unknown>;
+
+          return {
+            ...cohortCandidate,
+            grades: Array.isArray(cohortCandidate.grades)
+              ? cohortCandidate.grades.map((grade) => {
+                  if (!grade || typeof grade !== "object") {
+                    return grade;
+                  }
+
+                  const gradeCandidate = grade as Record<string, unknown>;
+
+                  return {
+                    ...gradeCandidate,
+                    semesters: Array.isArray(gradeCandidate.semesters)
+                      ? gradeCandidate.semesters.map((semester) => {
+                          if (!semester || typeof semester !== "object") {
+                            return semester;
+                          }
+
+                          const semesterCandidate = semester as Record<string, unknown>;
+
+                          return {
+                            ...semesterCandidate,
+                            requiredSubjects: Array.isArray(semesterCandidate.requiredSubjects)
+                              ? semesterCandidate.requiredSubjects.map(cleanSubject)
+                              : semesterCandidate.requiredSubjects,
+                            choiceGroups: Array.isArray(semesterCandidate.choiceGroups)
+                              ? semesterCandidate.choiceGroups.map((group) => {
+                                  if (!group || typeof group !== "object") {
+                                    return group;
+                                  }
+
+                                  const groupCandidate = group as Record<string, unknown>;
+
+                                  return {
+                                    ...groupCandidate,
+                                    subjects: Array.isArray(groupCandidate.subjects)
+                                      ? groupCandidate.subjects.map(cleanSubject)
+                                      : groupCandidate.subjects,
+                                    notes: Array.isArray(groupCandidate.notes)
+                                      ? groupCandidate.notes.filter(
+                                          (note): note is string =>
+                                            typeof note === "string" && note.trim().length > 0,
+                                        )
+                                      : groupCandidate.notes,
+                                  };
+                                })
+                              : semesterCandidate.choiceGroups,
+                          };
+                        })
+                      : gradeCandidate.semesters,
+                  };
+                })
+              : cohortCandidate.grades,
+          };
+        })
+      : candidate.cohorts,
   };
 }
 

@@ -5,7 +5,7 @@ import { getStructurerProvider } from "@/lib/llm";
 import { getParserProvider } from "@/lib/parser";
 import { createShareToken } from "@/lib/tokens";
 
-const maxUploadBytes = 15 * 1024 * 1024;
+const maxUploadBytes = 5 * 1024 * 1024;
 
 const allowedExtensions = new Set([".pdf", ".hwp", ".hwpx", ".xlsx", ".xlsm", ".docx"]);
 const allowedMimeTypes = new Set([
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
   if (file.size > maxUploadBytes) {
     return NextResponse.json(
-      { error: "파일은 15MB 이하만 업로드할 수 있습니다." },
+      { error: "파일은 5MB 이하만 업로드할 수 있습니다." },
       { status: 400 },
     );
   }

@@ -179,16 +179,16 @@ describe("POST /api/curricula/upload", () => {
     expect(await readJson(response)).toEqual({ error: "지원하지 않는 파일 형식입니다." });
   });
 
-  it("returns 400 when the file exceeds 15MB", async () => {
+  it("returns 400 when the file exceeds 5MB", async () => {
     const { POST } = await import("@/app/api/curricula/upload/route");
 
     const response = await POST(
-      createRequest(createUploadFile({ size: 15 * 1024 * 1024 + 1 })),
+      createRequest(createUploadFile({ size: 5 * 1024 * 1024 + 1 })),
     );
 
     expect(response.status).toBe(400);
     expect(await readJson(response)).toEqual({
-      error: "파일은 15MB 이하만 업로드할 수 있습니다.",
+      error: "파일은 5MB 이하만 업로드할 수 있습니다.",
     });
   });
 
