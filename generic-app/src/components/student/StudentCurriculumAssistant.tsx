@@ -11,9 +11,11 @@ import {
   Download,
   GraduationCap,
   Home,
+  Info,
   Search,
   Share2,
   Sparkles,
+  X,
 } from "lucide-react";
 import type {
   ChoiceGroup,
@@ -45,6 +47,15 @@ type InterestTag = {
   label: string;
   description: string;
   matcher: (subject: CurriculumSubject) => boolean;
+};
+
+type RecommendationProfile = {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  tagIds: string[];
+  keywords: string[];
 };
 
 const categoryTone: Record<string, string> = {
@@ -123,6 +134,10 @@ function uniqueSubjects(locations: SubjectLocation[]) {
 
 function gradeLabel(grade: number, semester?: number) {
   return semester ? `${grade}학년 ${semester}학기` : `${grade}학년`;
+}
+
+function cohortDisplayLabel(cohort: CurriculumCohort) {
+  return `${cohort.entranceYear}학년도 입학생`;
 }
 
 function countRequiredCredits(cohort: CurriculumCohort) {
@@ -207,9 +222,95 @@ function makeInterestTags(locations: SubjectLocation[]) {
   return [...areaTags, ...categoryTags].slice(0, 12);
 }
 
+function makeRecommendationProfiles(tags: InterestTag[], locations: SubjectLocation[]) {
+  const profiles: RecommendationProfile[] = tags.map((tag) => ({
+    id: `tag:${tag.id}`,
+    title: `${tag.label} 계열`,
+    subtitle: tag.label,
+    description: tag.description,
+    tagIds: [tag.id],
+    keywords: [tag.label, tag.description],
+  }));
+  const keywordGroups = [
+    {
+      id: "stem",
+      title: "이공·공학 계열",
+      subtitle: "수학 · 과학 · 기술",
+      keywords: ["수학", "미적분", "기하", "확률", "과학", "물리", "화학", "생명", "지구", "정보", "공학", "기술"],
+    },
+    {
+      id: "medical",
+      title: "보건·의생명 계열",
+      subtitle: "생명 · 화학 · 보건",
+      keywords: ["생명", "화학", "보건", "간호", "의학", "인체", "식품", "환경"],
+    },
+    {
+      id: "humanities",
+      title: "인문·사회 계열",
+      subtitle: "국어 · 사회 · 언어",
+      keywords: ["국어", "문학", "독서", "사회", "정치", "경제", "윤리", "역사", "지리", "세계", "언어"],
+    },
+    {
+      id: "business",
+      title: "상경·경영 계열",
+      subtitle: "경제 · 수학 · 사회",
+      keywords: ["경제", "수학", "확률", "사회", "정치", "법", "경영", "금융"],
+    },
+    {
+      id: "arts",
+      title: "예술·체육 계열",
+      subtitle: "예술 · 체육 · 창작",
+      keywords: ["음악", "미술", "예술", "체육", "창작", "연극", "매체", "스포츠"],
+    },
+  ];
+
+  keywordGroups.forEach((group) => {
+    const matchingTagIds = tags
+      .filter((tag) => group.keywords.some((keyword) => tag.label.includes(keyword)))
+      .map((tag) => tag.id);
+    const matchingSubjects = locations.filter((location) => {
+      const haystack = [
+        location.subject.name,
+        location.subject.area,
+        location.subject.category,
+        location.subject.rawText,
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      return group.keywords.some((keyword) => haystack.includes(keyword));
+    });
+
+    if (matchingTagIds.length > 0 || matchingSubjects.length > 0) {
+      profiles.unshift({
+        id: `profile:${group.id}`,
+        title: group.title,
+        subtitle: group.subtitle,
+        description: `${group.subtitle} 관련 과목을 우선 추천합니다.`,
+        tagIds: matchingTagIds,
+        keywords: group.keywords,
+      });
+    }
+  });
+
+  return profiles.slice(0, 16);
+}
+
 function tagMatches(tags: InterestTag[], selectedTagIds: string[], subject: CurriculumSubject) {
   if (selectedTagIds.length === 0) return true;
   return tags.some((tag) => selectedTagIds.includes(tag.id) && tag.matcher(subject));
+}
+
+function profileMatches(profile: RecommendationProfile, subject: CurriculumSubject, tags: InterestTag[]) {
+  if (profile.tagIds.length > 0 && tagMatches(tags, profile.tagIds, subject)) {
+    return true;
+  }
+
+  const haystack = [subject.name, subject.area, subject.category, subject.rawText]
+    .filter(Boolean)
+    .join(" ");
+
+  return profile.keywords.some((keyword) => haystack.includes(keyword));
 }
 
 function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; light?: boolean }) {
@@ -246,10 +347,12 @@ function SubjectCard({
   location,
   selected = false,
   onClick,
+  onDetails,
 }: {
   location: SubjectLocation;
   selected?: boolean;
   onClick?: () => void;
+  onDetails?: () => void;
 }) {
   const content = (
     <>
@@ -260,7 +363,10 @@ function SubjectCard({
             {gradeLabel(location.grade, location.semester)} · {location.group.label}
           </p>
         </div>
-        {selected && <Check className="h-4 w-4 shrink-0 text-blue-600" />}
+        <span className="flex shrink-0 items-center gap-2">
+          {selected && <Check className="h-4 w-4 text-blue-600" />}
+          {onDetails && <Info className="h-4 w-4 text-slate-400" />}
+        </span>
       </div>
       <SubjectMeta subject={location.subject} />
     </>
@@ -268,18 +374,28 @@ function SubjectCard({
 
   if (onClick) {
     return (
-      <button
-        type="button"
-        onClick={onClick}
+      <div
         className={cx(
-          "w-full rounded-lg border p-3 text-left transition active:scale-[0.99]",
+          "rounded-lg border transition",
           selected
             ? "border-blue-300 bg-blue-50 shadow-sm"
             : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40",
         )}
       >
-        {content}
-      </button>
+        <button type="button" onClick={onClick} className="w-full p-3 text-left active:scale-[0.99]">
+          {content}
+        </button>
+        {onDetails && (
+          <button
+            type="button"
+            onClick={onDetails}
+            className="flex w-full items-center justify-center gap-1.5 border-t border-slate-100 px-3 py-2 text-xs font-bold text-slate-500"
+          >
+            <Info className="h-3.5 w-3.5" />
+            과목 상세 보기
+          </button>
+        )}
+      </div>
     );
   }
 
@@ -408,11 +524,91 @@ function BottomNav({ mode, setMode }: { mode: ViewMode; setMode: (mode: ViewMode
   );
 }
 
+function SubjectDetailPanel({
+  location,
+  selected,
+  onClose,
+  onSelect,
+}: {
+  location: SubjectLocation | null;
+  selected: boolean;
+  onClose: () => void;
+  onSelect: (location: SubjectLocation) => void;
+}) {
+  if (!location) return null;
+
+  const subject = location.subject;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6">
+      <div className="mx-auto flex max-h-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b border-slate-200 p-4">
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-blue-600">{gradeLabel(location.grade, location.semester)}</p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">{subject.name}</h2>
+            <SubjectMeta subject={subject} />
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="space-y-4 overflow-y-auto p-4">
+          <section className="rounded-lg bg-slate-50 p-3">
+            <h3 className="text-sm font-bold text-slate-900">편제표 위치</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              {location.group.label}에서 {location.group.choose}개 선택하는 묶음에 포함되어 있습니다.
+            </p>
+          </section>
+
+          <section className="rounded-lg bg-slate-50 p-3">
+            <h3 className="text-sm font-bold text-slate-900">선택 참고</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              이 과목은 {subject.credits}학점 과목입니다. 같은 선택 묶음 안에서 이미 필요한 개수를
+              채웠다면 먼저 다른 과목을 해제해야 합니다.
+            </p>
+          </section>
+
+          {subject.rawText && (
+            <section className="rounded-lg bg-slate-50 p-3">
+              <h3 className="text-sm font-bold text-slate-900">원문 단서</h3>
+              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{subject.rawText}</p>
+            </section>
+          )}
+        </div>
+
+        <div className="border-t border-slate-200 p-4">
+          <button
+            type="button"
+            onClick={() => {
+              onSelect(location);
+              onClose();
+            }}
+            className={cx(
+              "h-11 w-full rounded-lg text-sm font-bold",
+              selected ? "bg-slate-100 text-slate-500" : "bg-blue-600 text-white",
+            )}
+          >
+            {selected ? "이미 로드맵에 선택됨" : "로드맵에 담기"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssistantProps) {
   const [mode, setMode] = useState<ViewMode>("home");
   const [cohortYear, setCohortYear] = useState(curriculum.cohorts[0]?.entranceYear ?? "");
   const [activeGrade, setActiveGrade] = useState<number | "all">("all");
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [profileQuery, setProfileQuery] = useState("");
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState("");
   const [selection, setSelection] = useState<SelectionState>({});
   const [toast, setToast] = useState<string | null>(null);
@@ -427,16 +623,24 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const locations = useMemo(() => (cohort ? choiceLocations(cohort) : []), [cohort]);
   const subjectLocations = useMemo(() => uniqueSubjects(locations), [locations]);
   const tags = useMemo(() => makeInterestTags(locations), [locations]);
+  const profiles = useMemo(() => makeRecommendationProfiles(tags, locations), [locations, tags]);
+  const selectedProfile = useMemo(
+    () => profiles.find((profile) => profile.id === selectedProfileId) ?? null,
+    [profiles, selectedProfileId],
+  );
   const selectedSubjectSet = useMemo(() => new Set(Object.values(selection).flat()), [selection]);
   const recommendedNames = useMemo(() => {
     const names = new Set<string>();
     locations.forEach((location) => {
-      if (tagMatches(tags, selectedTagIds, location.subject)) {
+      if (
+        tagMatches(tags, selectedTagIds, location.subject) ||
+        (selectedProfile && profileMatches(selectedProfile, location.subject, tags))
+      ) {
         names.add(location.subject.name);
       }
     });
     return names;
-  }, [locations, selectedTagIds, tags]);
+  }, [locations, selectedProfile, selectedTagIds, tags]);
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
@@ -456,11 +660,27 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           .filter(Boolean)
           .some((value) => value?.includes(query));
       const matchesTag = tagMatches(tags, selectedTagIds, location.subject);
+      const matchesProfile = selectedProfile
+        ? profileMatches(selectedProfile, location.subject, tags)
+        : true;
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
 
-      return matchesSearch && matchesTag && matchesGrade;
+      return matchesSearch && matchesTag && matchesProfile && matchesGrade;
     });
-  }, [activeGrade, search, selectedTagIds, subjectLocations, tags]);
+  }, [activeGrade, search, selectedProfile, selectedTagIds, subjectLocations, tags]);
+
+  const filteredProfiles = useMemo(() => {
+    const query = profileQuery.trim();
+    if (!query) return profiles.slice(0, 6);
+
+    return profiles
+      .filter((profile) =>
+        [profile.title, profile.subtitle, profile.description, ...profile.keywords]
+          .join(" ")
+          .includes(query),
+      )
+      .slice(0, 8);
+  }, [profileQuery, profiles]);
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -530,7 +750,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     ctx.font = "700 28px Arial, sans-serif";
     ctx.fillText(`${curriculum.schoolName} 선택과목 로드맵`, 40, 56);
     ctx.font = "500 16px Arial, sans-serif";
-    ctx.fillText(cohort.label, 40, 80);
+    ctx.fillText(cohortDisplayLabel(cohort), 40, 80);
     ctx.fillStyle = "#0f172a";
     ctx.font = "700 24px Arial, sans-serif";
     ctx.fillText(`예상 이수 학점 ${summary.totalCredits}/${summary.expectedCredits}`, 40, 140);
@@ -589,7 +809,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           >
             {curriculum.cohorts.map((candidate) => (
               <option key={candidate.entranceYear} value={candidate.entranceYear}>
-                {candidate.label}
+                {cohortDisplayLabel(candidate)}
               </option>
             ))}
           </select>
@@ -628,6 +848,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
             <section className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="mb-3 flex items-center gap-2">
+                <Search className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-bold">진로·학과로 검색하기</h3>
+              </div>
+              <input
+                value={profileQuery}
+                onChange={(event) => setProfileQuery(event.target.value)}
+                placeholder="예: 공학, 의생명, 사회, 경제, 예술"
+                className="h-11 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+              <div className="mt-3 space-y-2">
+                {filteredProfiles.map((profile) => {
+                  const active = selectedProfileId === profile.id;
+
+                  return (
+                    <button
+                      key={profile.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedProfileId(active ? null : profile.id);
+                        setSelectedTagIds(active ? [] : profile.tagIds);
+                      }}
+                      className={cx(
+                        "w-full rounded-lg border px-3 py-2 text-left transition",
+                        active
+                          ? "border-blue-600 bg-blue-50"
+                          : "border-slate-200 bg-slate-50 hover:border-blue-200",
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-bold text-slate-950">{profile.title}</span>
+                        {active && <Check className="h-4 w-4 text-blue-600" />}
+                      </div>
+                      <p className="mt-1 text-xs leading-5 text-slate-500">{profile.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <div className="mb-3 flex items-center gap-2">
                 <Compass className="h-4 w-4 text-blue-600" />
                 <h3 className="text-sm font-bold">관심 영역을 골라보기</h3>
               </div>
@@ -656,7 +917,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
             <button
               type="button"
-              onClick={() => setMode(selectedTagIds.length > 0 ? "recommend" : "subjects")}
+              onClick={() => setMode(selectedTagIds.length > 0 || selectedProfile ? "recommend" : "subjects")}
               className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-600/20"
             >
               {selectedTagIds.length > 0 ? "맞춤 과목 추천받기" : "전체 과목 탐색하기"}
@@ -737,6 +998,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   location={location}
                   selected={selectedSubjectSet.has(location.subject.name)}
                   onClick={() => selectRecommendation(location)}
+                  onDetails={() => setActiveSubject(location)}
                 />
               ))}
               {filteredSubjects.length === 0 && (
@@ -851,6 +1113,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           {toast}
         </div>
       )}
+      <SubjectDetailPanel
+        location={activeSubject}
+        selected={activeSubject ? selectedSubjectSet.has(activeSubject.subject.name) : false}
+        onClose={() => setActiveSubject(null)}
+        onSelect={selectRecommendation}
+      />
       <BottomNav mode={mode} setMode={setMode} />
     </main>
   );
