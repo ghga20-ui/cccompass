@@ -12,12 +12,16 @@ Create a local environment file with:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
-CURRICULUM_PARSER_PROVIDER="mock"
-CURRICULUM_STRUCTURER_PROVIDER="mock"
+CURRICULUM_PARSER_PROVIDER="kordoc"
+PARSER_SERVICE_URL="https://your-parser-worker.example.com"
+PARSER_SERVICE_TOKEN="shared-secret"
+CURRICULUM_STRUCTURER_PROVIDER="openai"
+OPENAI_STRUCTURER_MODEL="gpt-5.5"
+OPENAI_REASONING_EFFORT="low"
 OPENAI_API_KEY=""
 ```
 
-Use the mock parser and structurer providers until real parser and LLM adapters are configured.
+Use `mock` providers only for local smoke tests. Production should call the separate parser worker and then structure the extracted text and tables with OpenAI.
 
 Then install dependencies, generate the Prisma client, sync the database tables, and start the app:
 
@@ -32,6 +36,20 @@ npm run dev
 For Supabase deployments, apply the SQL migrations in `supabase/migrations` instead of relying on `db:push`.
 
 The development server starts at `http://localhost:3000` unless Next.js selects another port.
+
+## Parser Worker
+
+Document parsing is intentionally kept outside this Vercel app. Deploy `../parser-worker` as its own service, configure it with a Kordoc-compatible command adapter, then set `PARSER_SERVICE_URL` and `PARSER_SERVICE_TOKEN` here.
+
+The app sends uploaded file bytes to `POST /parse` and expects:
+
+```json
+{
+  "text": "extracted text or markdown",
+  "tables": [["header", "value"]],
+  "metadata": { "parser": "kordoc" }
+}
+```
 
 ## Checks
 

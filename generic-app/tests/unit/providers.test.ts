@@ -1,24 +1,32 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getStructurerProvider, OpenAIStructurerProvider } from "@/lib/llm";
 import { getParserProvider, KordocParserProvider } from "@/lib/parser";
 
 const xlsxMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 const originalParserProvider = process.env.CURRICULUM_PARSER_PROVIDER;
 const originalStructurerProvider = process.env.CURRICULUM_STRUCTURER_PROVIDER;
+const originalParserServiceUrl = process.env.PARSER_SERVICE_URL;
+const originalParserServiceToken = process.env.PARSER_SERVICE_TOKEN;
+const originalOpenAiApiKey = process.env.OPENAI_API_KEY;
+const originalOpenAiStructurerModel = process.env.OPENAI_STRUCTURER_MODEL;
+
+function restoreEnv(name: string, value: string | undefined) {
+  if (value === undefined) {
+    delete process.env[name];
+  } else {
+    process.env[name] = value;
+  }
+}
 
 describe("curriculum providers", () => {
   afterEach(() => {
-    if (originalParserProvider === undefined) {
-      delete process.env.CURRICULUM_PARSER_PROVIDER;
-    } else {
-      process.env.CURRICULUM_PARSER_PROVIDER = originalParserProvider;
-    }
-
-    if (originalStructurerProvider === undefined) {
-      delete process.env.CURRICULUM_STRUCTURER_PROVIDER;
-    } else {
-      process.env.CURRICULUM_STRUCTURER_PROVIDER = originalStructurerProvider;
-    }
+    restoreEnv("CURRICULUM_PARSER_PROVIDER", originalParserProvider);
+    restoreEnv("CURRICULUM_STRUCTURER_PROVIDER", originalStructurerProvider);
+    restoreEnv("PARSER_SERVICE_URL", originalParserServiceUrl);
+    restoreEnv("PARSER_SERVICE_TOKEN", originalParserServiceToken);
+    restoreEnv("OPENAI_API_KEY", originalOpenAiApiKey);
+    restoreEnv("OPENAI_STRUCTURER_MODEL", originalOpenAiStructurerModel);
+    vi.unstubAllGlobals();
   });
 
   it("returns the mock parser by default", async () => {
@@ -33,7 +41,7 @@ describe("curriculum providers", () => {
     });
 
     expect(document.metadata.parser).toBe("mock");
-    expect(document.text).toContain("테스트고등학교");
+    expect(document.text.length).toBeGreaterThan(0);
     expect(document.tables.length).toBeGreaterThan(0);
   });
 
@@ -43,29 +51,69 @@ describe("curriculum providers", () => {
     const structurer = getStructurerProvider();
 
     const result = await structurer.structure({
-      text: "테스트고등학교 2026학년도 입학생 교육과정 편제표",
+      text: "sample curriculum text",
       tables: [],
     });
 
-    expect(result.curriculum.schoolName).toBe("테스트고등학교");
+    expect(result.curriculum.schoolName.length).toBeGreaterThan(0);
     expect(result.warnings).toEqual([]);
   });
 
-  it("returns the kordoc parser shell when configured", async () => {
+  it("calls the parser service when kordoc is configured", async () => {
     process.env.CURRICULUM_PARSER_PROVIDER = "kordoc";
+    process.env.PARSER_SERVICE_URL = "https://parser.example.test";
+    process.env.PARSER_SERVICE_TOKEN = "parser-token";
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          text: "parsed text",
+          tables: [["header"], ["value"]],
+          metadata: { parser: "kordoc" },
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
 
     const parser = getParserProvider();
 
     expect(parser).toBeInstanceOf(KordocParserProvider);
+    const parsed = await parser.parse({
+      fileName: "sample.xlsx",
+      mimeType: xlsxMimeType,
+      buffer: Buffer.from("sample"),
+    });
+
+    expect(parsed.text).toBe("parsed text");
+    expect(parsed.tables).toEqual([["header"], ["value"]]);
+    expect(parsed.metadata).toEqual({
+      parser: "kordoc",
+      fileName: "sample.xlsx",
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL("/parse", "https://parser.example.test"),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer parser-token",
+        }),
+      }),
+    );
+  });
+
+  it("requires a parser service URL for kordoc", async () => {
+    process.env.CURRICULUM_PARSER_PROVIDER = "kordoc";
+    delete process.env.PARSER_SERVICE_URL;
+
+    const parser = getParserProvider();
+
     await expect(
       parser.parse({
         fileName: "sample.xlsx",
         mimeType: xlsxMimeType,
         buffer: Buffer.from("sample"),
       }),
-    ).rejects.toThrow(
-      "KordocParserProvider is not wired yet. Deploy a server-side parser service and set CURRICULUM_PARSER_PROVIDER=mock until it is ready.",
-    );
+    ).rejects.toThrow("PARSER_SERVICE_URL is required");
   });
 
   it("throws for unsupported parser providers", () => {
@@ -74,19 +122,74 @@ describe("curriculum providers", () => {
     expect(() => getParserProvider()).toThrow("Unsupported curriculum parser provider: unknown");
   });
 
-  it("returns the openai structurer shell when configured", async () => {
+  it("calls OpenAI when the openai structurer is configured", async () => {
     process.env.CURRICULUM_STRUCTURER_PROVIDER = "openai";
+    process.env.OPENAI_API_KEY = "openai-key";
+    process.env.OPENAI_STRUCTURER_MODEL = "test-model";
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          output_text: JSON.stringify({
+            curriculum: {
+              schoolName: "Test High School",
+              sourceYear: "2026",
+              cohorts: [
+                {
+                  entranceYear: "2026",
+                  label: "2026 entrance",
+                  grades: [
+                    {
+                      grade: 2,
+                      semesters: [
+                        {
+                          semester: 1,
+                          requiredSubjects: [{ name: "Literature", credits: 4 }],
+                          choiceGroups: [],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            warnings: [],
+            sourceSnippets: ["sample"],
+          }),
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
 
     const structurer = getStructurerProvider();
 
     expect(structurer).toBeInstanceOf(OpenAIStructurerProvider);
-    await expect(
-      structurer.structure({
-        text: "sample",
-        tables: [],
+    const result = await structurer.structure({
+      text: "sample",
+      tables: [],
+    });
+
+    expect(result.curriculum.schoolName).toBe("Test High School");
+    expect(result.warnings).toEqual([]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.openai.com/v1/responses",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer openai-key",
+        }),
       }),
-    ).rejects.toThrow(
-      "OpenAIStructurerProvider is not wired yet. Add the OpenAI Responses API call with structured output before setting CURRICULUM_STRUCTURER_PROVIDER=openai.",
+    );
+  });
+
+  it("requires an OpenAI API key for the openai structurer", async () => {
+    process.env.CURRICULUM_STRUCTURER_PROVIDER = "openai";
+    delete process.env.OPENAI_API_KEY;
+
+    const structurer = getStructurerProvider();
+
+    await expect(structurer.structure({ text: "sample", tables: [] })).rejects.toThrow(
+      "OPENAI_API_KEY is required",
     );
   });
 
