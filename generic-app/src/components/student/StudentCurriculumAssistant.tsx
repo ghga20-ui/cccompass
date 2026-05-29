@@ -64,6 +64,7 @@ type SharedAssistantState = {
   activeGrade?: number | "all";
   selectedTagIds?: string[];
   selectedProfileId?: string | null;
+  selectedProfileIds?: string[];
   selection?: SelectionState;
 };
 
@@ -663,6 +664,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
     initialSharedState.selectedProfileId ?? null,
   );
+  const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>(
+    initialSharedState.selectedProfileIds ??
+      (initialSharedState.selectedProfileId ? [initialSharedState.selectedProfileId] : []),
+  );
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState("");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
@@ -679,9 +684,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const subjectLocations = useMemo(() => uniqueSubjects(locations), [locations]);
   const tags = useMemo(() => makeInterestTags(locations), [locations]);
   const profiles = useMemo(() => makeRecommendationProfiles(tags, locations), [locations, tags]);
-  const selectedProfile = useMemo(
-    () => profiles.find((profile) => profile.id === selectedProfileId) ?? null,
-    [profiles, selectedProfileId],
+  const selectedProfiles = useMemo(
+    () => profiles.filter((profile) => selectedProfileIds.includes(profile.id)),
+    [profiles, selectedProfileIds],
   );
   const selectedSubjectSet = useMemo(() => new Set(Object.values(selection).flat()), [selection]);
   const recommendedNames = useMemo(() => {
@@ -689,13 +694,13 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     locations.forEach((location) => {
       if (
         tagMatches(tags, selectedTagIds, location.subject) ||
-        (selectedProfile && profileMatches(selectedProfile, location.subject, tags))
+        selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
       ) {
         names.add(location.subject.name);
       }
     });
     return names;
-  }, [locations, selectedProfile, selectedTagIds, tags]);
+  }, [locations, selectedProfiles, selectedTagIds, tags]);
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
@@ -715,14 +720,14 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           .filter(Boolean)
           .some((value) => value?.includes(query));
       const matchesTag = tagMatches(tags, selectedTagIds, location.subject);
-      const matchesProfile = selectedProfile
-        ? profileMatches(selectedProfile, location.subject, tags)
+      const matchesProfile = selectedProfiles.length > 0
+        ? selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
         : true;
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
 
       return matchesSearch && matchesTag && matchesProfile && matchesGrade;
     });
-  }, [activeGrade, search, selectedProfile, selectedTagIds, subjectLocations, tags]);
+  }, [activeGrade, search, selectedProfiles, selectedTagIds, subjectLocations, tags]);
 
   const filteredProfiles = useMemo(() => {
     const query = profileQuery.trim();
@@ -736,6 +741,31 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       )
       .slice(0, 8);
   }, [profileQuery, profiles]);
+
+  const profileComparison = useMemo(() => {
+    if (selectedProfiles.length < 2) {
+      return {
+        common: [] as SubjectLocation[],
+        exclusive: [] as Array<{ profile: RecommendationProfile; subjects: SubjectLocation[] }>,
+      };
+    }
+
+    const common = subjectLocations.filter((location) =>
+      selectedProfiles.every((profile) => profileMatches(profile, location.subject, tags)),
+    );
+    const exclusive = selectedProfiles.map((profile) => ({
+      profile,
+      subjects: subjectLocations.filter(
+        (location) =>
+          profileMatches(profile, location.subject, tags) &&
+          !selectedProfiles
+            .filter((candidate) => candidate.id !== profile.id)
+            .some((candidate) => profileMatches(candidate, location.subject, tags)),
+      ),
+    }));
+
+    return { common, exclusive };
+  }, [selectedProfiles, subjectLocations, tags]);
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -782,6 +812,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       activeGrade,
       selectedTagIds,
       selectedProfileId,
+      selectedProfileIds,
       selection,
     });
 
@@ -922,15 +953,28 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               />
               <div className="mt-3 space-y-2">
                 {filteredProfiles.map((profile) => {
-                  const active = selectedProfileId === profile.id;
+                  const active = selectedProfileIds.includes(profile.id);
 
                   return (
                     <button
                       key={profile.id}
                       type="button"
                       onClick={() => {
-                        setSelectedProfileId(active ? null : profile.id);
-                        setSelectedTagIds(active ? [] : profile.tagIds);
+                        setSelectedProfileIds((current) => {
+                          if (active) {
+                            const next = current.filter((id) => id !== profile.id);
+                            setSelectedProfileId(next[0] ?? null);
+                            return next;
+                          }
+
+                          const next = [...current, profile.id].slice(-3);
+                          setSelectedProfileId(next[0] ?? null);
+                          return next;
+                        });
+                        setSelectedTagIds((current) => {
+                          if (active) return current.filter((id) => !profile.tagIds.includes(id));
+                          return Array.from(new Set([...current, ...profile.tagIds]));
+                        });
                       }}
                       className={cx(
                         "w-full rounded-lg border px-3 py-2 text-left transition",
@@ -980,10 +1024,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
             <button
               type="button"
-              onClick={() => setMode(selectedTagIds.length > 0 || selectedProfile ? "recommend" : "subjects")}
+              onClick={() =>
+                setMode(selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "recommend" : "subjects")
+              }
               className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-600/20"
             >
-              {selectedTagIds.length > 0 ? "맞춤 과목 추천받기" : "전체 과목 탐색하기"}
+              {selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "맞춤 과목 추천받기" : "전체 과목 탐색하기"}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -1053,6 +1099,71 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 })}
               </div>
             </section>
+
+            {mode === "recommend" && selectedProfiles.length > 0 && (
+              <section className="rounded-xl border border-slate-200 bg-white p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-950">선택한 진로·학과</h3>
+                    <p className="mt-1 text-xs text-slate-500">
+                      여러 목표를 고르면 공통 추천과 전용 추천을 함께 비교합니다.
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-600">
+                    {selectedProfiles.length}/3
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {selectedProfiles.map((profile) => (
+                    <button
+                      key={profile.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedProfileIds((current) => {
+                          const next = current.filter((id) => id !== profile.id);
+                          setSelectedProfileId(next[0] ?? null);
+                          return next;
+                        });
+                      }}
+                      className="rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold text-white"
+                    >
+                      {profile.title} ×
+                    </button>
+                  ))}
+                </div>
+
+                {selectedProfiles.length >= 2 && (
+                  <div className="mt-4 space-y-3">
+                    <div className="rounded-lg bg-emerald-50 p-3">
+                      <p className="text-xs font-bold text-emerald-700">공통 추천 과목</p>
+                      <p className="mt-1 text-sm font-bold text-slate-950">
+                        {profileComparison.common.length}개
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {profileComparison.common.slice(0, 8).map((location) => (
+                          <span
+                            key={`${location.grade}-${location.semester}-${location.subject.name}`}
+                            className="rounded bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                          >
+                            {location.subject.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid gap-2">
+                      {profileComparison.exclusive.map((item) => (
+                        <div key={item.profile.id} className="rounded-lg bg-slate-50 p-3">
+                          <p className="text-xs font-bold text-slate-600">{item.profile.title} 전용</p>
+                          <p className="mt-1 text-sm font-bold text-slate-950">{item.subjects.length}개</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+            )}
 
             <div className="space-y-2">
               {filteredSubjects.map((location) => (
