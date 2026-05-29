@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "npm install --omit=optional",
   "functions": {
     "api/parse.ts": {
       "maxDuration": 60

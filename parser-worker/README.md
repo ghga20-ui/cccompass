@@ -10,9 +10,11 @@ PARSER_ADAPTER="mock"
 PARSER_COMMAND=""
 PARSER_COMMAND_TIMEOUT_MS="120000"
 MAX_UPLOAD_BYTES="20971520"
+KORDOC_FORMULA_OCR="false"
+KORDOC_REMOVE_HEADER_FOOTER="true"
 ```
 
-Use `PARSER_ADAPTER=mock` for smoke tests. Use `PARSER_ADAPTER=command` when a server-side parser such as Kordoc is installed.
+Use `PARSER_ADAPTER=mock` for smoke tests. Use `PARSER_ADAPTER=kordoc` to run the npm `kordoc` package inside the worker. Use `PARSER_ADAPTER=command` when a server-side parser must be called through a custom command.
 
 The command adapter runs:
 
@@ -54,4 +56,4 @@ vercel env add PARSER_ADAPTER production --value "mock" --yes
 vercel deploy --prod --yes
 ```
 
-If the mock deployment works, try `PARSER_ADAPTER=command` with a Kordoc-compatible command available in the Vercel build/runtime environment. This is the experiment that determines whether we can avoid a paid always-on parser server.
+If the mock deployment works, try `PARSER_ADAPTER=kordoc`. This is the experiment that determines whether we can avoid a paid always-on parser server.

@@ -1,16 +1,21 @@
-import { CommandParserAdapter } from "./command.js";
-import { MockParserAdapter } from "./mock.js";
 import type { ParserAdapter } from "../types.js";
 
-export function getParserAdapter(): ParserAdapter {
+export async function getParserAdapter(): Promise<ParserAdapter> {
   const adapter = process.env.PARSER_ADAPTER ?? "mock";
 
   if (adapter === "mock") {
+    const { MockParserAdapter } = await import("./mock.js");
     return new MockParserAdapter();
   }
 
   if (adapter === "command") {
+    const { CommandParserAdapter } = await import("./command.js");
     return new CommandParserAdapter();
+  }
+
+  if (adapter === "kordoc") {
+    const { KordocParserAdapter } = await import("./kordoc.js");
+    return new KordocParserAdapter();
   }
 
   throw new Error(`Unsupported parser adapter: ${adapter}`);

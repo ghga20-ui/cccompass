@@ -85,7 +85,8 @@ export async function handleParserRequest(
   }
 
   try {
-    const parsed = await getParserAdapter().parse({
+    const adapter = await getParserAdapter();
+    const parsed = await adapter.parse({
       fileName: body.fileName,
       mimeType: body.mimeType,
       buffer: Buffer.from(body.contentBase64, "base64"),

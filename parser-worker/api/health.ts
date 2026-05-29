@@ -1,8 +1,5 @@
-import { handleParserRequest } from "../src/handler.js";
-
 type VercelRequest = {
   method?: string;
-  headers: Record<string, string | string[] | undefined>;
 };
 
 type VercelResponse = {
@@ -11,12 +8,10 @@ type VercelResponse = {
 };
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
-  const result = await handleParserRequest({
-    method: request.method ?? "GET",
-    path: "/health",
-    headers: request.headers,
-    bodyText: "",
-  });
+  if ((request.method ?? "GET") !== "GET") {
+    response.status(404).json({ error: "Not found." });
+    return;
+  }
 
-  response.status(result.status).json(result.body);
+  response.status(200).json({ ok: true });
 }

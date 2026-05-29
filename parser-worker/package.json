@@ -10,11 +10,13 @@
     "test": "vitest run",
     "lint": "tsc --noEmit"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20",
     "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.14"
+  },
+  "dependencies": {
+    "@clazic/kordoc": "^2.7.6"
   }
 }
