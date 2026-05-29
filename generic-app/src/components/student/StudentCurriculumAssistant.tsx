@@ -58,6 +58,15 @@ type RecommendationProfile = {
   keywords: string[];
 };
 
+type SharedAssistantState = {
+  mode?: ViewMode;
+  cohortYear?: string;
+  activeGrade?: number | "all";
+  selectedTagIds?: string[];
+  selectedProfileId?: string | null;
+  selection?: SelectionState;
+};
+
 const categoryTone: Record<string, string> = {
   공통: "bg-slate-100 text-slate-600",
   일반선택: "bg-sky-100 text-sky-700",
@@ -73,6 +82,39 @@ function cx(...classes: Array<string | false | null | undefined>) {
 
 function normalizeText(value: string) {
   return value.trim().replace(/\s+/g, " ");
+}
+
+function encodeSharedState(state: SharedAssistantState) {
+  const encoded = encodeURIComponent(JSON.stringify(state));
+
+  return btoa(encoded).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeSharedState(value: string | null): SharedAssistantState {
+  if (!value) return {};
+
+  try {
+    const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    const decoded = JSON.parse(decodeURIComponent(atob(padded))) as SharedAssistantState;
+
+    return decoded && typeof decoded === "object" ? decoded : {};
+  } catch {
+    return {};
+  }
+}
+
+function getInitialSharedState(): SharedAssistantState {
+  if (typeof window === "undefined") return {};
+
+  return decodeSharedState(new URLSearchParams(window.location.search).get("state"));
+}
+
+function buildShareUrl(state: SharedAssistantState) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("state", encodeSharedState(state));
+
+  return url.toString();
 }
 
 function subjectKey(subject: CurriculumSubject) {
@@ -602,15 +644,28 @@ function SubjectDetailPanel({
 }
 
 export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssistantProps) {
-  const [mode, setMode] = useState<ViewMode>("home");
-  const [cohortYear, setCohortYear] = useState(curriculum.cohorts[0]?.entranceYear ?? "");
-  const [activeGrade, setActiveGrade] = useState<number | "all">("all");
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [initialSharedState] = useState(getInitialSharedState);
+  const initialMode: ViewMode =
+    initialSharedState.mode &&
+    ["home", "recommend", "roadmap", "subjects"].includes(initialSharedState.mode)
+      ? initialSharedState.mode
+      : "home";
+  const initialCohortYear =
+    initialSharedState.cohortYear &&
+    curriculum.cohorts.some((cohort) => cohort.entranceYear === initialSharedState.cohortYear)
+      ? initialSharedState.cohortYear
+      : curriculum.cohorts[0]?.entranceYear ?? "";
+  const [mode, setMode] = useState<ViewMode>(initialMode);
+  const [cohortYear, setCohortYear] = useState(initialCohortYear);
+  const [activeGrade, setActiveGrade] = useState<number | "all">(initialSharedState.activeGrade ?? "all");
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialSharedState.selectedTagIds ?? []);
   const [profileQuery, setProfileQuery] = useState("");
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
+    initialSharedState.selectedProfileId ?? null,
+  );
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState("");
-  const [selection, setSelection] = useState<SelectionState>({});
+  const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -721,7 +776,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   };
 
   const handleShare = async () => {
-    const url = window.location.href;
+    const url = buildShareUrl({
+      mode,
+      cohortYear: cohort?.entranceYear,
+      activeGrade,
+      selectedTagIds,
+      selectedProfileId,
+      selection,
+    });
+
     try {
       await navigator.clipboard.writeText(url);
       showToast("공유 링크를 복사했습니다.");
