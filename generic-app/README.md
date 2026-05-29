@@ -24,11 +24,12 @@ Then install dependencies, generate the Prisma client, sync the database tables,
 ```bash
 npm install
 npm run db:generate
-npm run db:push
 npm run dev
 ```
 
-`db:generate` creates the Prisma client. `db:push` creates or updates the database tables for this no-migrations setup.
+`db:generate` creates the Prisma client. For local throwaway databases, `npm run db:push` can still create or update tables from `prisma/schema.prisma`.
+
+For Supabase deployments, apply the SQL migrations in `supabase/migrations` instead of relying on `db:push`.
 
 The development server starts at `http://localhost:3000` unless Next.js selects another port.
 
@@ -53,4 +54,4 @@ npm run test:e2e -- tests/e2e/upload-publish.spec.ts
 
 Deploy this as its own Vercel project. Set the Vercel project root directory to `generic-app`, configure the required environment variables in that project, and keep the existing Hyoja High School assistant deployment unchanged.
 
-Provision the production Postgres schema before first use. For the current no-migrations setup, run `npm run db:push` against the production `DATABASE_URL` from a trusted environment; replace this with migrations once migration files are introduced.
+Provision the production Postgres schema before first use by applying the SQL files in `supabase/migrations`. If you use the Supabase CLI, link the project and run the migration SQL against the linked database.
