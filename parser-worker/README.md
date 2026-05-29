@@ -1,6 +1,6 @@
 # Curriculum Parser Worker
 
-This service keeps document parsing out of the Vercel app. Deploy it as a separate service and point `generic-app` at it with `PARSER_SERVICE_URL`.
+This service keeps document parsing out of the generic app's request handler. It can run as a standalone Node server or as a separate free Vercel project. Point `generic-app` at it with `PARSER_SERVICE_URL`.
 
 ## Environment Variables
 
@@ -42,3 +42,16 @@ Health check:
 ```bash
 curl http://localhost:8787/health
 ```
+
+## Vercel Deployment
+
+Deploy this directory as its own Vercel project:
+
+```bash
+vercel link --yes --project generic-curriculum-parser-worker
+vercel env add PARSER_SERVICE_TOKEN production --value "shared-secret" --yes
+vercel env add PARSER_ADAPTER production --value "mock" --yes
+vercel deploy --prod --yes
+```
+
+If the mock deployment works, try `PARSER_ADAPTER=command` with a Kordoc-compatible command available in the Vercel build/runtime environment. This is the experiment that determines whether we can avoid a paid always-on parser server.

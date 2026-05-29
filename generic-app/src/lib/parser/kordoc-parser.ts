@@ -19,6 +19,16 @@ function getParserServiceConfig() {
   };
 }
 
+function getParserEndpoint(url: string) {
+  const endpoint = new URL(url);
+
+  if (endpoint.pathname === "/") {
+    endpoint.pathname = "/parse";
+  }
+
+  return endpoint;
+}
+
 function isParserServiceResponse(value: unknown): value is ParserServiceResponse {
   if (!value || typeof value !== "object") {
     return false;
@@ -38,7 +48,7 @@ function isParserServiceResponse(value: unknown): value is ParserServiceResponse
 export class KordocParserProvider implements ParserProvider {
   async parse(input: Parameters<ParserProvider["parse"]>[0]): Promise<ParsedDocument> {
     const { token, url } = getParserServiceConfig();
-    const endpoint = new URL("/parse", url);
+    const endpoint = getParserEndpoint(url);
 
     const response = await fetch(endpoint, {
       method: "POST",

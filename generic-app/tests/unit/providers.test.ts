@@ -61,7 +61,7 @@ describe("curriculum providers", () => {
 
   it("calls the parser service when kordoc is configured", async () => {
     process.env.CURRICULUM_PARSER_PROVIDER = "kordoc";
-    process.env.PARSER_SERVICE_URL = "https://parser.example.test";
+    process.env.PARSER_SERVICE_URL = "https://parser.example.test/api/parse";
     process.env.PARSER_SERVICE_TOKEN = "parser-token";
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(
@@ -91,7 +91,7 @@ describe("curriculum providers", () => {
       fileName: "sample.xlsx",
     });
     expect(fetchMock).toHaveBeenCalledWith(
-      new URL("/parse", "https://parser.example.test"),
+      new URL("https://parser.example.test/api/parse"),
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
