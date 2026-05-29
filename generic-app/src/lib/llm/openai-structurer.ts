@@ -158,19 +158,39 @@ function cleanOptionalString(value: unknown) {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
-function cleanSubject(subject: unknown) {
+function cleanNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value.trim());
+
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+}
+
+function cleanSubject(subject: unknown, fallbackCredits?: number) {
   if (!subject || typeof subject !== "object") {
     return subject;
   }
 
   const candidate = subject as Record<string, unknown>;
   const category = subjectCategorySchema.safeParse(candidate.category);
+  const credits = cleanNumber(candidate.credits) ?? fallbackCredits ?? 1;
+  const confidence = cleanNumber(candidate.confidence);
 
   return {
     ...candidate,
+    credits,
     area: cleanOptionalString(candidate.area),
     category: category.success ? category.data : undefined,
     rawText: cleanOptionalString(candidate.rawText),
+    confidence: confidence ?? (cleanNumber(candidate.credits) ? candidate.confidence : 0.3),
   };
 }
 
@@ -185,12 +205,18 @@ function normalizeChoiceGroups(groups: unknown) {
     }
 
     const candidate = group as Record<string, unknown>;
+    const creditsEach = cleanNumber(candidate.creditsEach);
+    const subjects = Array.isArray(candidate.subjects)
+      ? candidate.subjects.map((subject) => cleanSubject(subject, creditsEach))
+      : candidate.subjects;
 
     return {
       ...candidate,
-      subjects: Array.isArray(candidate.subjects)
-        ? candidate.subjects.map(cleanSubject)
-        : candidate.subjects,
+      choose: cleanNumber(candidate.choose) ?? 1,
+      minChoose: cleanNumber(candidate.minChoose),
+      maxChoose: cleanNumber(candidate.maxChoose),
+      creditsEach,
+      subjects,
       notes: Array.isArray(candidate.notes)
         ? candidate.notes.filter(
             (note): note is string => typeof note === "string" && note.trim().length > 0,
@@ -245,7 +271,9 @@ function normalizeCurriculumCandidate(curriculum: unknown, hints?: StructuringHi
                           return {
                             ...semesterCandidate,
                             requiredSubjects: Array.isArray(semesterCandidate.requiredSubjects)
-                              ? semesterCandidate.requiredSubjects.map(cleanSubject)
+                              ? semesterCandidate.requiredSubjects.map((subject) =>
+                                  cleanSubject(subject),
+                                )
                               : semesterCandidate.requiredSubjects,
                             choiceGroups: normalizeChoiceGroups(semesterCandidate.choiceGroups),
                           };
