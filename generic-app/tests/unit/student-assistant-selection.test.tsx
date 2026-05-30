@@ -502,17 +502,21 @@ describe("student assistant selectable grade calculations", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
     expect(screen.getByRole("dialog", { name: "경제" })).not.toBeNull();
+    expect(document.body.style.overflow).toBe("hidden");
 
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByRole("dialog", { name: "경제" })).toBeNull();
+    expect(document.body.style.overflow).toBe("");
 
     fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
     const dialog = screen.getByRole("dialog", { name: "경제" });
     const backdrop = dialog.parentElement;
     if (!backdrop) throw new Error("Expected subject detail backdrop");
+    expect(document.body.style.overflow).toBe("hidden");
 
     fireEvent.mouseDown(backdrop);
     expect(screen.queryByRole("dialog", { name: "경제" })).toBeNull();
+    expect(document.body.style.overflow).toBe("");
   });
 
   it("lets students recover from an empty subject result", () => {
