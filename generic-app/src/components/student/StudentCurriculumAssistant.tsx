@@ -1962,6 +1962,13 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setProfileQuery("");
   };
 
+  const resetRecommendationCriteria = () => {
+    setSelectedTagIds([]);
+    setSelectedProfileId(null);
+    setSelectedProfileIds([]);
+    setProfileQuery("");
+  };
+
   const handleCohortChange = (nextYear: string) => {
     setCohortYear(nextYear);
     setSelection({});
@@ -2584,6 +2591,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </div>
               )}
             </section>
+
+            {hasRecommendationCriteria && (
+              <section className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-emerald-700">추천 조건 준비 완료</p>
+                    <h3 className="mt-1 text-base font-bold text-slate-950">
+                      {recommendationCriteriaLabels.length}개 조건으로 맞춤 과목을 볼 수 있습니다.
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-emerald-900/70">
+                      진로·학과와 관심 영역을 함께 반영합니다.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={resetRecommendationCriteria}
+                    className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100"
+                  >
+                    조건 초기화
+                  </button>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {recommendationCriteriaLabels.map((label) => (
+                    <span
+                      key={`home-criteria:${label}`}
+                      className="rounded-full bg-white px-2 py-1 text-xs font-bold text-emerald-700"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMode("recommend")}
+                  className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-bold text-white shadow-lg shadow-emerald-600/20"
+                >
+                  이 조건으로 추천 보기
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </section>
+            )}
 
             <section className="sticky bottom-[76px] z-20 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur">
               <button

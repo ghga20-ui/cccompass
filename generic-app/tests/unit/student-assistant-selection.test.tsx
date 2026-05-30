@@ -368,6 +368,36 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("summarizes and clears recommendation criteria on the home screen", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        selectedTagIds: ["area:Social"],
+        selectedProfileIds: ["career:business"],
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.queryByText("추천 조건 준비 완료")).not.toBeNull();
+    expect(screen.queryByText(/개 조건으로 맞춤 과목을 볼 수 있습니다/)).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "이 조건으로 추천 보기" }));
+
+    expect(screen.getByRole("button", { name: "추천 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
+
+    fireEvent.click(screen.getByRole("button", { name: "홈 탭으로 이동" }));
+    fireEvent.click(screen.getByRole("button", { name: "조건 초기화" }));
+
+    expect(screen.queryByText("추천 조건 준비 완료")).toBeNull();
+    expect(screen.queryByLabelText("추천 조건 2개")).toBeNull();
+  });
+
   it("asks for a recommendation condition before showing the recommendation list", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ mode: "recommend" })}`);
 
