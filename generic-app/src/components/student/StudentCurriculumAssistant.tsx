@@ -1281,6 +1281,28 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     if (activeGrade === "all") return grades;
     return grades.filter((grade) => grade.grade === activeGrade);
   }, [activeGrade, grades]);
+  const activeFilterLabels = useMemo(() => {
+    const labels: string[] = [];
+    if (activeGrade !== "all") labels.push(`${activeGrade}학년`);
+    if (search.trim()) labels.push(`검색: ${search.trim()}`);
+    if (activeSelectedArea !== "전체") labels.push(activeSelectedArea);
+    if (activeSelectedCategory !== "전체") labels.push(activeSelectedCategory);
+    selectedProfiles.forEach((profile) => labels.push(profile.title));
+    selectedTagIds.forEach((tagId) => {
+      const tag = tags.find((candidate) => candidate.id === tagId);
+      if (tag) labels.push(tag.label);
+    });
+
+    return Array.from(new Set(labels));
+  }, [
+    activeGrade,
+    activeSelectedArea,
+    activeSelectedCategory,
+    search,
+    selectedProfiles,
+    selectedTagIds,
+    tags,
+  ]);
 
   const filteredSubjects = useMemo(() => {
     const query = search.trim();
@@ -1451,6 +1473,17 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       else next.add(id);
       return next;
     });
+  };
+
+  const resetExploreFilters = () => {
+    setActiveGrade("all");
+    setSearch("");
+    setSelectedArea("전체");
+    setSelectedCategory("전체");
+    setSelectedTagIds([]);
+    setSelectedProfileId(null);
+    setSelectedProfileIds([]);
+    setProfileQuery("");
   };
 
   const toggleProfile = (profile: RecommendationProfile) => {
@@ -1967,6 +2000,44 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </button>
                   );
                 })}
+              </div>
+              <div className="mt-3 rounded-lg bg-slate-50 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-slate-600">현재 조건</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {filteredSubjects.length}개 과목 표시
+                    </p>
+                  </div>
+                  {activeFilterLabels.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={resetExploreFilters}
+                      className="shrink-0 text-xs font-bold text-blue-600"
+                    >
+                      조건 초기화
+                    </button>
+                  )}
+                </div>
+                {activeFilterLabels.length > 0 ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {activeFilterLabels.slice(0, 8).map((label) => (
+                      <span
+                        key={label}
+                        className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                    {activeFilterLabels.length > 8 && (
+                      <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-600">
+                        +{activeFilterLabels.length - 8}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs text-slate-500">조건 없이 전체 2·3학년 선택과목을 보고 있습니다.</p>
+                )}
               </div>
             </section>
 
