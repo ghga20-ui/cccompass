@@ -192,6 +192,23 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 1 Hidden Option")).toBeNull();
   });
 
+  it("shows a sticky grade 2 and 3 credit summary on the roadmap", () => {
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "roadmap" })}`);
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    const summaryRegion = screen.getByRole("region", { name: "학년별 학점 요약" });
+
+    expect(summaryRegion.textContent).toContain("2학년");
+    expect(summaryRegion.textContent).toContain("3학년");
+    expect(summaryRegion.textContent).toContain("4/7학점");
+    expect(summaryRegion.textContent).not.toContain("1학년");
+  });
+
   it("shows home cohort cards and switches the active entrance year", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

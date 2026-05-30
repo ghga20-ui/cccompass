@@ -2974,6 +2974,43 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
         {mode === "roadmap" && summary && (
           <div className="space-y-4">
+            <section
+              aria-label="학년별 학점 요약"
+              className="sticky top-[65px] z-20 -mx-4 border-b border-slate-200 bg-slate-50/95 px-4 py-3 backdrop-blur"
+            >
+              <div className="grid gap-2 sm:grid-cols-2">
+                {gradeProgress.map((progress) => {
+                  const complete =
+                    progress.totalGroups > 0 && progress.completedGroups >= progress.totalGroups;
+
+                  return (
+                    <button
+                      type="button"
+                      key={`sticky-grade-progress:${progress.grade}`}
+                      onClick={() => scrollToRoadmapGrade(progress.grade)}
+                      className={cx(
+                        "rounded-xl px-3 py-2 text-left transition active:scale-[0.98]",
+                        complete
+                          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100"
+                          : "bg-white text-slate-700 ring-1 ring-slate-200",
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-black">{progress.grade}학년</span>
+                        <span className="text-[11px] font-bold">
+                          {progress.completedGroups}/{progress.totalGroups}묶음
+                        </span>
+                      </div>
+                      <p className="mt-1 text-base font-black">
+                        {progress.totalCredits}/{progress.expectedCredits}학점
+                        {complete && <span className="ml-1">완료</span>}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
             <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               {(() => {
                 const completionRate =
