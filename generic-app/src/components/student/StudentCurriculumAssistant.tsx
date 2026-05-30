@@ -1588,6 +1588,23 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setProfileQuery("");
   };
 
+  const handleCohortChange = (nextYear: string) => {
+    setCohortYear(nextYear);
+    setSelection({});
+    setActiveGrade("all");
+    setSelectedArea("전체");
+    setSelectedCategory("전체");
+    setSelectedTagIds([]);
+    setSelectedProfileId(null);
+    setSelectedProfileIds([]);
+    setSubjectSelectionFilter("all");
+    setShowOnlyIncompleteGroups(false);
+    setCollapsedSemesterIds(new Set());
+    setActiveSubject(null);
+    setSearch("");
+    setProfileQuery("");
+  };
+
   const scrollToRoadmapGrade = (grade: number) => {
     document.getElementById(`roadmap-grade-${grade}`)?.scrollIntoView({
       behavior: "smooth",
@@ -1863,18 +1880,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           </div>
           <select
             value={cohort.entranceYear}
-            onChange={(event) => {
-              setCohortYear(event.target.value);
-              setSelection({});
-              setActiveGrade("all");
-              setSelectedArea("전체");
-              setSelectedCategory("전체");
-              setSubjectSelectionFilter("all");
-              setShowOnlyIncompleteGroups(false);
-              setCollapsedSemesterIds(new Set());
-              setActiveSubject(null);
-              setSearch("");
-            }}
+            onChange={(event) => handleCohortChange(event.target.value)}
             className="h-9 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs font-bold outline-none"
           >
             {curriculum.cohorts.map((candidate) => (
@@ -1899,6 +1905,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 이 화면은 업로드된 학교 편제표에서 2·3학년 선택과목만 사용합니다. 관심 영역을 고르면
                 추천 과목을 보고, 로드맵에서 실제 선택 조합을 만들 수 있습니다.
               </p>
+            </section>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-blue-600" />
+                <h3 className="text-sm font-bold">입학생 편제를 선택하세요</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {curriculum.cohorts.map((candidate) => {
+                  const active = candidate.entranceYear === cohort.entranceYear;
+                  const candidateGrades = selectableGrades(candidate).map((grade) => grade.grade);
+                  const candidateGroups = getGroupRecords(candidate).length;
+
+                  return (
+                    <button
+                      key={`home-cohort:${candidate.entranceYear}`}
+                      type="button"
+                      aria-label={`${cohortDisplayLabel(candidate)} 편제 선택`}
+                      onClick={() => handleCohortChange(candidate.entranceYear)}
+                      className={cx(
+                        "rounded-lg border p-3 text-left transition active:scale-[0.98]",
+                        active
+                          ? "border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                          : "border-slate-200 bg-slate-50 text-slate-950 hover:border-blue-200",
+                      )}
+                    >
+                      <p className={cx("text-xl font-black", active ? "text-white" : "text-slate-950")}>
+                        {candidate.entranceYear}
+                      </p>
+                      <p className={cx("mt-0.5 text-xs font-semibold", active ? "text-white/80" : "text-slate-500")}>
+                        {cohortDisplayLabel(candidate)}
+                      </p>
+                      <p className={cx("mt-2 text-[11px]", active ? "text-white/75" : "text-slate-500")}>
+                        {candidateGrades.length > 0
+                          ? `${candidateGrades.join(", ")}학년 · 선택 묶음 ${candidateGroups}개`
+                          : "2·3학년 선택과목 없음"}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
             </section>
 
             <section className="grid grid-cols-3 gap-2">

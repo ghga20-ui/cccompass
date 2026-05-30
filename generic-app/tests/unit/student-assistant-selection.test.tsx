@@ -181,6 +181,73 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 1 Hidden Option")).toBeNull();
   });
 
+  it("shows home cohort cards and switches the active entrance year", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-2026",
+                      label: "2026 Choice",
+                      choose: 1,
+                      subjects: [{ name: "2026 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          entranceYear: "2025",
+          label: "2025 entrance",
+          grades: [
+            {
+              grade: 3,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-3-2025",
+                      label: "2025 Choice",
+                      choose: 1,
+                      subjects: [{ name: "2025 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    const currentCard = screen.getByRole("button", { name: /2026.*편제 선택/ });
+    const nextCard = screen.getByRole("button", { name: /2025.*편제 선택/ });
+
+    expect(currentCard.className).toContain("bg-blue-600");
+    expect(nextCard.className).not.toContain("bg-blue-600");
+
+    fireEvent.click(nextCard);
+
+    expect(nextCard.className).toContain("bg-blue-600");
+  });
+
   it("restores the shared roadmap-selection subject filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
