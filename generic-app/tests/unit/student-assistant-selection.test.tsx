@@ -1008,6 +1008,44 @@ describe("student assistant selectable grade calculations", () => {
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
   });
 
+  it("counts every incomplete roadmap group even when the preview list is capped", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: Array.from({ length: 4 }, (_, index) => ({
+                    id: `incomplete-${index + 1}`,
+                    label: `Incomplete Choice ${index + 1}`,
+                    choose: 1,
+                    subjects: [{ name: `Option ${index + 1}`, credits: 3 }],
+                  })),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "roadmap" })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("4개 묶음이 남았습니다.")).not.toBeNull();
+    expect(screen.queryByText("4개 남음")).not.toBeNull();
+    expect(screen.queryByText("외 1개 선택 묶음이 더 남았습니다.")).not.toBeNull();
+  });
+
   it("opens subject details from roadmap choice options", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
