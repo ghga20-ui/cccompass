@@ -840,6 +840,21 @@ function buildExplorationIdeas(location: SubjectLocation) {
   ];
 }
 
+function buildRelatedDepartmentLabels(profiles: RecommendationProfile[]) {
+  return Array.from(new Set(profiles.map((profile) => profile.title))).slice(0, 8);
+}
+
+function buildRelatedCareerLabels(profiles: RecommendationProfile[]) {
+  return Array.from(
+    new Set(
+      profiles.flatMap((profile) => [
+        profile.subtitle,
+        ...profile.keywords.filter((keyword) => keyword.length >= 2).slice(0, 3),
+      ]),
+    ),
+  ).slice(0, 10);
+}
+
 export function buildSubjectAvailability(cohort: CurriculumCohort, subjectName: string) {
   return selectableGrades(cohort).flatMap((grade) =>
     grade.semesters.flatMap((semester) => {
@@ -1429,6 +1444,8 @@ function SubjectDetailPanel({
 
   const subject = location.subject;
   const matchingProfiles = profiles.filter((profile) => profileMatches(profile, subject, tags));
+  const relatedDepartmentLabels = buildRelatedDepartmentLabels(matchingProfiles);
+  const relatedCareerLabels = buildRelatedCareerLabels(matchingProfiles);
   const selectedCriteriaMatches = buildRecommendationCriteriaMatches({
     location,
     selectedProfiles,
@@ -1599,6 +1616,44 @@ function SubjectDetailPanel({
                     className="rounded-full bg-white px-2 py-1 text-xs font-bold text-emerald-700"
                   >
                     {profile.title}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {relatedDepartmentLabels.length > 0 && (
+            <section className="rounded-lg bg-slate-50 p-3">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-slate-600" />
+                <h3 className="text-sm font-bold text-slate-900">관련 학과·계열</h3>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {relatedDepartmentLabels.map((label) => (
+                  <span
+                    key={`related-department:${label}`}
+                    className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {relatedCareerLabels.length > 0 && (
+            <section className="rounded-lg bg-slate-50 p-3">
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-slate-600" />
+                <h3 className="text-sm font-bold text-slate-900">관련 진로 키워드</h3>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {relatedCareerLabels.map((label) => (
+                  <span
+                    key={`related-career:${label}`}
+                    className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                  >
+                    {label}
                   </span>
                 ))}
               </div>

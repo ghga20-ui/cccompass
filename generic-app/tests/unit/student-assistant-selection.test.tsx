@@ -1060,6 +1060,9 @@ describe("student assistant selectable grade calculations", () => {
     const dialog = screen.getByRole("dialog", { name: "경제" });
     expect(dialog.textContent).toContain("내 추천 조건과 연결");
     expect(dialog.textContent).toContain("경영학과");
+    expect(dialog.textContent).toContain("관련 학과·계열");
+    expect(dialog.textContent).toContain("관련 진로 키워드");
+    expect(dialog.textContent).toContain("경제 · 수학 · 사회");
     expect(dialog.textContent).toContain("주요 학습 내용");
     expect(dialog.textContent).toContain("주제 탐구 활동");
     expect(dialog.textContent).toContain("경제와 관심 진로를 연결한 탐구 질문 만들기");
