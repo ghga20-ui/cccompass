@@ -200,6 +200,67 @@ function getGroupRecords(cohort: CurriculumCohort) {
   );
 }
 
+function calculateSemesterProgress(
+  cohort: CurriculumCohort,
+  grade: CurriculumGrade,
+  semester: CurriculumSemester,
+  selection: SelectionState,
+) {
+  const requiredCredits = semester.requiredSubjects.reduce((sum, subject) => sum + subject.credits, 0);
+  const groups = semester.choiceGroups.map((group) => ({
+    id: groupKey(cohort, grade.grade, semester.semester, group),
+    group,
+  }));
+  const selectedCredits = groups.reduce((total, record) => {
+    const selected = selection[record.id] ?? [];
+
+    return (
+      total +
+      record.group.subjects.reduce((sum, subject) => {
+        return selected.includes(subject.name) ? sum + subject.credits : sum;
+      }, 0)
+    );
+  }, 0);
+  const expectedChoiceCredits = groups.reduce((total, record) => {
+    const creditsEach = record.group.creditsEach ?? record.group.subjects[0]?.credits ?? 0;
+
+    return total + creditsEach * record.group.choose;
+  }, 0);
+  const completedGroups = groups.filter(
+    (record) => (selection[record.id]?.length ?? 0) >= record.group.choose,
+  ).length;
+
+  return {
+    requiredCredits,
+    selectedCredits,
+    totalCredits: requiredCredits + selectedCredits,
+    expectedCredits: requiredCredits + expectedChoiceCredits,
+    completedGroups,
+    totalGroups: groups.length,
+  };
+}
+
+function calculateGradeProgress(cohort: CurriculumCohort, grade: CurriculumGrade, selection: SelectionState) {
+  return grade.semesters.reduce(
+    (total, semester) => {
+      const progress = calculateSemesterProgress(cohort, grade, semester, selection);
+
+      return {
+        totalCredits: total.totalCredits + progress.totalCredits,
+        expectedCredits: total.expectedCredits + progress.expectedCredits,
+        completedGroups: total.completedGroups + progress.completedGroups,
+        totalGroups: total.totalGroups + progress.totalGroups,
+      };
+    },
+    {
+      totalCredits: 0,
+      expectedCredits: 0,
+      completedGroups: 0,
+      totalGroups: 0,
+    },
+  );
+}
+
 function calculateSelectionSummary(selection: SelectionState, cohort: CurriculumCohort) {
   const groups = getGroupRecords(cohort);
   const requiredCredits = countRequiredCredits(cohort);
@@ -720,6 +781,14 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
   );
+  const gradeProgress = useMemo(() => {
+    if (!cohort) return [];
+
+    return selectableGrades(cohort).map((grade) => ({
+      grade: grade.grade,
+      ...calculateGradeProgress(cohort, grade, selection),
+    }));
+  }, [cohort, selection]);
 
   const filteredGrades = useMemo(() => {
     if (activeGrade === "all") return grades;
@@ -1257,15 +1326,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   이미지 저장
                 </button>
               </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {gradeProgress.map((progress) => {
+                  const complete =
+                    progress.totalGroups > 0 && progress.completedGroups >= progress.totalGroups;
+
+                  return (
+                    <div
+                      key={progress.grade}
+                      className={cx(
+                        "rounded-lg px-3 py-2",
+                        complete ? "bg-emerald-50 text-emerald-700" : "bg-slate-50 text-slate-600",
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold">{progress.grade}학년</span>
+                        <span className="text-xs font-semibold">
+                          {progress.completedGroups}/{progress.totalGroups} 묶음
+                        </span>
+                      </div>
+                      <p className="mt-1 text-base font-bold">
+                        {progress.totalCredits}/{progress.expectedCredits}학점
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </section>
 
             {filteredGrades.map((grade) => (
               <div key={grade.grade} className="space-y-3">
-                {grade.semesters.map((semester: CurriculumSemester) => (
-                  <section
-                    key={`${grade.grade}-${semester.semester}`}
-                    className="rounded-xl border border-slate-200 bg-white/70 p-3"
-                  >
+                {grade.semesters.map((semester: CurriculumSemester) => {
+                  const semesterProgress = calculateSemesterProgress(cohort, grade, semester, selection);
+                  const semesterComplete =
+                    semesterProgress.totalGroups > 0 &&
+                    semesterProgress.completedGroups >= semesterProgress.totalGroups;
+
+                  return (
+                    <section
+                      key={`${grade.grade}-${semester.semester}`}
+                      className="rounded-xl border border-slate-200 bg-white/70 p-3"
+                    >
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <BookOpen className="h-4 w-4 text-blue-600" />
@@ -1312,8 +1413,24 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         );
                       })}
                     </div>
+                    <div
+                      className={cx(
+                        "mt-3 flex items-center justify-between rounded-lg px-3 py-2 text-xs font-bold",
+                        semesterComplete
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-slate-50 text-slate-600",
+                      )}
+                    >
+                      <span>
+                        {semesterProgress.completedGroups}/{semesterProgress.totalGroups} 묶음 완료
+                      </span>
+                      <span>
+                        {semesterProgress.totalCredits}/{semesterProgress.expectedCredits}학점
+                      </span>
+                    </div>
                   </section>
-                ))}
+                );
+                })}
               </div>
             ))}
           </div>
