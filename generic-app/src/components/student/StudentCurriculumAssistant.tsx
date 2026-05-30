@@ -997,6 +997,7 @@ function SubjectDetailPanel({
   onClose,
   onSelect,
   onGoRoadmap,
+  onOpenSubject,
 }: {
   location: SubjectLocation | null;
   selected: boolean;
@@ -1006,13 +1007,18 @@ function SubjectDetailPanel({
   onClose: () => void;
   onSelect: (location: SubjectLocation) => void;
   onGoRoadmap: (location: SubjectLocation) => void;
+  onOpenSubject: (location: SubjectLocation) => void;
 }) {
   if (!location) return null;
 
   const subject = location.subject;
   const matchingProfiles = profiles.filter((profile) => profileMatches(profile, subject, tags));
-  const peerSubjects = location.group.subjects
+  const peerLocations = location.group.subjects
     .filter((candidate) => candidate.name !== subject.name)
+    .map((candidate) => ({
+      ...location,
+      subject: candidate,
+    }))
     .slice(0, 8);
   const recommendedFor = buildRecommendedFor(location);
   const learningKeywords = buildLearningKeywords(location);
@@ -1142,17 +1148,19 @@ function SubjectDetailPanel({
             </p>
           </section>
 
-          {peerSubjects.length > 0 && (
+          {peerLocations.length > 0 && (
             <section className="rounded-lg bg-slate-50 p-3">
               <h3 className="text-sm font-bold text-slate-900">같은 묶음의 비교 과목</h3>
               <div className="mt-2 flex flex-wrap gap-1.5">
-                {peerSubjects.map((candidate) => (
-                  <span
-                    key={subjectKey(candidate)}
-                    className="rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+                {peerLocations.map((peerLocation) => (
+                  <button
+                    key={subjectKey(peerLocation.subject)}
+                    type="button"
+                    onClick={() => onOpenSubject(peerLocation)}
+                    className="rounded-md bg-white px-2 py-1 text-left text-xs font-semibold text-slate-600 transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100"
                   >
-                    {candidate.name}
-                  </span>
+                    {peerLocation.subject.name}
+                  </button>
                 ))}
               </div>
             </section>
@@ -2707,6 +2715,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         onClose={() => setActiveSubject(null)}
         onSelect={selectRecommendation}
         onGoRoadmap={goToRoadmapSubject}
+        onOpenSubject={setActiveSubject}
       />
       <BottomNav mode={mode} setMode={setMode} />
     </main>
