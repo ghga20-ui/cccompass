@@ -368,6 +368,66 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByRole("button", { name: "홈 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
   });
 
+  it("explains blocked roadmap additions inside subject details", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "full-choice",
+                      label: "Full Choice",
+                      choose: 2,
+                      subjects: [
+                        { name: "First Option", credits: 3 },
+                        { name: "Second Option", credits: 3 },
+                        { name: "Third Option", credits: 3 },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        selection: {
+          "2026:2:1:full-choice": ["First Option", "Second Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    const detailButtons = screen.getAllByRole("button", { name: "과목 상세 보기" });
+    fireEvent.click(detailButtons[detailButtons.length - 1]);
+
+    expect(screen.getByText("선택 불가: 이 선택 묶음의 선택 조건이 가득 찼습니다.")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "로드맵에서 조정하기" }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+  });
+
   it("restores the shared roadmap-selection subject filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

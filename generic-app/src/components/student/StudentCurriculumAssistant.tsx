@@ -380,6 +380,27 @@ function buildSelectedSubjectOrigins(selection: SelectionState, cohort: Curricul
   return origins;
 }
 
+function getRoadmapAddBlockReason(location: SubjectLocation, selection: SelectionState) {
+  const id = groupKey(location.cohort, location.grade, location.semester, location.group);
+  const selected = selection[id] ?? [];
+
+  if (selected.includes(location.subject.name)) return null;
+
+  if (
+    Object.entries(selection).some(
+      ([groupId, names]) => groupId !== id && names.includes(location.subject.name),
+    )
+  ) {
+    return "이미 다른 학기나 선택 묶음에 담긴 과목입니다.";
+  }
+
+  if (location.group.choose > 1 && selected.length >= location.group.choose) {
+    return "이 선택 묶음의 선택 조건이 가득 찼습니다.";
+  }
+
+  return null;
+}
+
 function makeInterestTags(locations: SubjectLocation[]) {
   const areas = Array.from(
     new Set(
@@ -1128,6 +1149,7 @@ function SubjectDetailPanel({
   location,
   selected,
   selectedOrigin,
+  addBlockedReason,
   selectedSubjectSet,
   profiles,
   tags,
@@ -1139,6 +1161,7 @@ function SubjectDetailPanel({
   location: SubjectLocation | null;
   selected: boolean;
   selectedOrigin?: string;
+  addBlockedReason?: string | null;
   selectedSubjectSet: Set<string>;
   profiles: RecommendationProfile[];
   tags: InterestTag[];
@@ -1168,6 +1191,7 @@ function SubjectDetailPanel({
   );
   const groupSelectedCount = Math.min(groupSelectedSubjects.length, location.group.choose);
   const groupRemainingCount = Math.max(location.group.choose - groupSelectedCount, 0);
+  const cannotAdd = !selected && Boolean(addBlockedReason);
   const openPeerSubject = (peerLocation: SubjectLocation) => {
     onOpenSubject(peerLocation);
     window.setTimeout(() => {
@@ -1237,6 +1261,11 @@ function SubjectDetailPanel({
             <p className="mt-2 text-xs font-semibold text-slate-500">
               {groupRemainingCount === 0 ? "이 묶음의 선택 조건을 채웠습니다." : `${groupRemainingCount}개 더 선택해야 합니다.`}
             </p>
+            {cannotAdd && (
+              <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-700">
+                선택 불가: {addBlockedReason}
+              </p>
+            )}
           </section>
 
           {selected && (
@@ -1379,6 +1408,8 @@ function SubjectDetailPanel({
             onClick={() => {
               if (selected) {
                 onGoRoadmap(location);
+              } else if (cannotAdd) {
+                onGoRoadmap(location);
               } else {
                 onSelect(location);
               }
@@ -1386,10 +1417,10 @@ function SubjectDetailPanel({
             }}
             className={cx(
               "h-11 w-full rounded-lg text-sm font-bold",
-              selected ? "bg-slate-100 text-slate-500" : "bg-blue-600 text-white",
+              selected || cannotAdd ? "bg-slate-100 text-slate-600" : "bg-blue-600 text-white",
             )}
           >
-            {selected ? "로드맵에서 보기" : "로드맵에 담기"}
+            {selected ? "로드맵에서 보기" : cannotAdd ? "로드맵에서 조정하기" : "로드맵에 담기"}
           </button>
         </div>
       </div>
@@ -1832,14 +1863,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   };
 
   const canAddSubjectToRoadmap = (location: SubjectLocation) => {
-    const id = groupKey(location.cohort, location.grade, location.semester, location.group);
-    const selected = selection[id] ?? [];
-    if (selected.includes(location.subject.name)) return false;
-    if (Object.entries(selection).some(([groupId, names]) => groupId !== id && names.includes(location.subject.name))) {
-      return false;
-    }
-    if (location.group.choose === 1) return true;
-    return selected.length < location.group.choose;
+    return !getRoadmapAddBlockReason(location, selection);
   };
 
   const selectRecommendation = (location: SubjectLocation) => {
@@ -3130,6 +3154,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         selectedOrigin={
           activeSubject ? selectedSubjectOrigins.get(activeSubject.subject.name) : undefined
         }
+        addBlockedReason={activeSubject ? getRoadmapAddBlockReason(activeSubject, selection) : null}
         selectedSubjectSet={selectedSubjectSet}
         profiles={profiles}
         tags={tags}
