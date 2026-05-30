@@ -989,17 +989,21 @@ function BottomNav({ mode, setMode }: { mode: ViewMode; setMode: (mode: ViewMode
 function SubjectDetailPanel({
   location,
   selected,
+  selectedOrigin,
   profiles,
   tags,
   onClose,
   onSelect,
+  onGoRoadmap,
 }: {
   location: SubjectLocation | null;
   selected: boolean;
+  selectedOrigin?: string;
   profiles: RecommendationProfile[];
   tags: InterestTag[];
   onClose: () => void;
   onSelect: (location: SubjectLocation) => void;
+  onGoRoadmap: (location: SubjectLocation) => void;
 }) {
   if (!location) return null;
 
@@ -1035,6 +1039,18 @@ function SubjectDetailPanel({
             <h3 className="text-sm font-bold text-blue-900">과목 한눈에 보기</h3>
             <p className="mt-1 text-sm leading-6 text-blue-900/75">{buildSubjectOverview(subject)}</p>
           </section>
+
+          {selected && (
+            <section className="rounded-lg bg-emerald-50 p-3">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-700" />
+                <h3 className="text-sm font-bold text-emerald-900">로드맵에 선택한 과목</h3>
+              </div>
+              <p className="mt-1 text-sm leading-6 text-emerald-900/75">
+                {selectedOrigin ? `${selectedOrigin}에 담겨 있습니다.` : "현재 로드맵에 담겨 있습니다."}
+              </p>
+            </section>
+          )}
 
           {matchingProfiles.length > 0 && (
             <section className="rounded-lg bg-emerald-50 p-3">
@@ -1152,7 +1168,11 @@ function SubjectDetailPanel({
           <button
             type="button"
             onClick={() => {
-              onSelect(location);
+              if (selected) {
+                onGoRoadmap(location);
+              } else {
+                onSelect(location);
+              }
               onClose();
             }}
             className={cx(
@@ -1160,7 +1180,7 @@ function SubjectDetailPanel({
               selected ? "bg-slate-100 text-slate-500" : "bg-blue-600 text-white",
             )}
           >
-            {selected ? "이미 로드맵에 선택됨" : "로드맵에 담기"}
+            {selected ? "로드맵에서 보기" : "로드맵에 담기"}
           </button>
         </div>
       </div>
@@ -1563,6 +1583,11 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     const id = groupKey(location.cohort, location.grade, location.semester, location.group);
     handleToggleSubject(id, location.group, location.subject);
     setMode("roadmap");
+  };
+
+  const goToRoadmapSubject = (location: SubjectLocation) => {
+    setMode("roadmap");
+    window.setTimeout(() => scrollToRoadmapGrade(location.grade), 0);
   };
 
   const handleShare = async () => {
@@ -2644,10 +2669,14 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       <SubjectDetailPanel
         location={activeSubject}
         selected={activeSubject ? selectedSubjectSet.has(activeSubject.subject.name) : false}
+        selectedOrigin={
+          activeSubject ? selectedSubjectOrigins.get(activeSubject.subject.name) : undefined
+        }
         profiles={profiles}
         tags={tags}
         onClose={() => setActiveSubject(null)}
         onSelect={selectRecommendation}
+        onGoRoadmap={goToRoadmapSubject}
       />
       <BottomNav mode={mode} setMode={setMode} />
     </main>
