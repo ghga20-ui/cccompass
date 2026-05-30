@@ -153,6 +153,10 @@ function groupKey(cohort: CurriculumCohort, grade: number, semester: number, gro
   return `${cohort.entranceYear}:${grade}:${semester}:${group.id}`;
 }
 
+function semesterKey(grade: number, semester: number) {
+  return `${grade}-${semester}`;
+}
+
 function selectableGrades(cohort: CurriculumCohort): CurriculumGrade[] {
   return cohort.grades
     .filter((grade) => grade.grade >= 2)
@@ -1046,6 +1050,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState(initialSharedState.search ?? "");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
+  const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -1179,6 +1184,28 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       )
       .slice(0, 8);
   }, [profileQuery, profiles]);
+  const recommendationSections = useMemo(() => {
+    const bySemester = new Map<string, { grade: number; semester: number; subjects: SubjectLocation[] }>();
+
+    filteredSubjects.forEach((location) => {
+      const key = semesterKey(location.grade, location.semester);
+      const existing = bySemester.get(key);
+      if (existing) {
+        existing.subjects.push(location);
+        return;
+      }
+
+      bySemester.set(key, {
+        grade: location.grade,
+        semester: location.semester,
+        subjects: [location],
+      });
+    });
+
+    return Array.from(bySemester.values()).sort(
+      (a, b) => a.grade - b.grade || a.semester - b.semester,
+    );
+  }, [filteredSubjects]);
   const selectedTagPanels = useMemo(
     () =>
       selectedTagIds
@@ -1265,6 +1292,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setSelectedTagIds((current) =>
       current.includes(id) ? current.filter((tagId) => tagId !== id) : [...current, id],
     );
+  };
+
+  const toggleSemesterSection = (id: string) => {
+    setCollapsedSemesterIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   const toggleProfile = (profile: RecommendationProfile) => {
@@ -1787,35 +1823,106 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </section>
             )}
 
-            <div className="space-y-2">
-              {filteredSubjects.map((location) => {
-                const matchingProfileCount = countMatchingProfiles(selectedProfiles, location.subject, tags);
-                const recommendationBadge =
-                  selectedProfiles.length >= 2 && matchingProfileCount === selectedProfiles.length
-                    ? "공통 추천"
-                    : selectedProfiles.length >= 2 && matchingProfileCount > 0
-                      ? `${matchingProfileCount}개 목표 추천`
-                      : recommendedNames.has(location.subject.name)
-                        ? "추천"
-                        : undefined;
+            <div className="space-y-3">
+              {mode === "recommend"
+                ? recommendationSections.map((section) => {
+                    const id = semesterKey(section.grade, section.semester);
+                    const collapsed = collapsedSemesterIds.has(id);
+                    const recommendedCount = section.subjects.filter((location) =>
+                      recommendedNames.has(location.subject.name),
+                    ).length;
 
-                return (
-                  <SubjectCard
-                    key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
-                    location={location}
-                    selected={selectedSubjectSet.has(location.subject.name)}
-                    recommendationBadge={recommendationBadge}
-                    recommendationReason={buildRecommendationReason({
-                      location,
-                      selectedProfiles,
-                      selectedTagIds,
-                      tags,
-                    })}
-                    onClick={() => selectRecommendation(location)}
-                    onDetails={() => setActiveSubject(location)}
-                  />
-                );
-              })}
+                    return (
+                      <section key={id} className="rounded-xl border border-slate-200 bg-white p-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleSemesterSection(id)}
+                          className="flex w-full items-center justify-between gap-3 text-left"
+                        >
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-950">
+                              {gradeLabel(section.grade, section.semester)}
+                            </h3>
+                            <p className="mt-1 text-xs text-slate-500">
+                              추천 후보 {section.subjects.length}개
+                              {recommendedCount > 0 ? ` · 맞춤 ${recommendedCount}개` : ""}
+                            </p>
+                          </div>
+                          <ChevronDown
+                            className={cx(
+                              "h-4 w-4 shrink-0 text-slate-500 transition",
+                              collapsed && "-rotate-90",
+                            )}
+                          />
+                        </button>
+
+                        {!collapsed && (
+                          <div className="mt-3 space-y-2">
+                            {section.subjects.map((location) => {
+                              const matchingProfileCount = countMatchingProfiles(
+                                selectedProfiles,
+                                location.subject,
+                                tags,
+                              );
+                              const recommendationBadge =
+                                selectedProfiles.length >= 2 && matchingProfileCount === selectedProfiles.length
+                                  ? "공통 추천"
+                                  : selectedProfiles.length >= 2 && matchingProfileCount > 0
+                                    ? `${matchingProfileCount}개 목표 추천`
+                                    : recommendedNames.has(location.subject.name)
+                                      ? "추천"
+                                      : undefined;
+
+                              return (
+                                <SubjectCard
+                                  key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
+                                  location={location}
+                                  selected={selectedSubjectSet.has(location.subject.name)}
+                                  recommendationBadge={recommendationBadge}
+                                  recommendationReason={buildRecommendationReason({
+                                    location,
+                                    selectedProfiles,
+                                    selectedTagIds,
+                                    tags,
+                                  })}
+                                  onClick={() => selectRecommendation(location)}
+                                  onDetails={() => setActiveSubject(location)}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </section>
+                    );
+                  })
+                : filteredSubjects.map((location) => {
+                    const matchingProfileCount = countMatchingProfiles(selectedProfiles, location.subject, tags);
+                    const recommendationBadge =
+                      selectedProfiles.length >= 2 && matchingProfileCount === selectedProfiles.length
+                        ? "공통 추천"
+                        : selectedProfiles.length >= 2 && matchingProfileCount > 0
+                          ? `${matchingProfileCount}개 목표 추천`
+                          : recommendedNames.has(location.subject.name)
+                            ? "추천"
+                            : undefined;
+
+                    return (
+                      <SubjectCard
+                        key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
+                        location={location}
+                        selected={selectedSubjectSet.has(location.subject.name)}
+                        recommendationBadge={recommendationBadge}
+                        recommendationReason={buildRecommendationReason({
+                          location,
+                          selectedProfiles,
+                          selectedTagIds,
+                          tags,
+                        })}
+                        onClick={() => selectRecommendation(location)}
+                        onDetails={() => setActiveSubject(location)}
+                      />
+                    );
+                  })}
               {filteredSubjects.length === 0 && (
                 <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-500">
                   조건에 맞는 2·3학년 선택과목이 없습니다.
