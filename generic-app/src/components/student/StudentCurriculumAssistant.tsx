@@ -989,7 +989,15 @@ function ChoiceGroupRoadmap({
   );
 }
 
-function BottomNav({ mode, setMode }: { mode: ViewMode; setMode: (mode: ViewMode) => void }) {
+function BottomNav({
+  mode,
+  setMode,
+  selectedCount,
+}: {
+  mode: ViewMode;
+  setMode: (mode: ViewMode) => void;
+  selectedCount: number;
+}) {
   const items: Array<{ mode: ViewMode; label: string; icon: typeof Home }> = [
     { mode: "home", label: "홈", icon: Home },
     { mode: "recommend", label: "추천", icon: Sparkles },
@@ -1014,7 +1022,17 @@ function BottomNav({ mode, setMode }: { mode: ViewMode; setMode: (mode: ViewMode
                 active ? "text-blue-600" : "text-slate-500",
               )}
             >
-              <Icon className="h-5 w-5" />
+              <span className="relative">
+                <Icon className="h-5 w-5" />
+                {item.mode === "roadmap" && selectedCount > 0 && (
+                  <span
+                    aria-label={`로드맵 선택 과목 ${selectedCount}개`}
+                    className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-black leading-none text-white ring-2 ring-white"
+                  >
+                    {selectedCount > 9 ? "9+" : selectedCount}
+                  </span>
+                )}
+              </span>
               {item.label}
             </button>
           );
@@ -2875,7 +2893,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         onGoRoadmap={goToRoadmapSubject}
         onOpenSubject={setActiveSubject}
       />
-      <BottomNav mode={mode} setMode={setMode} />
+      <BottomNav mode={mode} setMode={setMode} selectedCount={summary?.selectedCount ?? 0} />
     </main>
   );
 }
