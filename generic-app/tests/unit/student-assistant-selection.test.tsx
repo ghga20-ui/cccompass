@@ -630,6 +630,8 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("경제")).not.toBeNull();
     expect(screen.getByText("추천 결과 요약")).not.toBeNull();
     expect(screen.getByText("2개 과목을 로드맵에서 비교할 수 있습니다.")).not.toBeNull();
+    expect(screen.getByLabelText("Physics Option 추천 연결 조건").textContent).toContain("Science");
+    expect(screen.getByLabelText("경제 추천 연결 조건").textContent).toContain("경영학과");
 
     fireEvent.click(screen.getByRole("button", { name: "이 추천으로 로드맵 만들기" }));
 

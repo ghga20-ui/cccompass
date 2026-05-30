@@ -693,6 +693,32 @@ function buildRecommendationReason({
   return `${location.group.label}에서 ${location.group.choose}개 선택하는 ${location.subject.credits}학점 과목입니다.`;
 }
 
+function buildRecommendationCriteriaMatches({
+  location,
+  selectedProfiles,
+  selectedTagIds,
+  tags,
+}: {
+  location: SubjectLocation;
+  selectedProfiles: RecommendationProfile[];
+  selectedTagIds: string[];
+  tags: InterestTag[];
+}) {
+  const labels: string[] = [];
+  selectedProfiles.forEach((profile) => {
+    if (profileMatches(profile, location.subject, tags)) {
+      labels.push(profile.title);
+    }
+  });
+  tags.forEach((tag) => {
+    if (selectedTagIds.includes(tag.id) && tag.matcher(location.subject)) {
+      labels.push(tag.label);
+    }
+  });
+
+  return Array.from(new Set(labels));
+}
+
 function buildSubjectOverview(subject: CurriculumSubject) {
   const hints = [subject.area, subject.category].filter(Boolean).join(" · ");
 
@@ -892,6 +918,7 @@ function SubjectCard({
   addBlockedReason,
   recommendationBadge,
   recommendationReason,
+  criteriaMatches = [],
   onClick,
   onDetails,
 }: {
@@ -901,6 +928,7 @@ function SubjectCard({
   addBlockedReason?: string | null;
   recommendationBadge?: string;
   recommendationReason?: string;
+  criteriaMatches?: string[];
   onClick?: () => void;
   onDetails?: () => void;
 }) {
@@ -953,6 +981,23 @@ function SubjectCard({
         <span className="mt-2 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
           {recommendationBadge}
         </span>
+      )}
+      {criteriaMatches.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5" aria-label={`${location.subject.name} 추천 연결 조건`}>
+          {criteriaMatches.slice(0, 3).map((label) => (
+            <span
+              key={`${location.subject.name}:criteria:${label}`}
+              className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 ring-1 ring-emerald-100"
+            >
+              {label}
+            </span>
+          ))}
+          {criteriaMatches.length > 3 && (
+            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 ring-1 ring-emerald-100">
+              +{criteriaMatches.length - 3}
+            </span>
+          )}
+        </div>
       )}
       {recommendationReason && (
         <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">{recommendationReason}</p>
@@ -3118,6 +3163,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                                     selectedTagIds,
                                     tags,
                                   })}
+                                  criteriaMatches={buildRecommendationCriteriaMatches({
+                                    location,
+                                    selectedProfiles,
+                                    selectedTagIds,
+                                    tags,
+                                  })}
                                   onClick={() => selectOrViewRecommendation(location)}
                                   onDetails={() => setActiveSubject(location)}
                                 />
@@ -3148,6 +3199,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         addBlockedReason={getRoadmapAddBlockReason(location, selection)}
                         recommendationBadge={recommendationBadge}
                         recommendationReason={buildRecommendationReason({
+                          location,
+                          selectedProfiles,
+                          selectedTagIds,
+                          tags,
+                        })}
+                        criteriaMatches={buildRecommendationCriteriaMatches({
                           location,
                           selectedProfiles,
                           selectedTagIds,
