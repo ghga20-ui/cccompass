@@ -325,14 +325,14 @@ function makeInterestTags(locations: SubjectLocation[]) {
   const areas = Array.from(
     new Set(
       locations
-        .map((location) => location.subject.area)
+        .map(inferSubjectArea)
         .filter((area): area is string => Boolean(area && area.trim().length > 0)),
     ),
   ).slice(0, 8);
   const categories = Array.from(
     new Set(
       locations
-        .map((location) => location.subject.category)
+        .map(inferSubjectCategory)
         .filter((category): category is SubjectCategory => Boolean(category)),
     ),
   );
@@ -341,13 +341,19 @@ function makeInterestTags(locations: SubjectLocation[]) {
     id: `area:${area}`,
     label: area,
     description: `${area} 영역 과목 중심으로 보기`,
-    matcher: (subject) => subject.area === area,
+    matcher: (subject) => {
+      const location = locations.find((candidate) => candidate.subject.name === subject.name);
+      return location ? inferSubjectArea(location) === area : subject.area === area;
+    },
   }));
   const categoryTags: InterestTag[] = categories.map((category) => ({
     id: `category:${category}`,
     label: category,
     description: `${category} 과목 중심으로 보기`,
-    matcher: (subject) => subject.category === category,
+    matcher: (subject) => {
+      const location = locations.find((candidate) => candidate.subject.name === subject.name);
+      return location ? inferSubjectCategory(location) === category : subject.category === category;
+    },
   }));
 
   return [...areaTags, ...categoryTags].slice(0, 12);
@@ -362,6 +368,101 @@ function makeRecommendationProfiles(tags: InterestTag[], locations: SubjectLocat
     tagIds: [tag.id],
     keywords: [tag.label, tag.description],
   }));
+  const careerGroups = [
+    {
+      id: "computer",
+      title: "컴퓨터공학과",
+      subtitle: "소프트웨어 · 인공지능",
+      description: "프로그래밍, 인공지능, 정보 과목을 중심으로 확인합니다.",
+      keywords: ["컴퓨터", "소프트웨어", "인공지능", "정보", "프로그래밍", "수학", "공학"],
+    },
+    {
+      id: "engineering",
+      title: "공학계열",
+      subtitle: "기계 · 전자 · 로봇",
+      description: "수학, 과학, 기술·공학 과목을 중심으로 확인합니다.",
+      keywords: ["공학", "로봇", "기술", "물리", "미적분", "기하", "창의 공학", "전자"],
+    },
+    {
+      id: "nursing",
+      title: "간호학과",
+      subtitle: "보건 · 생명",
+      description: "생명과학, 화학, 보건 계열 과목을 중심으로 확인합니다.",
+      keywords: ["간호", "보건", "생명", "화학", "인체", "의학", "의생명"],
+    },
+    {
+      id: "biology",
+      title: "생명과학과",
+      subtitle: "생명 · 화학 · 환경",
+      description: "생명과학과 화학 탐구 과목을 중심으로 확인합니다.",
+      keywords: ["생명", "화학", "환경", "세포", "유전", "과학"],
+    },
+    {
+      id: "business",
+      title: "경영학과",
+      subtitle: "경영 · 경제 · 사회",
+      description: "경제, 사회, 수학 관련 과목을 중심으로 확인합니다.",
+      keywords: ["경영", "경제", "금융", "사회", "수학", "확률"],
+    },
+    {
+      id: "law",
+      title: "법학과",
+      subtitle: "법 · 정치 · 윤리",
+      description: "사회, 법, 정치, 윤리 과목을 중심으로 확인합니다.",
+      keywords: ["법", "정치", "윤리", "사회", "시민", "세계"],
+    },
+    {
+      id: "education",
+      title: "교육학과",
+      subtitle: "교육 · 심리 · 인문",
+      description: "교육, 심리, 인문·사회 과목을 중심으로 확인합니다.",
+      keywords: ["교육", "심리", "인문", "사회", "국어", "문학"],
+    },
+    {
+      id: "media",
+      title: "미디어커뮤니케이션학과",
+      subtitle: "언어 · 매체 · 문화",
+      description: "언어, 문학, 영상, 문화 과목을 중심으로 확인합니다.",
+      keywords: ["미디어", "매체", "영상", "문화", "언어", "문학", "영어"],
+    },
+    {
+      id: "art-design",
+      title: "디자인·예술계열",
+      subtitle: "미술 · 음악 · 창작",
+      description: "예술, 창작, 매체 표현 과목을 중심으로 확인합니다.",
+      keywords: ["디자인", "예술", "미술", "음악", "창작", "매체", "연극"],
+    },
+  ];
+
+  careerGroups.forEach((group) => {
+    const matchingTagIds = tags
+      .filter((tag) => group.keywords.some((keyword) => tag.label.includes(keyword) || tag.description.includes(keyword)))
+      .map((tag) => tag.id);
+    const matchingSubjects = locations.filter((location) => {
+      const haystack = [
+        location.subject.name,
+        location.subject.area,
+        location.subject.category,
+        location.subject.rawText,
+        location.group.label,
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      return group.keywords.some((keyword) => haystack.includes(keyword));
+    });
+
+    if (matchingTagIds.length > 0 || matchingSubjects.length > 0) {
+      profiles.unshift({
+        id: `career:${group.id}`,
+        title: group.title,
+        subtitle: group.subtitle,
+        description: group.description,
+        tagIds: matchingTagIds,
+        keywords: group.keywords,
+      });
+    }
+  });
   const keywordGroups = [
     {
       id: "stem",
@@ -424,7 +525,7 @@ function makeRecommendationProfiles(tags: InterestTag[], locations: SubjectLocat
     }
   });
 
-  return profiles.slice(0, 16);
+  return profiles.slice(0, 28);
 }
 
 function tagMatches(tags: InterestTag[], selectedTagIds: string[], subject: CurriculumSubject) {
@@ -990,6 +1091,29 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       )
       .slice(0, 8);
   }, [profileQuery, profiles]);
+  const selectedTagPanels = useMemo(
+    () =>
+      selectedTagIds
+        .map((tagId) => {
+          const tag = tags.find((candidate) => candidate.id === tagId);
+          if (!tag) return null;
+
+          const tagText = `${tag.label} ${tag.description}`;
+          const relatedProfiles = profiles
+            .filter((profile) => profile.id !== `tag:${tag.id}`)
+            .filter((profile) => {
+              if (profile.tagIds.includes(tag.id)) return true;
+              return profile.keywords.some(
+                (keyword) => tagText.includes(keyword) || keyword.includes(tag.label),
+              );
+            })
+            .slice(0, 6);
+
+          return relatedProfiles.length > 0 ? { tag, profiles: relatedProfiles } : null;
+        })
+        .filter((panel): panel is { tag: InterestTag; profiles: RecommendationProfile[] } => Boolean(panel)),
+    [profiles, selectedTagIds, tags],
+  );
 
   const profileComparison = useMemo(() => {
     if (selectedProfiles.length < 2) {
@@ -1053,6 +1177,26 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setSelectedTagIds((current) =>
       current.includes(id) ? current.filter((tagId) => tagId !== id) : [...current, id],
     );
+  };
+
+  const toggleProfile = (profile: RecommendationProfile) => {
+    const active = selectedProfileIds.includes(profile.id);
+
+    setSelectedProfileIds((current) => {
+      if (active) {
+        const next = current.filter((id) => id !== profile.id);
+        setSelectedProfileId(next[0] ?? null);
+        return next;
+      }
+
+      const next = [...current, profile.id].slice(-3);
+      setSelectedProfileId(next[0] ?? null);
+      return next;
+    });
+    setSelectedTagIds((current) => {
+      if (active) return current.filter((id) => !profile.tagIds.includes(id));
+      return Array.from(new Set([...current, ...profile.tagIds]));
+    });
   };
 
   const handleToggleSubject = (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => {
@@ -1293,23 +1437,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     <button
                       key={profile.id}
                       type="button"
-                      onClick={() => {
-                        setSelectedProfileIds((current) => {
-                          if (active) {
-                            const next = current.filter((id) => id !== profile.id);
-                            setSelectedProfileId(next[0] ?? null);
-                            return next;
-                          }
-
-                          const next = [...current, profile.id].slice(-3);
-                          setSelectedProfileId(next[0] ?? null);
-                          return next;
-                        });
-                        setSelectedTagIds((current) => {
-                          if (active) return current.filter((id) => !profile.tagIds.includes(id));
-                          return Array.from(new Set([...current, ...profile.tagIds]));
-                        });
-                      }}
+                      onClick={() => toggleProfile(profile)}
                       className={cx(
                         "w-full rounded-lg border px-3 py-2 text-left transition",
                         active
@@ -1354,6 +1482,46 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   );
                 })}
               </div>
+              {selectedTagPanels.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {selectedTagPanels.map((panel) => (
+                    <div key={panel.tag.id} className="rounded-lg border border-blue-100 bg-blue-50/60 p-3">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-bold text-blue-700">{panel.tag.label} 관련 진로·학과</p>
+                          <p className="mt-0.5 text-xs text-slate-500">선택하지 않아도 추천받을 수 있습니다.</p>
+                        </div>
+                        <ChevronDown className="h-4 w-4 shrink-0 text-blue-500" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {panel.profiles.map((profile) => {
+                          const active = selectedProfileIds.includes(profile.id);
+
+                          return (
+                            <button
+                              key={`${panel.tag.id}:${profile.id}`}
+                              type="button"
+                              onClick={() => toggleProfile(profile)}
+                              className={cx(
+                                "min-h-16 rounded-md border p-2.5 text-left transition",
+                                active
+                                  ? "border-blue-600 bg-white shadow-sm"
+                                  : "border-slate-200 bg-white/70 hover:border-blue-200",
+                              )}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <p className="text-sm font-bold leading-5 text-slate-950">{profile.title}</p>
+                                {active && <Check className="h-4 w-4 shrink-0 text-blue-600" />}
+                              </div>
+                              <p className="mt-1 line-clamp-1 text-xs text-slate-500">{profile.subtitle}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             <button
@@ -1378,7 +1546,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     {mode === "recommend" ? "맞춤 과목 추천" : "과목 탐색"}
                   </h2>
                   <p className="mt-1 text-xs text-slate-500">
-                    1학년 과목은 제외하고 2·3학년 선택과목만 보여줍니다.
+                    2·3학년 선택과목만 보여줍니다.
                   </p>
                 </div>
                 {mode === "recommend" && <Sparkles className="h-5 w-5 text-blue-600" />}
