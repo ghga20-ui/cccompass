@@ -816,6 +816,11 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("추천 결과 요약")).not.toBeNull();
     expect(screen.getByText("2개 과목을 로드맵에서 비교할 수 있습니다.")).not.toBeNull();
     expect(screen.queryByText(/담은 과목/)).toBeNull();
+    expect(screen.getByRole("button", { name: /권장 역량/ })).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /권장 역량/ }));
+
+    expect(screen.getByText(/경영학과: 경영 · 경제 · 사회 분야에 필요한 과목/)).not.toBeNull();
     expect(screen.getByLabelText("Physics Option 추천 연결 조건").textContent).toContain("Science");
     expect(screen.getByLabelText("경제 추천 연결 조건").textContent).toContain("경영학과");
 

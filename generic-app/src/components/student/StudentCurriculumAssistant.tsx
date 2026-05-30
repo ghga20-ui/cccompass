@@ -637,6 +637,20 @@ function makeRecommendationProfiles(tags: InterestTag[], locations: SubjectLocat
   return profiles.slice(0, 28);
 }
 
+function buildProfileCompetencies(profile: RecommendationProfile) {
+  const mainKeywords = profile.keywords.slice(0, 3).join(", ");
+  const competencies = [
+    `${profile.subtitle} 분야에 필요한 과목을 꾸준히 연결해 선택하기`,
+    profile.description,
+  ];
+
+  if (mainKeywords) {
+    competencies.push(`${mainKeywords} 관련 개념을 여러 과목에서 반복해서 확인하기`);
+  }
+
+  return competencies;
+}
+
 function tagMatches(tags: InterestTag[], selectedTagIds: string[], subject: CurriculumSubject) {
   if (selectedTagIds.length === 0) return true;
   return tags.some((tag) => selectedTagIds.includes(tag.id) && tag.matcher(subject));
@@ -1753,6 +1767,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
+  const [showProfileCompetencies, setShowProfileCompetencies] = useState(false);
   const [showOnlyIncompleteGroups, setShowOnlyIncompleteGroups] = useState(
     initialSharedState.showOnlyIncompleteGroups === true,
   );
@@ -1852,6 +1867,17 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
     return Array.from(new Set(labels));
   }, [selectedProfiles, selectedTagIds, tags]);
+  const selectedProfileCompetencies = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          selectedProfiles.flatMap((profile) =>
+            buildProfileCompetencies(profile).map((competency) => `${profile.title}: ${competency}`),
+          ),
+        ),
+      ),
+    [selectedProfiles],
+  );
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
@@ -3360,6 +3386,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </button>
                   ))}
                 </div>
+
+                {selectedProfileCompetencies.length > 0 && (
+                  <div className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/80">
+                    <button
+                      type="button"
+                      onClick={() => setShowProfileCompetencies((current) => !current)}
+                      className="flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left"
+                    >
+                      <div>
+                        <p className="text-xs font-bold text-emerald-700">권장 역량</p>
+                        <p className="mt-0.5 text-xs text-emerald-900/70">
+                          선택한 진로·학과를 준비할 때 함께 볼 포인트입니다.
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span className="rounded-full bg-white px-2 py-1 text-[10px] font-black text-emerald-700">
+                          {selectedProfileCompetencies.length}개
+                        </span>
+                        <ChevronDown
+                          className={cx(
+                            "h-4 w-4 text-emerald-700 transition",
+                            showProfileCompetencies && "rotate-180",
+                          )}
+                        />
+                      </div>
+                    </button>
+                    {showProfileCompetencies && (
+                      <ul className="space-y-1.5 px-3.5 pb-3.5">
+                        {selectedProfileCompetencies.map((competency) => (
+                          <li
+                            key={`profile-competency:${competency}`}
+                            className="flex items-start gap-2 rounded-lg bg-white px-3 py-2 text-xs leading-5 text-slate-700"
+                          >
+                            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                            <span>{competency}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
 
                 <button
                   type="button"
