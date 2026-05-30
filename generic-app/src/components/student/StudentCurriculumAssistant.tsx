@@ -1062,6 +1062,7 @@ function ChoiceGroupRoadmap({
   selectedSubjectSet,
   selectedSubjectOrigins,
   recommendedNames,
+  recommendedCriteriaLabels,
   onToggle,
   onDetails,
 }: {
@@ -1073,6 +1074,7 @@ function ChoiceGroupRoadmap({
   selectedSubjectSet: Set<string>;
   selectedSubjectOrigins: Map<string, string>;
   recommendedNames: Set<string>;
+  recommendedCriteriaLabels: Map<string, string[]>;
   onToggle: (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => void;
   onDetails: (location: SubjectLocation) => void;
 }) {
@@ -1122,6 +1124,7 @@ function ChoiceGroupRoadmap({
           const isDuplicate = selectedSubjectSet.has(subject.name) && !isSelected;
           const isFull = group.choose > 1 && selection.length >= group.choose && !isSelected;
           const isRecommended = recommendedNames.has(subject.name);
+          const criteriaLabels = recommendedCriteriaLabels.get(subject.name) ?? [];
           const disabled = isDuplicate || isFull;
           const conflictLabel = isDuplicate
             ? `${selectedSubjectOrigins.get(subject.name) ?? "이미"} 선택`
@@ -1183,6 +1186,31 @@ function ChoiceGroupRoadmap({
                   </span>
                 </div>
                 <SubjectMeta subject={subject} light={isSelected} />
+                {criteriaLabels.length > 0 && (
+                  <div className="mt-1.5 flex flex-wrap gap-1">
+                    {criteriaLabels.slice(0, 3).map((label) => (
+                      <span
+                        key={`${subject.name}:roadmap-criteria:${label}`}
+                        className={cx(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                          isSelected ? "bg-white/15 text-white" : "bg-white text-emerald-700",
+                        )}
+                      >
+                        {label}
+                      </span>
+                    ))}
+                    {criteriaLabels.length > 3 && (
+                      <span
+                        className={cx(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                          isSelected ? "bg-white/15 text-white" : "bg-white text-emerald-700",
+                        )}
+                      >
+                        +{criteriaLabels.length - 3}
+                      </span>
+                    )}
+                  </div>
+                )}
                 {disabled && conflictLabel && (
                   <p className="mt-1 text-[10px] font-semibold text-slate-500">
                     선택 불가: {conflictLabel}
@@ -1777,6 +1805,24 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       }
     });
     return names;
+  }, [hasRecommendationCriteria, locations, selectedProfiles, selectedTagIds, tags]);
+  const recommendedCriteriaBySubject = useMemo(() => {
+    const bySubject = new Map<string, string[]>();
+    if (!hasRecommendationCriteria) return bySubject;
+
+    locations.forEach((location) => {
+      const labels = buildRecommendationCriteriaMatches({
+        location,
+        selectedProfiles,
+        selectedTagIds,
+        tags,
+      });
+      if (labels.length > 0) {
+        bySubject.set(location.subject.name, labels);
+      }
+    });
+
+    return bySubject;
   }, [hasRecommendationCriteria, locations, selectedProfiles, selectedTagIds, tags]);
   const recommendationCriteriaLabels = useMemo(() => {
     const labels = selectedProfiles.map((profile) => profile.title);
@@ -3975,6 +4021,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                             selectedSubjectSet={selectedSubjectSet}
                             selectedSubjectOrigins={selectedSubjectOrigins}
                             recommendedNames={recommendedNames}
+                            recommendedCriteriaLabels={recommendedCriteriaBySubject}
                             onToggle={toggleRoadmapSubject}
                             onDetails={setActiveSubject}
                           />

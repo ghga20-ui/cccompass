@@ -816,6 +816,8 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("추천 조건 반영")).not.toBeNull();
     expect(screen.getByText("로드맵에서 추천 후보 1개를 표시하고 있습니다.")).not.toBeNull();
     expect(screen.getAllByText("Science").length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "Physics Option 선택" }).textContent).toContain("Science");
+    expect(screen.getByRole("button", { name: "History Option 선택" }).textContent).not.toContain("Science");
 
     fireEvent.click(screen.getByRole("button", { name: "추천 보기" }));
 
