@@ -980,6 +980,11 @@ function ChoiceGroupRoadmap({
                 type="button"
                 disabled={disabled}
                 onClick={() => onToggle(id, group, subject)}
+                aria-label={
+                  disabled && conflictLabel
+                    ? `${subject.name} 선택 불가: ${conflictLabel}`
+                    : `${subject.name} 선택`
+                }
                 className={cx(
                   "min-w-0 flex-1 px-3 py-2 text-left transition active:scale-[0.99]",
                   disabled ? "cursor-not-allowed" : "cursor-pointer",
@@ -1012,6 +1017,11 @@ function ChoiceGroupRoadmap({
                   </span>
                 </div>
                 <SubjectMeta subject={subject} light={isSelected} />
+                {disabled && conflictLabel && (
+                  <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                    선택 불가: {conflictLabel}
+                  </p>
+                )}
               </button>
               <button
                 type="button"

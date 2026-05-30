@@ -501,6 +501,58 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 2 Option을 로드맵에 담았습니다.")).not.toBeNull();
   });
 
+  it("explains why a full roadmap choice option is disabled", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 2,
+                      subjects: [
+                        { name: "First Option", credits: 3 },
+                        { name: "Second Option", credits: 3 },
+                        { name: "Third Option", credits: 3 },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["First Option", "Second Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByLabelText("Third Option 선택 불가: 택2 완료")).not.toBeNull();
+    expect(screen.queryByText("선택 불가: 택2 완료")).not.toBeNull();
+  });
+
   it("opens subject details from selected roadmap chips", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
