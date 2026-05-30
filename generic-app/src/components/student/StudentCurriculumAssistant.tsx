@@ -219,6 +219,18 @@ function cohortDisplayLabel(cohort: CurriculumCohort) {
   return `${cohort.entranceYear}학년도 입학생`;
 }
 
+export function roadmapShareTitle(schoolName: string) {
+  return `${schoolName} 2·3학년 선택과목 로드맵`;
+}
+
+export function roadmapShareText(cohort?: CurriculumCohort | null) {
+  return `${cohort ? `${cohortDisplayLabel(cohort)} · ` : ""}2·3학년 선택과목 로드맵`;
+}
+
+export function roadmapExportFileName(schoolName: string) {
+  return `${schoolName}-2-3학년-선택과목-로드맵.png`;
+}
+
 function objectParticle(text: string) {
   const lastChar = text.trim().charCodeAt(text.trim().length - 1);
   if (lastChar < 0xac00 || lastChar > 0xd7a3) return "을";
@@ -1870,8 +1882,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
       if (browserNavigator.share) {
         await browserNavigator.share({
-          title: `${curriculum.schoolName} 선택과목 로드맵`,
-          text: `${cohort ? cohortDisplayLabel(cohort) : ""} 선택과목 로드맵`,
+          title: roadmapShareTitle(curriculum.schoolName),
+          text: roadmapShareText(cohort),
           url,
         });
         return;
@@ -1937,7 +1949,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     ctx.fillRect(0, 0, width, 92);
     ctx.fillStyle = "#ffffff";
     ctx.font = `700 28px ${font}`;
-    ctx.fillText(`${curriculum.schoolName} 선택과목 로드맵`, 40, 56);
+    ctx.fillText(roadmapShareTitle(curriculum.schoolName), 40, 56);
     ctx.font = `500 16px ${font}`;
     ctx.fillText(cohortDisplayLabel(cohort), 40, 80);
     ctx.fillStyle = "#0f172a";
@@ -2012,7 +2024,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     );
 
     const link = document.createElement("a");
-    link.download = `${curriculum.schoolName}-선택과목-로드맵.png`;
+    link.download = roadmapExportFileName(curriculum.schoolName);
     link.href = canvas.toDataURL("image/png");
     link.click();
     showToast("로드맵 이미지를 저장했습니다.");

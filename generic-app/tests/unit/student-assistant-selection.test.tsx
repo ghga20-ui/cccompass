@@ -4,6 +4,9 @@ import {
   buildSubjectAvailability,
   choiceLocations,
   getGroupRecords,
+  roadmapExportFileName,
+  roadmapShareText,
+  roadmapShareTitle,
   selectableGrades,
   StudentCurriculumAssistant,
 } from "@/components/student/StudentCurriculumAssistant";
@@ -81,6 +84,14 @@ afterEach(() => {
 });
 
 describe("student assistant selectable grade calculations", () => {
+  it("labels shared roadmap artifacts as grade 2 and 3 selection outputs", () => {
+    expect(roadmapShareTitle("Test High School")).toBe("Test High School 2·3학년 선택과목 로드맵");
+    expect(roadmapShareText(cohort)).toBe("2026학년도 입학생 · 2·3학년 선택과목 로드맵");
+    expect(roadmapExportFileName("Test High School")).toBe(
+      "Test High School-2-3학년-선택과목-로드맵.png",
+    );
+  });
+
   it("uses only grade 2 and 3 curriculum for student selection flows", () => {
     expect(selectableGrades(cohort).map((grade) => grade.grade)).toEqual([2, 3]);
     expect(choiceLocations(cohort).map((location) => location.subject.name)).toEqual([
