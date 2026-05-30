@@ -497,6 +497,73 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("탐색 결과 추천 과목 2개")).not.toBeNull();
   });
 
+  it("drops stale grade 1 selections from shared state", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-1-choice",
+                      label: "Grade 1 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Hidden Grade 1 Option", credits: 2 }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:1:1:grade-1-choice": ["Hidden Grade 1 Option"],
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("Hidden Grade 1 Option")).toBeNull();
+    expect(screen.queryByLabelText("로드맵 선택 과목 1개")).not.toBeNull();
+    expect(screen.getByLabelText("학년별 선택 과목 요약").textContent).not.toContain("Hidden Grade 1 Option");
+  });
+
   it("marks the current bottom-nav tab for app navigation", () => {
     render(
       <StudentCurriculumAssistant

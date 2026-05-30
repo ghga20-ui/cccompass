@@ -290,6 +290,25 @@ export function getGroupRecords(cohort: CurriculumCohort) {
   );
 }
 
+function sanitizeSelectionForCohort(selection: SelectionState, cohort: CurriculumCohort) {
+  const sanitized: SelectionState = {};
+
+  getGroupRecords(cohort).forEach((record) => {
+    const allowedNames = new Set(record.group.subjects.map((subject) => subject.name));
+    const selected = selection[record.id] ?? [];
+    const validNames = Array.from(new Set(selected.filter((name) => allowedNames.has(name)))).slice(
+      0,
+      record.group.choose,
+    );
+
+    if (validNames.length > 0) {
+      sanitized[record.id] = validNames;
+    }
+  });
+
+  return sanitized;
+}
+
 function calculateSemesterProgress(
   cohort: CurriculumCohort,
   grade: CurriculumGrade,
@@ -1885,7 +1904,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       : "all",
   );
   const [onlyExamSubjects, setOnlyExamSubjects] = useState(initialSharedState.onlyExamSubjects === true);
-  const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
+  const [rawSelection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
   const [showProfileCompetencies, setShowProfileCompetencies] = useState(false);
@@ -1901,6 +1920,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectableCohorts.find((candidate) => candidate.entranceYear === cohortYear) ??
       selectableCohorts[0],
     [cohortYear, selectableCohorts],
+  );
+  const selection = useMemo(
+    () => (cohort ? sanitizeSelectionForCohort(rawSelection, cohort) : rawSelection),
+    [cohort, rawSelection],
   );
   const grades = useMemo(() => (cohort ? selectableGrades(cohort) : []), [cohort]);
   const locations = useMemo(() => (cohort ? choiceLocations(cohort) : []), [cohort]);
