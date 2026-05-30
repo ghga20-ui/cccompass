@@ -1819,6 +1819,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               setActiveGrade("all");
               setSelectedArea("전체");
               setSelectedCategory("전체");
+              setSubjectSelectionFilter("all");
+              setShowOnlyIncompleteGroups(false);
+              setCollapsedSemesterIds(new Set());
+              setActiveSubject(null);
               setSearch("");
             }}
             className="h-9 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs font-bold outline-none"
