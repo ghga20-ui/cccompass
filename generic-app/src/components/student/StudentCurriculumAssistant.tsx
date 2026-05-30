@@ -840,6 +840,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
   );
+  const selectedSubjectNames = useMemo(() => Array.from(selectedSubjectSet), [selectedSubjectSet]);
   const gradeProgress = useMemo(() => {
     if (!cohort) return [];
 
@@ -1454,6 +1455,34 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </div>
                   );
                 })}
+              </div>
+              <div className="mt-3 rounded-lg bg-slate-50 p-3">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <p className="text-xs font-bold text-slate-600">선택한 과목</p>
+                  {selectedSubjectNames.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelection({})}
+                      className="text-xs font-bold text-red-500"
+                    >
+                      전체 초기화
+                    </button>
+                  )}
+                </div>
+                {selectedSubjectNames.length > 0 ? (
+                  <div className="flex max-h-20 flex-wrap gap-1.5 overflow-y-auto">
+                    {selectedSubjectNames.map((name) => (
+                      <span
+                        key={name}
+                        className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500">아직 선택한 과목이 없습니다.</p>
+                )}
               </div>
             </section>
 
