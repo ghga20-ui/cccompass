@@ -2061,6 +2061,35 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
   };
 
+  const getToggleSubjectResult = (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => {
+    const selected = selection[groupId] ?? [];
+    if (selected.includes(subject.name)) return "removed";
+    if (Object.entries(selection).some(([id, names]) => id !== groupId && names.includes(subject.name))) {
+      return "duplicate";
+    }
+    if (group.choose > 1 && selected.length >= group.choose) return "full";
+    return "added";
+  };
+
+  const toggleRoadmapSubject = (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => {
+    const result = getToggleSubjectResult(groupId, group, subject);
+    handleToggleSubject(groupId, group, subject);
+
+    if (result === "removed") {
+      showToast(`${subject.name}${objectParticle(subject.name)} 로드맵에서 해제했습니다.`);
+      return;
+    }
+    if (result === "duplicate") {
+      showToast("이미 다른 학기나 선택 묶음에 담긴 과목입니다.");
+      return;
+    }
+    if (result === "full") {
+      showToast(`택${group.choose} 선택 조건이 가득 찼습니다.`);
+      return;
+    }
+    showToast(`${subject.name}${objectParticle(subject.name)} 로드맵에 담았습니다.`);
+  };
+
   const removeSelectedSubject = (subjectName: string) => {
     setSelection((current) => {
       const next = Object.fromEntries(
@@ -3623,7 +3652,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                             selectedSubjectSet={selectedSubjectSet}
                             selectedSubjectOrigins={selectedSubjectOrigins}
                             recommendedNames={recommendedNames}
-                            onToggle={handleToggleSubject}
+                            onToggle={toggleRoadmapSubject}
                             onDetails={setActiveSubject}
                           />
                         );
