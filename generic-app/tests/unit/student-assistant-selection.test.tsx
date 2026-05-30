@@ -368,6 +368,56 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByRole("button", { name: "홈 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
   });
 
+  it("combines selected interest and career recommendation conditions", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "combined-choice",
+                      label: "Combined Choice",
+                      choose: 2,
+                      subjects: [
+                        { name: "Physics Option", credits: 3, area: "Science" },
+                        { name: "경제", credits: 3, area: "Social" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "recommend",
+        selectedTagIds: ["area:Science"],
+        selectedProfileIds: ["career:business"],
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByText("Physics Option")).not.toBeNull();
+    expect(screen.getByText("경제")).not.toBeNull();
+  });
+
   it("shows an empty state for unmatched career search on the home screen", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ profileQuery: "없는학과" })}`);
 

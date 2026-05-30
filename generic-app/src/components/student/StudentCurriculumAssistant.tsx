@@ -633,6 +633,28 @@ function countMatchingProfiles(
   return profiles.filter((profile) => profileMatches(profile, subject, tags)).length;
 }
 
+function subjectMatchesRecommendationCriteria({
+  subject,
+  tags,
+  selectedTagIds,
+  selectedProfiles,
+}: {
+  subject: CurriculumSubject;
+  tags: InterestTag[];
+  selectedTagIds: string[];
+  selectedProfiles: RecommendationProfile[];
+}) {
+  if (selectedTagIds.length === 0 && selectedProfiles.length === 0) return true;
+
+  const matchesSelectedTag =
+    selectedTagIds.length > 0 && tagMatches(tags, selectedTagIds, subject);
+  const matchesSelectedProfile = selectedProfiles.some((profile) =>
+    profileMatches(profile, subject, tags),
+  );
+
+  return matchesSelectedTag || matchesSelectedProfile;
+}
+
 function buildRecommendationReason({
   location,
   selectedProfiles,
@@ -1538,10 +1560,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     if (!hasRecommendationCriteria) return names;
 
     locations.forEach((location) => {
-      if (
-        tagMatches(tags, selectedTagIds, location.subject) ||
-        selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
-      ) {
+      if (subjectMatchesRecommendationCriteria({
+        subject: location.subject,
+        tags,
+        selectedTagIds,
+        selectedProfiles,
+      })) {
         names.add(location.subject.name);
       }
     });
@@ -1611,10 +1635,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         [location.subject.name, location.subject.area, location.subject.category, location.group.label]
           .filter(Boolean)
           .some((value) => value?.includes(query));
-      const matchesTag = tagMatches(tags, selectedTagIds, location.subject);
-      const matchesProfile = selectedProfiles.length > 0
-        ? selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
-        : true;
+      const matchesRecommendationCriteria = subjectMatchesRecommendationCriteria({
+        subject: location.subject,
+        tags,
+        selectedTagIds,
+        selectedProfiles,
+      });
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
       const matchesArea = activeSelectedArea === "전체" || inferSubjectArea(location) === activeSelectedArea;
       const matchesCategory =
@@ -1627,8 +1653,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
       return (
         matchesSearch &&
-        matchesTag &&
-        matchesProfile &&
+        matchesRecommendationCriteria &&
         matchesGrade &&
         matchesArea &&
         matchesCategory &&
