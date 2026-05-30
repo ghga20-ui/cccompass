@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Briefcase,
@@ -1011,6 +1011,8 @@ function SubjectDetailPanel({
   onGoRoadmap: (location: SubjectLocation) => void;
   onOpenSubject: (location: SubjectLocation) => void;
 }) {
+  const detailScrollRef = useRef<HTMLDivElement | null>(null);
+
   if (!location) return null;
 
   const subject = location.subject;
@@ -1025,6 +1027,12 @@ function SubjectDetailPanel({
   const recommendedFor = buildRecommendedFor(location);
   const learningKeywords = buildLearningKeywords(location);
   const availability = buildSubjectAvailability(location.cohort, subject.name);
+  const openPeerSubject = (peerLocation: SubjectLocation) => {
+    onOpenSubject(peerLocation);
+    window.setTimeout(() => {
+      detailScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6">
@@ -1044,7 +1052,7 @@ function SubjectDetailPanel({
           </button>
         </div>
 
-        <div className="space-y-4 overflow-y-auto p-4">
+        <div ref={detailScrollRef} className="space-y-4 overflow-y-auto p-4">
           <section className="rounded-lg bg-blue-50 p-3">
             <h3 className="text-sm font-bold text-blue-900">과목 한눈에 보기</h3>
             <p className="mt-1 text-sm leading-6 text-blue-900/75">{buildSubjectOverview(subject)}</p>
@@ -1158,7 +1166,7 @@ function SubjectDetailPanel({
                   <button
                     key={subjectKey(peerLocation.subject)}
                     type="button"
-                    onClick={() => onOpenSubject(peerLocation)}
+                    onClick={() => openPeerSubject(peerLocation)}
                     className={cx(
                       "rounded-md bg-white px-2 py-1 text-left text-xs font-semibold transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
                       selectedSubjectSet.has(peerLocation.subject.name)
