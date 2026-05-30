@@ -1504,6 +1504,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [showOnlyIncompleteGroups, setShowOnlyIncompleteGroups] = useState(
     initialSharedState.showOnlyIncompleteGroups === true,
   );
+  const [resetAllSelectionConfirmCount, setResetAllSelectionConfirmCount] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -1592,6 +1593,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     [cohort, selection],
   );
   const selectedSubjectNames = useMemo(() => Array.from(selectedSubjectSet), [selectedSubjectSet]);
+  const confirmResetAllSelection = resetAllSelectionConfirmCount === selectedSubjectNames.length;
   const selectedSubjectLocations = useMemo(() => {
     const byName = new Map<string, SubjectLocation>();
     locations.forEach((location) => {
@@ -1921,6 +1923,16 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
       return next;
     });
+  };
+
+  const resetAllSelection = () => {
+    if (resetAllSelectionConfirmCount !== selectedSubjectNames.length) {
+      setResetAllSelectionConfirmCount(selectedSubjectNames.length);
+      return;
+    }
+
+    setSelection({});
+    setResetAllSelectionConfirmCount(null);
   };
 
   const canAddSubjectToRoadmap = (location: SubjectLocation) => {
@@ -3124,13 +3136,21 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   {selectedSubjectNames.length > 0 && (
                     <button
                       type="button"
-                      onClick={() => setSelection({})}
-                      className="text-xs font-bold text-red-500"
+                      onClick={resetAllSelection}
+                      className={cx(
+                        "text-xs font-bold",
+                        confirmResetAllSelection ? "text-red-600" : "text-red-500",
+                      )}
                     >
-                      전체 초기화
+                      {confirmResetAllSelection ? "다시 누르면 초기화" : "전체 초기화"}
                     </button>
                   )}
                 </div>
+                {confirmResetAllSelection && (
+                  <p className="mb-2 rounded-md bg-red-50 px-2.5 py-2 text-xs font-semibold leading-5 text-red-600">
+                    선택한 과목을 모두 지웁니다. 한 번 더 누르면 초기화됩니다.
+                  </p>
+                )}
                 {selectedSubjectNames.length > 0 ? (
                   <div className="flex max-h-20 flex-wrap gap-1.5 overflow-y-auto">
                     {selectedSubjectNames.map((name) => {

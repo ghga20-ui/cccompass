@@ -934,4 +934,59 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("Grade 2 Option 선택 해제")).toBeNull();
     expect(screen.getByText("아직 선택한 과목이 없습니다.")).not.toBeNull();
   });
+
+  it("confirms before clearing every roadmap subject", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "전체 초기화" }));
+
+    expect(screen.getByText("선택한 과목을 모두 지웁니다. 한 번 더 누르면 초기화됩니다.")).not.toBeNull();
+    expect(screen.getByLabelText("Grade 2 Option 선택 해제")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "다시 누르면 초기화" }));
+
+    expect(screen.queryByLabelText("Grade 2 Option 선택 해제")).toBeNull();
+    expect(screen.getByText("아직 선택한 과목이 없습니다.")).not.toBeNull();
+  });
 });
