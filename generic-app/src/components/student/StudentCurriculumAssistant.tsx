@@ -849,16 +849,31 @@ function SubjectCard({
         <button type="button" onClick={onClick} className="w-full p-3 text-left active:scale-[0.99]">
           {content}
         </button>
-        {onDetails && (
+        <div className={cx("grid border-t border-slate-100", onDetails ? "grid-cols-2" : "grid-cols-1")}>
+          <button
+            type="button"
+            onClick={onClick}
+            className={cx(
+              "flex min-h-10 items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold",
+              selected
+                ? "bg-blue-50 text-blue-700"
+                : "bg-white text-blue-700",
+            )}
+          >
+            {selected ? "로드맵에서 보기" : "로드맵에 담기"}
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
+          {onDetails && (
           <button
             type="button"
             onClick={onDetails}
-            className="flex w-full items-center justify-center gap-1.5 border-t border-slate-100 px-3 py-2 text-xs font-bold text-slate-500"
+            className="flex min-h-10 items-center justify-center gap-1.5 border-l border-slate-100 px-3 py-2 text-xs font-bold text-slate-500"
           >
             <Info className="h-3.5 w-3.5" />
             과목 상세 보기
           </button>
-        )}
+          )}
+        </div>
       </div>
     );
   }

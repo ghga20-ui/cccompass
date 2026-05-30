@@ -354,6 +354,7 @@ describe("student assistant selectable grade calculations", () => {
 
     expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
     expect(screen.queryAllByText("로드맵 선택됨").length).toBeGreaterThan(1);
+    expect(screen.queryByText("로드맵에서 보기")).not.toBeNull();
     expect(screen.queryByLabelText("로드맵 선택 과목 1개")).not.toBeNull();
     expect(screen.queryByText("Grade 3 Option")).toBeNull();
   });
