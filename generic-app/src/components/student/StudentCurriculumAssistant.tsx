@@ -1286,6 +1286,8 @@ function SubjectDetailPanel({
   selectedSubjectSet,
   profiles,
   tags,
+  selectedProfiles,
+  selectedTagIds,
   onClose,
   onSelect,
   onGoRoadmap,
@@ -1298,6 +1300,8 @@ function SubjectDetailPanel({
   selectedSubjectSet: Set<string>;
   profiles: RecommendationProfile[];
   tags: InterestTag[];
+  selectedProfiles: RecommendationProfile[];
+  selectedTagIds: string[];
   onClose: () => void;
   onSelect: (location: SubjectLocation) => void;
   onGoRoadmap: (location: SubjectLocation) => void;
@@ -1327,6 +1331,12 @@ function SubjectDetailPanel({
 
   const subject = location.subject;
   const matchingProfiles = profiles.filter((profile) => profileMatches(profile, subject, tags));
+  const selectedCriteriaMatches = buildRecommendationCriteriaMatches({
+    location,
+    selectedProfiles,
+    selectedTagIds,
+    tags,
+  });
   const peerLocations = location.group.subjects
     .filter((candidate) => candidate.name !== subject.name)
     .map((candidate) => ({
@@ -1442,6 +1452,28 @@ function SubjectDetailPanel({
               <p className="mt-1 text-sm leading-6 text-emerald-900/75">
                 {selectedOrigin ? `${selectedOrigin}에 담겨 있습니다.` : "현재 로드맵에 담겨 있습니다."}
               </p>
+            </section>
+          )}
+
+          {selectedCriteriaMatches.length > 0 && (
+            <section className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-emerald-700" />
+                <h3 className="text-sm font-bold text-emerald-900">내 추천 조건과 연결</h3>
+              </div>
+              <p className="mt-1 text-xs leading-5 text-emerald-900/70">
+                선택한 진로·학과나 관심 영역 기준으로 이 과목이 추천 후보에 포함됩니다.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {selectedCriteriaMatches.map((label) => (
+                  <span
+                    key={`detail-selected-criteria:${label}`}
+                    className="rounded-full bg-white px-2 py-1 text-xs font-bold text-emerald-700"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
             </section>
           )}
 
@@ -3950,6 +3982,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         selectedSubjectSet={selectedSubjectSet}
         profiles={profiles}
         tags={tags}
+        selectedProfiles={selectedProfiles}
+        selectedTagIds={selectedTagIds}
         onClose={() => setActiveSubject(null)}
         onSelect={selectRecommendation}
         onGoRoadmap={goToRoadmapSubject}

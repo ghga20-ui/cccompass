@@ -844,6 +844,29 @@ describe("student assistant selectable grade calculations", () => {
     expect(document.body.style.overflow).toBe("");
   });
 
+  it("shows selected recommendation criteria inside subject details", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        selectedProfileIds: ["career:business"],
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
+
+    const dialog = screen.getByRole("dialog", { name: "경제" });
+    expect(dialog.textContent).toContain("내 추천 조건과 연결");
+    expect(dialog.textContent).toContain("경영학과");
+  });
+
   it("lets students recover from an empty subject result", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects", search: "없는과목" })}`);
 
