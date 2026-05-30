@@ -542,6 +542,35 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("추천 조건 2개")).toBeNull();
   });
 
+  it("previews recommended subjects on the home screen after criteria are selected", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        selectedProfileIds: ["career:business"],
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    const preview = screen.getByRole("region", { name: "홈 추천 과목 미리보기" });
+
+    expect(preview.textContent).toContain("바로 담을 추천 과목");
+    expect(preview.textContent).toContain("경제");
+    expect(preview.textContent).toContain("경영학과");
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 추천 과목 로드맵에 담기" }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(screen.queryByLabelText("경제 선택 해제")).not.toBeNull();
+  });
+
   it("removes profile-linked interest criteria when a selected profile chip is removed", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

@@ -1898,6 +1898,32 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       )
       .slice(0, 8);
   }, [profileQuery, profiles]);
+  const homeRecommendationPreview = useMemo(() => {
+    if (!hasRecommendationCriteria) return [];
+
+    const seen = new Set<string>();
+    return locations
+      .filter((location) =>
+        subjectMatchesRecommendationCriteria({
+          subject: location.subject,
+          tags,
+          selectedTagIds,
+          selectedProfiles,
+        }),
+      )
+      .sort((a, b) => {
+        const aMatches = countMatchingProfiles(selectedProfiles, a.subject, tags);
+        const bMatches = countMatchingProfiles(selectedProfiles, b.subject, tags);
+        if (aMatches !== bMatches) return bMatches - aMatches;
+        return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
+      })
+      .filter((location) => {
+        if (seen.has(location.subject.name)) return false;
+        seen.add(location.subject.name);
+        return true;
+      })
+      .slice(0, 4);
+  }, [hasRecommendationCriteria, locations, selectedProfiles, selectedTagIds, tags]);
   const recommendationSections = useMemo(() => {
     const bySemester = new Map<string, { grade: number; semester: number; subjects: SubjectLocation[] }>();
 
@@ -2797,6 +2823,78 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </span>
                   ))}
                 </div>
+                {homeRecommendationPreview.length > 0 && (
+                  <section
+                    className="mt-4 rounded-lg border border-emerald-100 bg-white/80 p-3"
+                    aria-label="홈 추천 과목 미리보기"
+                  >
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <p className="text-xs font-bold text-emerald-700">바로 담을 추천 과목</p>
+                      <span className="text-xs font-semibold text-emerald-700">
+                        {homeRecommendationPreview.length}개
+                      </span>
+                    </div>
+                    <div className="grid gap-2">
+                      {homeRecommendationPreview.map((location) => {
+                        const selected = selectedSubjectSet.has(location.subject.name);
+                        const cannotAdd = !selected && Boolean(getRoadmapAddBlockReason(location, selection));
+                        const criteriaMatches = buildRecommendationCriteriaMatches({
+                          location,
+                          selectedProfiles,
+                          selectedTagIds,
+                          tags,
+                        });
+
+                        return (
+                          <button
+                            key={`home-recommendation-preview:${location.grade}:${location.semester}:${location.subject.name}`}
+                            type="button"
+                            onClick={() => selectOrViewRecommendation(location)}
+                            aria-label={`${location.subject.name} 추천 과목 ${
+                              selected ? "로드맵에서 보기" : cannotAdd ? "로드맵에서 조정" : "로드맵에 담기"
+                            }`}
+                            className="rounded-md border border-emerald-100 bg-white px-3 py-2 text-left transition hover:border-emerald-200 active:scale-[0.99]"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold leading-5 text-slate-950">
+                                  {location.subject.name}
+                                </p>
+                                <p className="mt-0.5 text-xs text-slate-500">
+                                  {gradeLabel(location.grade, location.semester)} · {location.subject.credits}학점
+                                </p>
+                              </div>
+                              <span
+                                className={cx(
+                                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black",
+                                  selected
+                                    ? "bg-blue-50 text-blue-700"
+                                    : cannotAdd
+                                      ? "bg-amber-50 text-amber-700"
+                                      : "bg-emerald-50 text-emerald-700",
+                                )}
+                              >
+                                {selected ? "선택됨" : cannotAdd ? "조정" : "담기"}
+                              </span>
+                            </div>
+                            {criteriaMatches.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {criteriaMatches.slice(0, 3).map((label) => (
+                                  <span
+                                    key={`home-preview-criteria:${location.subject.name}:${label}`}
+                                    className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700"
+                                  >
+                                    {label}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
                 <button
                   type="button"
                   onClick={() => setMode("recommend")}
