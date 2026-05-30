@@ -443,6 +443,58 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("lets students add a common recommendation from multi-profile comparison", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "business-choice",
+                      label: "Business Choice",
+                      choose: 1,
+                      subjects: [{ name: "경제", credits: 3, area: "Social" }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "recommend",
+        selectedProfileIds: ["career:business", "profile:business"],
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByText("공통 추천 과목")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 공통 추천 과목 로드맵에 담기" }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(screen.queryByLabelText("경제 선택 해제")).not.toBeNull();
+  });
+
   it("summarizes active recommendation criteria on the roadmap", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

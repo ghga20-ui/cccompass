@@ -2781,12 +2781,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                       </p>
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {profileComparison.common.slice(0, 8).map((location) => (
-                          <span
+                          <button
                             key={`${location.grade}-${location.semester}-${location.subject.name}`}
-                            className="rounded bg-white px-2 py-1 text-xs font-semibold text-slate-700"
+                            type="button"
+                            onClick={() => selectOrViewRecommendation(location)}
+                            className="rounded bg-white px-2 py-1 text-left text-xs font-semibold text-slate-700 transition hover:text-blue-700 hover:ring-2 hover:ring-emerald-100"
+                            aria-label={`${location.subject.name} 공통 추천 과목 로드맵에 담기`}
                           >
                             {location.subject.name}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>
