@@ -2282,29 +2282,45 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </div>
               )}
               <div className="mt-3 space-y-2">
-                {filteredProfiles.map((profile) => {
-                  const active = selectedProfileIds.includes(profile.id);
+                {filteredProfiles.length > 0 ? (
+                  filteredProfiles.map((profile) => {
+                    const active = selectedProfileIds.includes(profile.id);
 
-                  return (
+                    return (
+                      <button
+                        key={profile.id}
+                        type="button"
+                        onClick={() => toggleProfile(profile)}
+                        className={cx(
+                          "w-full rounded-lg border px-3 py-2 text-left transition",
+                          active
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-slate-200 bg-slate-50 hover:border-blue-200",
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-bold text-slate-950">{profile.title}</span>
+                          {active && <Check className="h-4 w-4 text-blue-600" />}
+                        </div>
+                        <p className="mt-1 text-xs leading-5 text-slate-500">{profile.description}</p>
+                      </button>
+                    );
+                  })
+                ) : (
+                  <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-center">
+                    <p className="text-sm font-bold text-slate-700">검색 결과가 없습니다.</p>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      다른 학과명이나 계열명을 입력하거나 관심 영역을 선택해 주세요.
+                    </p>
                     <button
-                      key={profile.id}
                       type="button"
-                      onClick={() => toggleProfile(profile)}
-                      className={cx(
-                        "w-full rounded-lg border px-3 py-2 text-left transition",
-                        active
-                          ? "border-blue-600 bg-blue-50"
-                          : "border-slate-200 bg-slate-50 hover:border-blue-200",
-                      )}
+                      onClick={() => setProfileQuery("")}
+                      className="mt-3 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-blue-700 ring-1 ring-blue-100"
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-bold text-slate-950">{profile.title}</span>
-                        {active && <Check className="h-4 w-4 text-blue-600" />}
-                      </div>
-                      <p className="mt-1 text-xs leading-5 text-slate-500">{profile.description}</p>
+                      추천 후보 다시 보기
                     </button>
-                  );
-                })}
+                  </div>
+                )}
               </div>
             </section>
 

@@ -368,6 +368,25 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByRole("button", { name: "홈 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
   });
 
+  it("shows an empty state for unmatched career search on the home screen", () => {
+    window.history.replaceState({}, "", `/?state=${encodeState({ profileQuery: "없는학과" })}`);
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.getByText("검색 결과가 없습니다.")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "추천 후보 다시 보기" }));
+
+    expect(screen.queryByText("검색 결과가 없습니다.")).toBeNull();
+    expect((screen.getByPlaceholderText("예: 공학, 의생명, 사회, 경제, 예술") as HTMLInputElement).value).toBe(
+      "",
+    );
+  });
+
   it("explains blocked roadmap additions inside subject details", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
