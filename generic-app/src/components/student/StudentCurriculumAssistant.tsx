@@ -1603,6 +1603,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     window.setTimeout(() => scrollToRoadmapGrade(location.grade), 0);
   };
 
+  const selectOrViewRecommendation = (location: SubjectLocation) => {
+    if (selectedSubjectSet.has(location.subject.name)) {
+      goToRoadmapSubject(location);
+      return;
+    }
+
+    selectRecommendation(location);
+  };
+
   const handleShare = async () => {
     const url = buildShareUrl({
       mode,
@@ -2360,7 +2369,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                                     selectedTagIds,
                                     tags,
                                   })}
-                                  onClick={() => selectRecommendation(location)}
+                                  onClick={() => selectOrViewRecommendation(location)}
                                   onDetails={() => setActiveSubject(location)}
                                 />
                               );
@@ -2393,7 +2402,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                           selectedTagIds,
                           tags,
                         })}
-                        onClick={() => selectRecommendation(location)}
+                        onClick={() => selectOrViewRecommendation(location)}
                         onDetails={() => setActiveSubject(location)}
                       />
                     );
