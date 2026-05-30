@@ -276,6 +276,129 @@ describe("student assistant selectable grade calculations", () => {
     expect(nextCard.className).toContain("bg-blue-600");
   });
 
+  it("starts from the first cohort with grade 2 or 3 choice groups", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2027",
+          label: "2027 entrance",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [{ name: "Common Korean", credits: 4 }],
+                  choiceGroups: [
+                    {
+                      id: "grade-1-only",
+                      label: "Grade 1 Only",
+                      choose: 1,
+                      subjects: [{ name: "Hidden Grade 1 Option", credits: 2 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("학생 선택과목 신청 대상인 2·3학년 편제 데이터가 없습니다.")).toBeNull();
+    expect(screen.queryByRole("button", { name: /2027.*편제 선택/ })).toBeNull();
+    expect(screen.getByRole("button", { name: /2026.*편제 선택/ }).className).toContain("bg-blue-600");
+  });
+
+  it("ignores a shared cohort state when that cohort only has grade 1 data", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2027",
+          label: "2027 entrance",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-1-only",
+                      label: "Grade 1 Only",
+                      choose: 1,
+                      subjects: [{ name: "Hidden Grade 1 Option", credits: 2 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ cohortYear: "2027", mode: "roadmap" })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("Hidden Grade 1 Option")).toBeNull();
+    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+  });
+
   it("shows the active recommendation-filter count in the bottom nav", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

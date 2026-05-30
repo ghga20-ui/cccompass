@@ -176,6 +176,16 @@ export function selectableGrades(cohort: CurriculumCohort): CurriculumGrade[] {
     .sort((a, b) => a.grade - b.grade);
 }
 
+function hasSelectableStudentCurriculum(cohort: CurriculumCohort) {
+  return selectableGrades(cohort).some((grade) =>
+    grade.semesters.some((semester) => semester.choiceGroups.length > 0),
+  );
+}
+
+function studentSelectableCohorts(curriculum: SchoolCurriculum) {
+  return curriculum.cohorts.filter(hasSelectableStudentCurriculum);
+}
+
 function requiredSubjectsForSelectableGrades(cohort: CurriculumCohort) {
   return selectableGrades(cohort).flatMap((grade) =>
     grade.semesters.flatMap((semester) => semester.requiredSubjects),
@@ -1573,11 +1583,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     ["home", "recommend", "roadmap", "subjects"].includes(initialSharedState.mode)
       ? initialSharedState.mode
       : "home";
+  const initialSelectableCohorts = studentSelectableCohorts(curriculum);
   const initialCohortYear =
     initialSharedState.cohortYear &&
-    curriculum.cohorts.some((cohort) => cohort.entranceYear === initialSharedState.cohortYear)
+    initialSelectableCohorts.some((cohort) => cohort.entranceYear === initialSharedState.cohortYear)
       ? initialSharedState.cohortYear
-      : curriculum.cohorts[0]?.entranceYear ?? "";
+      : initialSelectableCohorts[0]?.entranceYear ?? "";
   const [mode, setMode] = useState<ViewMode>(initialMode);
   const [cohortYear, setCohortYear] = useState(initialCohortYear);
   const [activeGrade, setActiveGrade] = useState<number | "all">(initialSharedState.activeGrade ?? "all");
@@ -1610,11 +1621,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [resetAllSelectionConfirmCount, setResetAllSelectionConfirmCount] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
+  const selectableCohorts = useMemo(() => studentSelectableCohorts(curriculum), [curriculum]);
   const cohort = useMemo(
     () =>
-      curriculum.cohorts.find((candidate) => candidate.entranceYear === cohortYear) ??
-      curriculum.cohorts[0],
-    [cohortYear, curriculum.cohorts],
+      selectableCohorts.find((candidate) => candidate.entranceYear === cohortYear) ??
+      selectableCohorts[0],
+    [cohortYear, selectableCohorts],
   );
   const grades = useMemo(() => (cohort ? selectableGrades(cohort) : []), [cohort]);
   const locations = useMemo(() => (cohort ? choiceLocations(cohort) : []), [cohort]);
@@ -2348,7 +2360,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
             onChange={(event) => handleCohortChange(event.target.value)}
             className="h-9 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs font-bold outline-none"
           >
-            {curriculum.cohorts.map((candidate) => (
+            {selectableCohorts.map((candidate) => (
               <option key={candidate.entranceYear} value={candidate.entranceYear}>
                 {cohortDisplayLabel(candidate)}
               </option>
@@ -2378,7 +2390,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 <h3 className="text-sm font-bold">입학생 편제를 선택하세요</h3>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {curriculum.cohorts.map((candidate) => {
+                {selectableCohorts.map((candidate) => {
                   const active = candidate.entranceYear === cohort.entranceYear;
                   const candidateGrades = selectableGrades(candidate).map((grade) => grade.grade);
                   const candidateGroups = getGroupRecords(candidate).length;
