@@ -483,12 +483,38 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("나의 선택 진행")).not.toBeNull();
     expect(screen.getByText("선택 1개 · 완료 1/2묶음")).not.toBeNull();
     expect(screen.getByText("50%")).not.toBeNull();
+    expect(screen.getByRole("button", { name: /다음 선택: 3학년 1학기 · 3학년 선택/ })).not.toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "로드맵 이어하기" }));
 
     expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
       "page",
     );
+  });
+
+  it("jumps from home progress to the next incomplete roadmap group", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        selection: {
+          "2026:2:1:g2-choice": ["경제"],
+        },
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /다음 선택: 3학년 1학기 · 3학년 선택/ }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(screen.queryByText("심화 경제")).not.toBeNull();
   });
 
   it("previews the grade 2 and 3 semester choice structure on the home screen", () => {

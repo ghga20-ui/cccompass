@@ -2681,6 +2681,26 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     아직 담은 과목이 없습니다. 추천 과목을 보거나 로드맵에서 직접 선택할 수 있습니다.
                   </p>
                 )}
+                {nextIncompleteGroups.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("roadmap");
+                      window.setTimeout(() => scrollToRoadmapGroup(nextIncompleteGroups[0].id), 0);
+                    }}
+                    className="mt-3 flex w-full items-center justify-between gap-3 rounded-lg bg-white px-3 py-2.5 text-left text-xs font-bold text-blue-800 ring-1 ring-blue-100 transition hover:ring-blue-200"
+                  >
+                    <span className="min-w-0 truncate">
+                      다음 선택: {gradeLabel(nextIncompleteGroups[0].grade, nextIncompleteGroups[0].semester)} ·{" "}
+                      {nextIncompleteGroups[0].group.label}
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0" />
+                  </button>
+                ) : (
+                  <div className="mt-3 rounded-lg bg-white px-3 py-2.5 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100">
+                    2·3학년 선택 조건을 모두 채웠습니다.
+                  </div>
+                )}
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <button
                     type="button"
