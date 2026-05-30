@@ -454,5 +454,7 @@ describe("student assistant selectable grade calculations", () => {
     fireEvent.click(screen.getByRole("button", { name: /Grade 2 Option 과목 상세 보기/ }));
 
     expect(screen.queryByText(/Grade 2 Option은/)).not.toBeNull();
+    expect(screen.queryByText("선택 묶음 현황")).not.toBeNull();
+    expect(screen.queryByText("1개 더 선택해야 합니다.")).not.toBeNull();
   });
 });

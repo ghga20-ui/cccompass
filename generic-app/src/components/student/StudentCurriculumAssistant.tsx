@@ -1091,6 +1091,11 @@ function SubjectDetailPanel({
   const recommendedFor = buildRecommendedFor(location);
   const learningKeywords = buildLearningKeywords(location);
   const availability = buildSubjectAvailability(location.cohort, subject.name);
+  const groupSelectedSubjects = location.group.subjects.filter((candidate) =>
+    selectedSubjectSet.has(candidate.name),
+  );
+  const groupSelectedCount = Math.min(groupSelectedSubjects.length, location.group.choose);
+  const groupRemainingCount = Math.max(location.group.choose - groupSelectedCount, 0);
   const openPeerSubject = (peerLocation: SubjectLocation) => {
     onOpenSubject(peerLocation);
     window.setTimeout(() => {
@@ -1120,6 +1125,46 @@ function SubjectDetailPanel({
           <section className="rounded-lg bg-blue-50 p-3">
             <h3 className="text-sm font-bold text-blue-900">과목 한눈에 보기</h3>
             <p className="mt-1 text-sm leading-6 text-blue-900/75">{buildSubjectOverview(subject)}</p>
+          </section>
+
+          <section className="rounded-lg border border-blue-100 bg-white p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">선택 묶음 현황</h3>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  {location.group.label}에서 {location.group.choose}개를 선택합니다.
+                </p>
+              </div>
+              <span
+                className={cx(
+                  "shrink-0 rounded-full px-2.5 py-1 text-xs font-black",
+                  groupRemainingCount === 0
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-blue-100 text-blue-700",
+                )}
+              >
+                {groupSelectedCount}/{location.group.choose}
+              </span>
+            </div>
+            {groupSelectedSubjects.length > 0 ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {groupSelectedSubjects.map((candidate) => (
+                  <span
+                    key={`detail-selected:${candidate.name}`}
+                    className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700"
+                  >
+                    {candidate.name}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                아직 이 묶음에서 선택한 과목이 없습니다.
+              </p>
+            )}
+            <p className="mt-2 text-xs font-semibold text-slate-500">
+              {groupRemainingCount === 0 ? "이 묶음의 선택 조건을 채웠습니다." : `${groupRemainingCount}개 더 선택해야 합니다.`}
+            </p>
           </section>
 
           {selected && (
