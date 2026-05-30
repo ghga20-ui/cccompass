@@ -633,7 +633,7 @@ function ChoiceGroupRoadmap({
         {group.subjects.map((subject) => {
           const isSelected = selection.includes(subject.name);
           const isDuplicate = selectedSubjectSet.has(subject.name) && !isSelected;
-          const isFull = selection.length >= group.choose && !isSelected;
+          const isFull = group.choose > 1 && selection.length >= group.choose && !isSelected;
           const isRecommended = recommendedNames.has(subject.name);
           const disabled = isDuplicate || isFull;
 
@@ -1064,10 +1064,16 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           [groupId]: selected.filter((name) => name !== subject.name),
         };
       }
-      if (selected.length >= group.choose) return current;
       if (Object.entries(current).some(([id, names]) => id !== groupId && names.includes(subject.name))) {
         return current;
       }
+      if (group.choose === 1) {
+        return {
+          ...current,
+          [groupId]: [subject.name],
+        };
+      }
+      if (selected.length >= group.choose) return current;
 
       return {
         ...current,
