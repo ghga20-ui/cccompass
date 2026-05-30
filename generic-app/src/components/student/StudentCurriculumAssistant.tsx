@@ -2498,7 +2498,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
         {mode === "roadmap" && summary && (
           <div className="space-y-4">
-            <section className="sticky top-[65px] z-20 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
+            <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-bold">나의 선택 로드맵</h2>
