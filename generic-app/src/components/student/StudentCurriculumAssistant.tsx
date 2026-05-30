@@ -230,6 +230,25 @@ function cohortDisplayLabel(cohort: CurriculumCohort) {
   return `${cohort.entranceYear}학년도 입학생`;
 }
 
+function cohortStudentGradeLabel(cohort: CurriculumCohort, sourceYear: string | undefined) {
+  if (!sourceYear) return null;
+
+  const entranceYear = Number(cohort.entranceYear);
+  const schoolYear = Number(sourceYear);
+  if (!Number.isInteger(entranceYear) || !Number.isInteger(schoolYear)) return null;
+
+  const grade = schoolYear - entranceYear + 1;
+  if (grade < 1 || grade > 3) return null;
+
+  return `고${grade}`;
+}
+
+function cohortStudentDisplayLabel(cohort: CurriculumCohort, sourceYear: string | undefined) {
+  const gradeLabelText = cohortStudentGradeLabel(cohort, sourceYear);
+
+  return gradeLabelText ? `${gradeLabelText} · ${cohortDisplayLabel(cohort)}` : cohortDisplayLabel(cohort);
+}
+
 export function roadmapShareTitle(schoolName: string) {
   return `${schoolName} 2·3학년 선택과목 로드맵`;
 }
@@ -2568,7 +2587,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
           >
             {selectableCohorts.map((candidate) => (
               <option key={candidate.entranceYear} value={candidate.entranceYear}>
-                {cohortDisplayLabel(candidate)}
+                {cohortStudentDisplayLabel(candidate, curriculum.sourceYear)}
               </option>
             ))}
           </select>
@@ -2600,12 +2619,13 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   const active = candidate.entranceYear === cohort.entranceYear;
                   const candidateGrades = selectableGrades(candidate).map((grade) => grade.grade);
                   const candidateGroups = getGroupRecords(candidate).length;
+                  const studentGradeLabel = cohortStudentGradeLabel(candidate, curriculum.sourceYear);
 
                   return (
                     <button
                       key={`home-cohort:${candidate.entranceYear}`}
                       type="button"
-                      aria-label={`${cohortDisplayLabel(candidate)} 편제 선택`}
+                      aria-label={`${cohortStudentDisplayLabel(candidate, curriculum.sourceYear)} 편제 선택`}
                       onClick={() => handleCohortChange(candidate.entranceYear)}
                       className={cx(
                         "rounded-lg border p-3 text-left transition active:scale-[0.98]",
@@ -2615,7 +2635,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                       )}
                     >
                       <p className={cx("text-xl font-black", active ? "text-white" : "text-slate-950")}>
-                        {candidate.entranceYear}
+                        {studentGradeLabel ?? candidate.entranceYear}
                       </p>
                       <p className={cx("mt-0.5 text-xs font-semibold", active ? "text-white/80" : "text-slate-500")}>
                         {cohortDisplayLabel(candidate)}

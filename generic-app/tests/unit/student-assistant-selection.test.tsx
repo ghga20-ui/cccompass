@@ -265,11 +265,13 @@ describe("student assistant selectable grade calculations", () => {
 
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
-    const currentCard = screen.getByRole("button", { name: /2026.*편제 선택/ });
-    const nextCard = screen.getByRole("button", { name: /2025.*편제 선택/ });
+    const currentCard = screen.getByRole("button", { name: /고1.*2026.*편제 선택/ });
+    const nextCard = screen.getByRole("button", { name: /고2.*2025.*편제 선택/ });
 
     expect(currentCard.className).toContain("bg-blue-600");
     expect(nextCard.className).not.toContain("bg-blue-600");
+    expect(screen.getByText("고1")).not.toBeNull();
+    expect(screen.getByText("고2")).not.toBeNull();
 
     fireEvent.click(nextCard);
 
