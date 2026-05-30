@@ -104,6 +104,26 @@ describe("public student assistant page", () => {
     expect(screen.queryByText("1학년 숨김 과목")).toBeNull();
   });
 
+  it("lets students build a roadmap from the published assistant link", async () => {
+    mocks.findPublication.mockResolvedValueOnce({
+      curriculumJson: publishedCurriculum,
+    });
+
+    render(
+      await SharePage({
+        params: Promise.resolve({ shareToken: "student-share-token" }),
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "로드맵 탭으로 이동" }));
+    fireEvent.click(screen.getByRole("button", { name: "경제 선택" }));
+
+    expect(screen.getByText("경제를 로드맵에 담았습니다.")).not.toBeNull();
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" })).not.toBeNull();
+    expect(screen.getByText("모든 선택 조건을 채웠습니다.")).not.toBeNull();
+    expect(screen.queryByText("1학년 숨김 과목")).toBeNull();
+  });
+
   it("returns not found when the share token is unknown", async () => {
     mocks.findPublication.mockResolvedValueOnce(null);
 
