@@ -2767,8 +2767,30 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     <ArrowRight className="h-4 w-4 shrink-0" />
                   </button>
                 ) : (
-                  <div className="mt-3 rounded-lg bg-white px-3 py-2.5 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100">
-                    2·3학년 선택 조건을 모두 채웠습니다.
+                  <div className="mt-3 rounded-lg bg-white px-3 py-2.5 ring-1 ring-emerald-100">
+                    <p className="text-xs font-bold text-emerald-700">
+                      2·3학년 선택 조건을 모두 채웠습니다.
+                    </p>
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={handleShare}
+                        className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100"
+                        aria-label="홈에서 링크 공유"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                        링크 공유
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleExport}
+                        className="flex h-9 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 text-xs font-bold text-white"
+                        aria-label="홈에서 이미지 저장"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        이미지 저장
+                      </button>
+                    </div>
                   </div>
                 )}
                 <div className="mt-4 grid grid-cols-2 gap-2">

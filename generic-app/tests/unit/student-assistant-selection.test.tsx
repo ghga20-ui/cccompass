@@ -521,6 +521,30 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("경제를 로드맵에서 해제했습니다.")).not.toBeNull();
   });
 
+  it("shows share and export actions on the home screen when the roadmap is complete", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        selection: {
+          "2026:2:1:g2-choice": ["경제"],
+          "2026:3:1:g3-choice": ["심화 경제"],
+        },
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.getByText("선택 2개 · 완료 2/2묶음")).not.toBeNull();
+    expect(screen.getByText("2·3학년 선택 조건을 모두 채웠습니다.")).not.toBeNull();
+    expect(screen.getByRole("button", { name: "홈에서 링크 공유" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "홈에서 이미지 저장" })).not.toBeNull();
+  });
+
   it("jumps from home progress to the next incomplete roadmap group", () => {
     window.history.replaceState(
       {},
