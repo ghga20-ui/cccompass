@@ -159,7 +159,7 @@ function semesterKey(grade: number, semester: number) {
   return `${grade}-${semester}`;
 }
 
-function selectableGrades(cohort: CurriculumCohort): CurriculumGrade[] {
+export function selectableGrades(cohort: CurriculumCohort): CurriculumGrade[] {
   return cohort.grades
     .filter((grade) => grade.grade >= 2)
     .map((grade) => ({
@@ -178,7 +178,7 @@ function requiredSubjectsForSelectableGrades(cohort: CurriculumCohort) {
   );
 }
 
-function choiceLocations(cohort: CurriculumCohort): SubjectLocation[] {
+export function choiceLocations(cohort: CurriculumCohort): SubjectLocation[] {
   return selectableGrades(cohort).flatMap((grade) =>
     grade.semesters.flatMap((semester) =>
       semester.choiceGroups.flatMap((group) =>
@@ -220,7 +220,7 @@ function countRequiredCredits(cohort: CurriculumCohort) {
   return requiredSubjectsForSelectableGrades(cohort).reduce((sum, subject) => sum + subject.credits, 0);
 }
 
-function getGroupRecords(cohort: CurriculumCohort) {
+export function getGroupRecords(cohort: CurriculumCohort) {
   return selectableGrades(cohort).flatMap((grade) =>
     grade.semesters.flatMap((semester) =>
       semester.choiceGroups.map((group) => ({
@@ -657,7 +657,7 @@ function buildLearningKeywords(location: SubjectLocation) {
   return keywords.filter((keyword) => haystack.includes(keyword)).slice(0, 5);
 }
 
-function buildSubjectAvailability(cohort: CurriculumCohort, subjectName: string) {
+export function buildSubjectAvailability(cohort: CurriculumCohort, subjectName: string) {
   return selectableGrades(cohort).flatMap((grade) =>
     grade.semesters.flatMap((semester) => {
       const required = semester.requiredSubjects
