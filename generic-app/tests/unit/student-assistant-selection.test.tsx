@@ -491,6 +491,24 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("lets students recover from an empty subject result", () => {
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects", search: "없는과목" })}`);
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.getByText("조건에 맞는 2·3학년 선택과목이 없습니다.")).not.toBeNull();
+
+    const resetButtons = screen.getAllByRole("button", { name: "조건 초기화" });
+    fireEvent.click(resetButtons[resetButtons.length - 1]);
+
+    expect(screen.queryByText("조건에 맞는 2·3학년 선택과목이 없습니다.")).toBeNull();
+    expect(screen.getByText("경제")).not.toBeNull();
+  });
+
   it("explains blocked roadmap additions inside subject details", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

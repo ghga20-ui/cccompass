@@ -2865,9 +2865,28 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     );
                   })}
               {filteredSubjects.length === 0 && (
-                <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-500">
-                  조건에 맞는 2·3학년 선택과목이 없습니다.
-                </p>
+                <section className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center">
+                  <p className="text-sm font-bold text-slate-700">조건에 맞는 2·3학년 선택과목이 없습니다.</p>
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    학년, 영역, 검색어, 추천 조건을 줄이면 더 많은 과목을 볼 수 있습니다.
+                  </p>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={resetExploreFilters}
+                      className="h-10 rounded-lg border border-blue-100 bg-blue-50 text-xs font-bold text-blue-700"
+                    >
+                      조건 초기화
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode("home")}
+                      className="h-10 rounded-lg bg-blue-600 text-xs font-bold text-white"
+                    >
+                      조건 다시 고르기
+                    </button>
+                  </div>
+                </section>
               )}
             </div>
             )}
