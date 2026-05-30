@@ -267,6 +267,12 @@ function objectParticle(text: string) {
   return (lastChar - 0xac00) % 28 === 0 ? "를" : "을";
 }
 
+function andParticle(text: string) {
+  const lastChar = text.trim().charCodeAt(text.trim().length - 1);
+  if (lastChar < 0xac00 || lastChar > 0xd7a3) return "과";
+  return (lastChar - 0xac00) % 28 === 0 ? "와" : "과";
+}
+
 function countRequiredCredits(cohort: CurriculumCohort) {
   return requiredSubjectsForSelectableGrades(cohort).reduce((sum, subject) => sum + subject.credits, 0);
 }
@@ -803,6 +809,35 @@ function buildLearningKeywords(location: SubjectLocation) {
   ];
 
   return keywords.filter((keyword) => haystack.includes(keyword)).slice(0, 5);
+}
+
+function buildKeyLearningContents(location: SubjectLocation) {
+  const area = inferSubjectArea(location);
+  const category = inferSubjectCategory(location);
+  const rawText = location.subject.rawText?.trim();
+  const contents = [
+    `${area} 영역에서 ${location.subject.name}의 핵심 개념과 용어를 정리합니다.`,
+    `${category} 과목으로서 진로 방향과 학습 부담을 함께 확인합니다.`,
+    `${location.group.label} 안의 다른 과목과 비교해 선택 이유를 분명히 합니다.`,
+  ];
+
+  if (rawText && rawText.length > 12) {
+    contents.unshift(rawText);
+  }
+
+  return Array.from(new Set(contents)).slice(0, 4);
+}
+
+function buildExplorationIdeas(location: SubjectLocation) {
+  const area = inferSubjectArea(location);
+  const keywords = buildLearningKeywords(location);
+  const keywordText = keywords.length > 0 ? keywords.slice(0, 2).join(", ") : "관심 진로";
+
+  return [
+    `${location.subject.name}${andParticle(location.subject.name)} ${keywordText}를 연결한 탐구 질문 만들기`,
+    `${area} 분야 자료를 찾아 근거를 정리하고 발표하기`,
+    `${location.group.label}의 비교 과목과 차이를 표로 정리하기`,
+  ];
 }
 
 export function buildSubjectAvailability(cohort: CurriculumCohort, subjectName: string) {
@@ -1408,6 +1443,8 @@ function SubjectDetailPanel({
     }))
     .slice(0, 8);
   const recommendedFor = buildRecommendedFor(location);
+  const keyLearningContents = buildKeyLearningContents(location);
+  const explorationIdeas = buildExplorationIdeas(location);
   const learningKeywords = buildLearningKeywords(location);
   const availability = buildSubjectAvailability(location.cohort, subject.name);
   const groupSelectedSubjects = location.group.subjects.filter((candidate) =>
@@ -1584,6 +1621,35 @@ function SubjectDetailPanel({
               </ul>
             </section>
           )}
+
+          <section className="rounded-lg bg-slate-50 p-3">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-slate-600" />
+              <h3 className="text-sm font-bold text-slate-900">주요 학습 내용</h3>
+            </div>
+            <ul className="mt-2 space-y-1.5">
+              {keyLearningContents.map((content) => (
+                <li key={content} className="flex items-start gap-2 text-sm leading-6 text-slate-600">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+                  <span>{content}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-lg bg-slate-50 p-3">
+            <div className="flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-slate-600" />
+              <h3 className="text-sm font-bold text-slate-900">주제 탐구 활동</h3>
+            </div>
+            <div className="mt-2 space-y-1.5">
+              {explorationIdeas.map((idea) => (
+                <div key={idea} className="rounded-md bg-white px-3 py-2 text-sm leading-6 text-slate-600">
+                  {idea}
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="rounded-lg bg-slate-50 p-3">
             <div className="flex items-center gap-2">
