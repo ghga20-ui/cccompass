@@ -2529,9 +2529,11 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 {nextIncompleteGroups.length > 0 ? (
                   <div className="mt-2 space-y-1.5">
                     {nextIncompleteGroups.map((record) => (
-                      <div
+                      <button
                         key={record.id}
-                        className="flex items-center justify-between gap-3 rounded-md bg-white px-2.5 py-2 text-xs"
+                        type="button"
+                        onClick={() => scrollToRoadmapGrade(record.grade)}
+                        className="flex w-full items-center justify-between gap-3 rounded-md bg-white px-2.5 py-2 text-left text-xs transition hover:ring-2 hover:ring-amber-100"
                       >
                         <span className="min-w-0 truncate font-semibold text-slate-700">
                           {gradeLabel(record.grade, record.semester)} · {record.group.label}
@@ -2539,7 +2541,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         <span className="shrink-0 font-bold text-amber-700">
                           {record.remainingCount}개 더 선택
                         </span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 ) : (
