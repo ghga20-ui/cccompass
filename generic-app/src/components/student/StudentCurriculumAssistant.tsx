@@ -2025,6 +2025,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
   };
 
+  const removeProfileCriteria = (profile: RecommendationProfile) => {
+    setSelectedProfileIds((current) => {
+      const next = current.filter((id) => id !== profile.id);
+      setSelectedProfileId(next[0] ?? null);
+      return next;
+    });
+    setSelectedTagIds((current) => current.filter((id) => !profile.tagIds.includes(id)));
+  };
+
   const handleToggleSubject = (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => {
     setSelection((current) => {
       const selected = current[groupId] ?? [];
@@ -2465,13 +2474,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                       <button
                         key={`selected-profile:${profile.id}`}
                         type="button"
-                        onClick={() => {
-                          setSelectedProfileIds((current) => {
-                            const next = current.filter((id) => id !== profile.id);
-                            setSelectedProfileId(next[0] ?? null);
-                            return next;
-                          });
-                        }}
+                        onClick={() => removeProfileCriteria(profile)}
+                        aria-label={`${profile.title} 추천 조건 해제`}
                         className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm"
                       >
                         {profile.title}
@@ -2864,13 +2868,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     <button
                       key={profile.id}
                       type="button"
-                      onClick={() => {
-                        setSelectedProfileIds((current) => {
-                          const next = current.filter((id) => id !== profile.id);
-                          setSelectedProfileId(next[0] ?? null);
-                          return next;
-                        });
-                      }}
+                      onClick={() => removeProfileCriteria(profile)}
+                      aria-label={`${profile.title} 추천 조건 해제`}
                       className="rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold text-white"
                     >
                       {profile.title} ×

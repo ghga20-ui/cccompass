@@ -398,6 +398,48 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("추천 조건 2개")).toBeNull();
   });
 
+  it("removes profile-linked interest criteria when a selected profile chip is removed", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "profile-linked-choice",
+                      label: "Profile Linked Choice",
+                      choose: 1,
+                      subjects: [{ name: "경제", credits: 3, area: "Social" }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /경영학과/ }));
+    expect(screen.queryByText("추천 조건 준비 완료")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "경영학과 추천 조건 해제" }));
+
+    expect(screen.queryByText("추천 조건 준비 완료")).toBeNull();
+    expect(screen.queryByLabelText("추천 조건 1개")).toBeNull();
+  });
+
   it("asks for a recommendation condition before showing the recommendation list", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ mode: "recommend" })}`);
 
