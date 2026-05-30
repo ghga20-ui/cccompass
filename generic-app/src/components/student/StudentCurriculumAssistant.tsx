@@ -1198,6 +1198,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
+  const [showOnlyIncompleteGroups, setShowOnlyIncompleteGroups] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -2383,6 +2384,21 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   이미지 저장
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={() => setShowOnlyIncompleteGroups((current) => !current)}
+                className={cx(
+                  "mt-3 flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-xs font-bold transition",
+                  showOnlyIncompleteGroups
+                    ? "border-amber-200 bg-amber-50 text-amber-700"
+                    : "border-slate-200 bg-slate-50 text-slate-600",
+                )}
+              >
+                <span>미완료 선택 묶음만 보기</span>
+                <span className="rounded-full bg-white px-2 py-0.5 text-[10px]">
+                  {nextIncompleteGroups.length}개 남음
+                </span>
+              </button>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {gradeProgress.map((progress) => {
                   const complete =
@@ -2467,13 +2483,39 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
             </section>
 
-            {grades.map((grade) => (
-              <div key={grade.grade} id={`roadmap-grade-${grade.grade}`} className="scroll-mt-80 space-y-3">
-                {grade.semesters.map((semester: CurriculumSemester) => {
+            {grades.map((grade) => {
+              const hasVisibleSemester = grade.semesters.some((semester: CurriculumSemester) =>
+                semester.choiceGroups.some((group) => {
+                  const id = groupKey(cohort, grade.grade, semester.semester, group);
+                  return (selection[id] ?? []).length < group.choose;
+                }),
+              );
+
+              if (showOnlyIncompleteGroups && !hasVisibleSemester) {
+                return (
+                  <div key={grade.grade} id={`roadmap-grade-${grade.grade}`} className="scroll-mt-80">
+                    <section className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">
+                      {grade.grade}학년의 미완료 선택 묶음이 없습니다.
+                    </section>
+                  </div>
+                );
+              }
+
+              return (
+                <div key={grade.grade} id={`roadmap-grade-${grade.grade}`} className="scroll-mt-80 space-y-3">
+                  {grade.semesters.map((semester: CurriculumSemester) => {
                   const semesterProgress = calculateSemesterProgress(cohort, grade, semester, selection);
                   const semesterComplete =
                     semesterProgress.totalGroups > 0 &&
                     semesterProgress.completedGroups >= semesterProgress.totalGroups;
+                  const visibleChoiceGroups = showOnlyIncompleteGroups
+                    ? semester.choiceGroups.filter((group) => {
+                        const id = groupKey(cohort, grade.grade, semester.semester, group);
+                        return (selection[id] ?? []).length < group.choose;
+                      })
+                    : semester.choiceGroups;
+
+                  if (showOnlyIncompleteGroups && visibleChoiceGroups.length === 0) return null;
 
                   return (
                     <section
@@ -2488,11 +2530,11 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         </h3>
                       </div>
                       <span className="text-xs font-semibold text-slate-500">
-                        선택 묶음 {semester.choiceGroups.length}개
+                        선택 묶음 {visibleChoiceGroups.length}개
                       </span>
                     </div>
 
-                    {semester.requiredSubjects.length > 0 && (
+                    {!showOnlyIncompleteGroups && semester.requiredSubjects.length > 0 && (
                       <div className="mb-3">
                         <h4 className="mb-2 text-xs font-bold text-slate-500">필수 이수</h4>
                         <div className="flex flex-wrap gap-1.5">
@@ -2509,7 +2551,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     )}
 
                     <div className="space-y-2">
-                      {semester.choiceGroups.map((group) => {
+                      {visibleChoiceGroups.map((group) => {
                         const id = groupKey(cohort, grade.grade, semester.semester, group);
                         return (
                           <ChoiceGroupRoadmap
@@ -2544,9 +2586,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </div>
                   </section>
                 );
-                })}
-              </div>
-            ))}
+                  })}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
