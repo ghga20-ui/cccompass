@@ -862,6 +862,16 @@ function SubjectMeta({
       >
         {subject.credits}학점
       </span>
+      {isExamRelatedSubject(subject) && (
+        <span
+          className={cx(
+            "rounded px-1.5 py-0.5 text-[10px] font-semibold",
+            light ? "bg-white/15 text-white" : "bg-violet-100 text-violet-700",
+          )}
+        >
+          수능 관련
+        </span>
+      )}
     </div>
   );
 }

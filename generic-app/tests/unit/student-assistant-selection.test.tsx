@@ -663,6 +663,49 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getAllByText("수능 관련").length).toBeGreaterThan(1);
   });
 
+  it("marks exam-related subjects with a visible badge", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "exam-badge-choice",
+                      label: "Exam Badge Choice",
+                      choose: 1,
+                      subjects: [
+                        { name: "경제", credits: 3, area: "Social" },
+                        { name: "창의 디자인", credits: 3, area: "Arts" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects" })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("경제")).not.toBeNull();
+    expect(screen.queryByText("창의 디자인")).not.toBeNull();
+    expect(screen.getAllByText("수능 관련").length).toBeGreaterThan(1);
+  });
+
   it("explains blocked roadmap additions inside subject details", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
