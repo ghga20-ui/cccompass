@@ -988,6 +988,12 @@ function ChoiceGroupRoadmap({
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-sm font-semibold leading-5">{subject.name}</span>
                   <span className="flex shrink-0 flex-wrap justify-end gap-1">
+                    {isSelected && (
+                      <span className="inline-flex items-center gap-0.5 rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                        <Check className="h-3 w-3" />
+                        선택됨
+                      </span>
+                    )}
                     {isRecommended && !isSelected && (
                       <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
                         추천
