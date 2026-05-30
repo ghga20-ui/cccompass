@@ -813,6 +813,7 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("경제")).not.toBeNull();
     expect(screen.getByText("추천 결과 요약")).not.toBeNull();
     expect(screen.getByText("2개 과목을 로드맵에서 비교할 수 있습니다.")).not.toBeNull();
+    expect(screen.queryByText(/담은 과목/)).toBeNull();
     expect(screen.getByLabelText("Physics Option 추천 연결 조건").textContent).toContain("Science");
     expect(screen.getByLabelText("경제 추천 연결 조건").textContent).toContain("경영학과");
 
@@ -821,6 +822,58 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
       "page",
     );
+  });
+
+  it("summarizes selected recommendation subjects in each semester section", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "recommended-selected-choice",
+                      label: "Recommended Selected Choice",
+                      choose: 2,
+                      subjects: [
+                        { name: "경제", credits: 3, area: "Social" },
+                        { name: "금융 경제", credits: 3, area: "Social" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "recommend",
+        selectedProfileIds: ["career:business"],
+        selection: {
+          "2026:2:1:recommended-selected-choice": ["경제"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByText(/추천 후보 2개 · 맞춤 2개 · 담은 과목 1개/)).not.toBeNull();
+    expect(screen.getByText("1/2")).not.toBeNull();
   });
 
   it("lets students add a common recommendation from multi-profile comparison", () => {

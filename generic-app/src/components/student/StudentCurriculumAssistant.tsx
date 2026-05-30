@@ -3485,6 +3485,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     const recommendedCount = section.subjects.filter((location) =>
                       recommendedNames.has(location.subject.name),
                     ).length;
+                    const selectedCount = section.subjects.filter((location) =>
+                      selectedSubjectSet.has(location.subject.name),
+                    ).length;
 
                     return (
                       <section key={id} className="rounded-xl border border-slate-200 bg-white p-3">
@@ -3500,14 +3503,22 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                             <p className="mt-1 text-xs text-slate-500">
                               추천 후보 {section.subjects.length}개
                               {recommendedCount > 0 ? ` · 맞춤 ${recommendedCount}개` : ""}
+                              {selectedCount > 0 ? ` · 담은 과목 ${selectedCount}개` : ""}
                             </p>
                           </div>
+                          <div className="flex shrink-0 items-center gap-2">
+                            {selectedCount > 0 && (
+                              <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-black text-blue-700">
+                                {selectedCount}/{section.subjects.length}
+                              </span>
+                            )}
                           <ChevronDown
                             className={cx(
                               "h-4 w-4 shrink-0 text-slate-500 transition",
                               collapsed && "-rotate-90",
                             )}
                           />
+                          </div>
                         </button>
 
                         {!collapsed && (
