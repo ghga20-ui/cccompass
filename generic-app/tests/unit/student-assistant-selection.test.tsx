@@ -180,4 +180,70 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 3 Option")).not.toBeNull();
     expect(screen.queryByText("Grade 1 Hidden Option")).toBeNull();
   });
+
+  it("restores the shared roadmap-selection subject filter", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              grade: 3,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-3-choice",
+                      label: "Grade 3 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 3 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        subjectSelectionFilter: "selected",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryByText("Grade 3 Option")).toBeNull();
+  });
 });

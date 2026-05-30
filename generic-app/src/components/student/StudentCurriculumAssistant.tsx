@@ -70,6 +70,7 @@ type SharedAssistantState = {
   selectedProfileIds?: string[];
   selectedArea?: string;
   selectedCategory?: string;
+  subjectSelectionFilter?: SubjectSelectionFilter;
   profileQuery?: string;
   search?: string;
   selection?: SelectionState;
@@ -1216,7 +1217,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selectedCategory, setSelectedCategory] = useState(initialSharedState.selectedCategory ?? "전체");
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState(initialSharedState.search ?? "");
-  const [subjectSelectionFilter, setSubjectSelectionFilter] = useState<SubjectSelectionFilter>("all");
+  const [subjectSelectionFilter, setSubjectSelectionFilter] = useState<SubjectSelectionFilter>(
+    initialSharedState.subjectSelectionFilter === "selected" ||
+      initialSharedState.subjectSelectionFilter === "unselected"
+      ? initialSharedState.subjectSelectionFilter
+      : "all",
+  );
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
@@ -1480,6 +1486,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedProfileIds,
       selectedArea,
       selectedCategory,
+      subjectSelectionFilter,
       profileQuery,
       search,
       selection,
@@ -1496,6 +1503,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     selectedProfileIds,
     selectedTagIds,
     selection,
+    subjectSelectionFilter,
   ]);
 
   const toggleTag = (id: string) => {
@@ -1600,6 +1608,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedProfileIds,
       selectedArea,
       selectedCategory,
+      subjectSelectionFilter,
       profileQuery,
       search,
       selection,
