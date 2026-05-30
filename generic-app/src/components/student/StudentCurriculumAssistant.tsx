@@ -1469,6 +1469,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     [cohort, selection],
   );
   const selectedSubjectNames = useMemo(() => Array.from(selectedSubjectSet), [selectedSubjectSet]);
+  const selectedSubjectLocations = useMemo(() => {
+    const byName = new Map<string, SubjectLocation>();
+    locations.forEach((location) => {
+      if (selectedSubjectSet.has(location.subject.name) && !byName.has(location.subject.name)) {
+        byName.set(location.subject.name, location);
+      }
+    });
+    return byName;
+  }, [locations, selectedSubjectSet]);
   const gradeProgress = useMemo(() => {
     if (!cohort) return [];
 
@@ -2835,14 +2844,26 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </div>
                 {selectedSubjectNames.length > 0 ? (
                   <div className="flex max-h-20 flex-wrap gap-1.5 overflow-y-auto">
-                    {selectedSubjectNames.map((name) => (
-                      <span
-                        key={name}
-                        className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700"
-                      >
-                        {name}
-                      </span>
-                    ))}
+                    {selectedSubjectNames.map((name) => {
+                      const selectedLocation = selectedSubjectLocations.get(name);
+
+                      return (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => {
+                            if (selectedLocation) setActiveSubject(selectedLocation);
+                          }}
+                          className={cx(
+                            "rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700",
+                            selectedLocation && "transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
+                          )}
+                          aria-label={`${name} 선택 과목 상세 보기`}
+                        >
+                          {name}
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-xs text-slate-500">아직 선택한 과목이 없습니다.</p>

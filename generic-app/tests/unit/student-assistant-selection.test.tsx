@@ -414,7 +414,7 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("1개 묶음이 남았습니다.")).not.toBeNull();
     expect(screen.queryAllByText("1개 더 선택").length).toBeGreaterThan(1);
     expect(screen.queryAllByRole("button", { name: /Remaining Option/ }).length).toBeGreaterThan(0);
-    expect(screen.queryAllByRole("button", { name: /Completed Option/ })).toHaveLength(0);
+    expect(screen.queryByText("Complete Choice")).toBeNull();
     expect(screen.queryByText("Required Korean")).toBeNull();
   });
 
@@ -458,5 +458,55 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText(/Grade 2 Option은/)).not.toBeNull();
     expect(screen.queryByText("선택 묶음 현황")).not.toBeNull();
     expect(screen.queryByText("1개 더 선택해야 합니다.")).not.toBeNull();
+  });
+
+  it("opens subject details from selected roadmap chips", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByLabelText("Grade 2 Option 선택 과목 상세 보기"));
+
+    expect(screen.queryByText(/Grade 2 Option은/)).not.toBeNull();
+    expect(screen.queryByText("이 묶음의 선택 조건을 채웠습니다.")).not.toBeNull();
   });
 });
