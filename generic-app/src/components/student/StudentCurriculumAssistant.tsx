@@ -553,6 +553,34 @@ function countMatchingProfiles(
   return profiles.filter((profile) => profileMatches(profile, subject, tags)).length;
 }
 
+function buildRecommendationReason({
+  location,
+  selectedProfiles,
+  selectedTagIds,
+  tags,
+}: {
+  location: SubjectLocation;
+  selectedProfiles: RecommendationProfile[];
+  selectedTagIds: string[];
+  tags: InterestTag[];
+}) {
+  const matchingProfiles = selectedProfiles.filter((profile) =>
+    profileMatches(profile, location.subject, tags),
+  );
+  if (matchingProfiles.length > 0) {
+    return `${matchingProfiles.map((profile) => profile.title).join(", ")} 목표와 연결되는 과목입니다.`;
+  }
+
+  const matchingTags = tags.filter(
+    (tag) => selectedTagIds.includes(tag.id) && tag.matcher(location.subject),
+  );
+  if (matchingTags.length > 0) {
+    return `${matchingTags.map((tag) => tag.label).join(", ")} 관심 영역과 연결되는 과목입니다.`;
+  }
+
+  return `${location.group.label}에서 ${location.group.choose}개 선택하는 ${location.subject.credits}학점 과목입니다.`;
+}
+
 function buildSubjectOverview(subject: CurriculumSubject) {
   const hints = [subject.area, subject.category].filter(Boolean).join(" · ");
 
@@ -593,8 +621,19 @@ function inferSubjectCategory(location: SubjectLocation) {
   return "선택과목";
 }
 
-function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; light?: boolean }) {
-  const labels = [subject.area, subject.category].filter(
+function SubjectMeta({
+  subject,
+  location,
+  light = false,
+}: {
+  subject: CurriculumSubject;
+  location?: SubjectLocation;
+  light?: boolean;
+}) {
+  const labels = [
+    location ? inferSubjectArea(location) : subject.area,
+    location ? inferSubjectCategory(location) : subject.category,
+  ].filter(
     (label): label is string => typeof label === "string" && label.length > 0,
   );
 
@@ -627,12 +666,14 @@ function SubjectCard({
   location,
   selected = false,
   recommendationBadge,
+  recommendationReason,
   onClick,
   onDetails,
 }: {
   location: SubjectLocation;
   selected?: boolean;
   recommendationBadge?: string;
+  recommendationReason?: string;
   onClick?: () => void;
   onDetails?: () => void;
 }) {
@@ -650,11 +691,25 @@ function SubjectCard({
           {onDetails && <Info className="h-4 w-4 text-slate-400" />}
         </span>
       </div>
-      <SubjectMeta subject={location.subject} />
+      <SubjectMeta subject={location.subject} location={location} />
+      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">
+          우리 학교 개설
+        </span>
+        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
+          {gradeLabel(location.grade, location.semester)}
+        </span>
+        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
+          택{location.group.choose}
+        </span>
+      </div>
       {recommendationBadge && (
         <span className="mt-2 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
           {recommendationBadge}
         </span>
+      )}
+      {recommendationReason && (
+        <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">{recommendationReason}</p>
       )}
     </>
   );
@@ -1717,6 +1772,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     location={location}
                     selected={selectedSubjectSet.has(location.subject.name)}
                     recommendationBadge={recommendationBadge}
+                    recommendationReason={buildRecommendationReason({
+                      location,
+                      selectedProfiles,
+                      selectedTagIds,
+                      tags,
+                    })}
                     onClick={() => selectRecommendation(location)}
                     onDetails={() => setActiveSubject(location)}
                   />
