@@ -433,6 +433,14 @@ describe("student assistant selectable grade calculations", () => {
 
     expect(screen.getByText("Physics Option")).not.toBeNull();
     expect(screen.getByText("경제")).not.toBeNull();
+    expect(screen.getByText("추천 결과 요약")).not.toBeNull();
+    expect(screen.getByText("2개 과목을 로드맵에서 비교할 수 있습니다.")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "이 추천으로 로드맵 만들기" }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
   });
 
   it("summarizes active recommendation criteria on the roadmap", () => {

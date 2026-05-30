@@ -1758,6 +1758,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       (a, b) => a.grade - b.grade || a.semester - b.semester,
     );
   }, [filteredSubjects]);
+  const recommendationResultSummary = useMemo(() => {
+    const recommendedSubjectNames = new Set(filteredSubjects.map((location) => location.subject.name));
+
+    return {
+      subjectCount: recommendedSubjectNames.size,
+      semesterCount: recommendationSections.length,
+      selectedCount: Array.from(recommendedSubjectNames).filter((name) => selectedSubjectSet.has(name)).length,
+    };
+  }, [filteredSubjects, recommendationSections.length, selectedSubjectSet]);
   const selectedTagPanels = useMemo(
     () =>
       selectedTagIds
@@ -2792,6 +2801,34 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </div>
                   </div>
                 )}
+              </section>
+            )}
+
+            {mode === "recommend" && hasRecommendationCriteria && (
+              <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-blue-700">추천 결과 요약</p>
+                    <h3 className="mt-1 text-base font-bold text-slate-950">
+                      {recommendationResultSummary.subjectCount}개 과목을 로드맵에서 비교할 수 있습니다.
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-blue-900/70">
+                      {recommendationResultSummary.semesterCount}개 학기 · 이미 담은 추천 과목{" "}
+                      {recommendationResultSummary.selectedCount}개
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black text-blue-700">
+                    2·3학년
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMode("roadmap")}
+                  className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-600/20"
+                >
+                  이 추천으로 로드맵 만들기
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </section>
             )}
 
