@@ -1772,6 +1772,32 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       ...calculateGradeProgress(cohort, grade, selection),
     }));
   }, [cohort, selection]);
+  const homeSemesterOverview = useMemo(
+    () =>
+      grades.flatMap((grade) =>
+        grade.semesters
+          .filter((semester) => semester.choiceGroups.length > 0)
+          .map((semester) => {
+            const choiceCount = semester.choiceGroups.reduce((sum, group) => sum + group.choose, 0);
+            const candidateCount = semester.choiceGroups.reduce((sum, group) => sum + group.subjects.length, 0);
+            const selectedCount = semester.choiceGroups.reduce((sum, group) => {
+              const id = groupKey(cohort, grade.grade, semester.semester, group);
+              return sum + (selection[id] ?? []).length;
+            }, 0);
+
+            return {
+              id: semesterKey(grade.grade, semester.semester),
+              grade: grade.grade,
+              semester: semester.semester,
+              groupCount: semester.choiceGroups.length,
+              choiceCount,
+              candidateCount,
+              selectedCount,
+            };
+          }),
+      ),
+    [cohort, grades, selection],
+  );
 
   const activeFilterLabels = useMemo(() => {
     const labels: string[] = [];
@@ -2484,6 +2510,65 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 <p className="mt-1 text-lg font-bold">{subjectLocations.length}</p>
               </div>
             </section>
+
+            {homeSemesterOverview.length > 0 && (
+              <section className="rounded-xl border border-slate-200 bg-white p-4" aria-label="2·3학년 선택 구조">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-bold">2·3학년 선택 구조</h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      학기별로 몇 개를 선택해야 하는지 먼저 확인하세요.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMode("roadmap")}
+                    className="shrink-0 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
+                  >
+                    로드맵 보기
+                  </button>
+                </div>
+                <div className="grid gap-2">
+                  {homeSemesterOverview.map((item) => {
+                    const complete = item.choiceCount > 0 && item.selectedCount >= item.choiceCount;
+
+                    return (
+                      <button
+                        key={`home-semester-overview:${item.id}`}
+                        type="button"
+                        onClick={() => {
+                          setMode("roadmap");
+                          window.setTimeout(() => scrollToRoadmapGrade(item.grade), 0);
+                        }}
+                        className={cx(
+                          "rounded-lg border px-3 py-2.5 text-left transition active:scale-[0.99]",
+                          complete
+                            ? "border-emerald-100 bg-emerald-50"
+                            : "border-slate-200 bg-slate-50 hover:border-blue-200",
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-bold text-slate-950">
+                            {gradeLabel(item.grade, item.semester)}
+                          </p>
+                          <span
+                            className={cx(
+                              "rounded-full px-2 py-0.5 text-[11px] font-black",
+                              complete ? "bg-white text-emerald-700" : "bg-white text-blue-700",
+                            )}
+                          >
+                            {item.selectedCount}/{item.choiceCount}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs leading-5 text-slate-500">
+                          선택 묶음 {item.groupCount}개 · 후보 {item.candidateCount}개
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
             {summary && (
               <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">

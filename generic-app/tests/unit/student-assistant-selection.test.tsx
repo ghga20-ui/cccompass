@@ -491,6 +491,27 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("previews the grade 2 and 3 semester choice structure on the home screen", () => {
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    const overview = screen.getByRole("region", { name: "2·3학년 선택 구조" });
+
+    expect(overview.textContent).toContain("2학년 1학기");
+    expect(overview.textContent).toContain("3학년 1학기");
+    expect(overview.textContent).toContain("선택 묶음 1개 · 후보 1개");
+    expect(overview.textContent).not.toContain("1학년");
+
+    fireEvent.click(screen.getByRole("button", { name: "로드맵 보기" }));
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+  });
+
   it("summarizes and clears recommendation criteria on the home screen", () => {
     window.history.replaceState(
       {},
