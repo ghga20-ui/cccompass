@@ -993,10 +993,12 @@ function BottomNav({
   mode,
   setMode,
   selectedCount,
+  recommendationFilterCount,
 }: {
   mode: ViewMode;
   setMode: (mode: ViewMode) => void;
   selectedCount: number;
+  recommendationFilterCount: number;
 }) {
   const items: Array<{ mode: ViewMode; label: string; icon: typeof Home }> = [
     { mode: "home", label: "홈", icon: Home },
@@ -1030,6 +1032,14 @@ function BottomNav({
                     className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-black leading-none text-white ring-2 ring-white"
                   >
                     {selectedCount > 9 ? "9+" : selectedCount}
+                  </span>
+                )}
+                {item.mode === "recommend" && recommendationFilterCount > 0 && (
+                  <span
+                    aria-label={`추천 조건 ${recommendationFilterCount}개`}
+                    className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-black leading-none text-white ring-2 ring-white"
+                  >
+                    {recommendationFilterCount > 9 ? "9+" : recommendationFilterCount}
                   </span>
                 )}
               </span>
@@ -2893,7 +2903,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         onGoRoadmap={goToRoadmapSubject}
         onOpenSubject={setActiveSubject}
       />
-      <BottomNav mode={mode} setMode={setMode} selectedCount={summary?.selectedCount ?? 0} />
+      <BottomNav
+        mode={mode}
+        setMode={setMode}
+        selectedCount={summary?.selectedCount ?? 0}
+        recommendationFilterCount={selectedProfiles.length + selectedTagIds.length}
+      />
     </main>
   );
 }

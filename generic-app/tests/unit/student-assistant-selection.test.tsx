@@ -248,6 +248,48 @@ describe("student assistant selectable grade calculations", () => {
     expect(nextCard.className).toContain("bg-blue-600");
   });
 
+  it("shows the active recommendation-filter count in the bottom nav", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Physics Option", credits: 3, area: "Science" }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({ mode: "subjects", selectedTagIds: ["science"] })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByLabelText("추천 조건 1개")).not.toBeNull();
+  });
+
   it("restores the shared roadmap-selection subject filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
