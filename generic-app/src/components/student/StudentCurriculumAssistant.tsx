@@ -425,6 +425,20 @@ function countMatchingProfiles(
   return profiles.filter((profile) => profileMatches(profile, subject, tags)).length;
 }
 
+function buildSubjectOverview(subject: CurriculumSubject) {
+  const hints = [subject.area, subject.category].filter(Boolean).join(" · ");
+
+  if (subject.rawText && subject.rawText.trim().length > 12) {
+    return subject.rawText.trim();
+  }
+
+  if (hints) {
+    return `${subject.name}은 ${hints} 성격의 ${subject.credits}학점 선택과목입니다. 같은 영역의 과목과 함께 비교하면서 진로 방향과 학습 부담을 확인해 보세요.`;
+  }
+
+  return `${subject.name}은 ${subject.credits}학점 선택과목입니다. 편제표의 같은 선택 묶음 안에서 다른 과목과 비교해 선택할 수 있습니다.`;
+}
+
 function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; light?: boolean }) {
   const labels = [subject.area, subject.category].filter(
     (label): label is string => typeof label === "string" && label.length > 0,
@@ -646,17 +660,25 @@ function BottomNav({ mode, setMode }: { mode: ViewMode; setMode: (mode: ViewMode
 function SubjectDetailPanel({
   location,
   selected,
+  profiles,
+  tags,
   onClose,
   onSelect,
 }: {
   location: SubjectLocation | null;
   selected: boolean;
+  profiles: RecommendationProfile[];
+  tags: InterestTag[];
   onClose: () => void;
   onSelect: (location: SubjectLocation) => void;
 }) {
   if (!location) return null;
 
   const subject = location.subject;
+  const matchingProfiles = profiles.filter((profile) => profileMatches(profile, subject, tags));
+  const peerSubjects = location.group.subjects
+    .filter((candidate) => candidate.name !== subject.name)
+    .slice(0, 8);
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6">
@@ -677,6 +699,27 @@ function SubjectDetailPanel({
         </div>
 
         <div className="space-y-4 overflow-y-auto p-4">
+          <section className="rounded-lg bg-blue-50 p-3">
+            <h3 className="text-sm font-bold text-blue-900">과목 한눈에 보기</h3>
+            <p className="mt-1 text-sm leading-6 text-blue-900/75">{buildSubjectOverview(subject)}</p>
+          </section>
+
+          {matchingProfiles.length > 0 && (
+            <section className="rounded-lg bg-emerald-50 p-3">
+              <h3 className="text-sm font-bold text-emerald-900">연결되는 진로·학과</h3>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {matchingProfiles.slice(0, 6).map((profile) => (
+                  <span
+                    key={profile.id}
+                    className="rounded-full bg-white px-2 py-1 text-xs font-bold text-emerald-700"
+                  >
+                    {profile.title}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="rounded-lg bg-slate-50 p-3">
             <h3 className="text-sm font-bold text-slate-900">편제표 위치</h3>
             <p className="mt-1 text-sm leading-6 text-slate-600">
@@ -691,6 +734,22 @@ function SubjectDetailPanel({
               채웠다면 먼저 다른 과목을 해제해야 합니다.
             </p>
           </section>
+
+          {peerSubjects.length > 0 && (
+            <section className="rounded-lg bg-slate-50 p-3">
+              <h3 className="text-sm font-bold text-slate-900">같은 묶음의 비교 과목</h3>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {peerSubjects.map((candidate) => (
+                  <span
+                    key={subjectKey(candidate)}
+                    className="rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+                  >
+                    {candidate.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
 
           {subject.rawText && (
             <section className="rounded-lg bg-slate-50 p-3">
@@ -1445,6 +1504,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       <SubjectDetailPanel
         location={activeSubject}
         selected={activeSubject ? selectedSubjectSet.has(activeSubject.subject.name) : false}
+        profiles={profiles}
+        tags={tags}
         onClose={() => setActiveSubject(null)}
         onSelect={selectRecommendation}
       />
