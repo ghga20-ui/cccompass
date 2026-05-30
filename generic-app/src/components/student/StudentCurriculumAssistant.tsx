@@ -992,6 +992,7 @@ function SubjectDetailPanel({
   location,
   selected,
   selectedOrigin,
+  selectedSubjectSet,
   profiles,
   tags,
   onClose,
@@ -1002,6 +1003,7 @@ function SubjectDetailPanel({
   location: SubjectLocation | null;
   selected: boolean;
   selectedOrigin?: string;
+  selectedSubjectSet: Set<string>;
   profiles: RecommendationProfile[];
   tags: InterestTag[];
   onClose: () => void;
@@ -1157,9 +1159,17 @@ function SubjectDetailPanel({
                     key={subjectKey(peerLocation.subject)}
                     type="button"
                     onClick={() => onOpenSubject(peerLocation)}
-                    className="rounded-md bg-white px-2 py-1 text-left text-xs font-semibold text-slate-600 transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100"
+                    className={cx(
+                      "rounded-md bg-white px-2 py-1 text-left text-xs font-semibold transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
+                      selectedSubjectSet.has(peerLocation.subject.name)
+                        ? "text-blue-700 ring-1 ring-blue-100"
+                        : "text-slate-600",
+                    )}
                   >
                     {peerLocation.subject.name}
+                    {selectedSubjectSet.has(peerLocation.subject.name) && (
+                      <span className="ml-1 text-[10px] text-blue-600">선택됨</span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -2710,6 +2720,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         selectedOrigin={
           activeSubject ? selectedSubjectOrigins.get(activeSubject.subject.name) : undefined
         }
+        selectedSubjectSet={selectedSubjectSet}
         profiles={profiles}
         tags={tags}
         onClose={() => setActiveSubject(null)}
