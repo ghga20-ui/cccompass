@@ -321,6 +321,23 @@ function calculateSelectionSummary(selection: SelectionState, cohort: Curriculum
   };
 }
 
+function buildSelectedSubjectOrigins(selection: SelectionState, cohort: CurriculumCohort) {
+  const records = getGroupRecords(cohort);
+  const recordById = new Map(records.map((record) => [record.id, record]));
+  const origins = new Map<string, string>();
+
+  Object.entries(selection).forEach(([groupId, names]) => {
+    const record = recordById.get(groupId);
+    const label = record ? gradeLabel(record.grade, record.semester) : "이미 선택";
+
+    names.forEach((name) => {
+      if (!origins.has(name)) origins.set(name, label);
+    });
+  });
+
+  return origins;
+}
+
 function makeInterestTags(locations: SubjectLocation[]) {
   const areas = Array.from(
     new Set(
@@ -751,6 +768,7 @@ function ChoiceGroupRoadmap({
   group,
   selection,
   selectedSubjectSet,
+  selectedSubjectOrigins,
   recommendedNames,
   onToggle,
 }: {
@@ -760,6 +778,7 @@ function ChoiceGroupRoadmap({
   group: ChoiceGroup;
   selection: string[];
   selectedSubjectSet: Set<string>;
+  selectedSubjectOrigins: Map<string, string>;
   recommendedNames: Set<string>;
   onToggle: (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => void;
 }) {
@@ -792,6 +811,11 @@ function ChoiceGroupRoadmap({
           const isFull = group.choose > 1 && selection.length >= group.choose && !isSelected;
           const isRecommended = recommendedNames.has(subject.name);
           const disabled = isDuplicate || isFull;
+          const conflictLabel = isDuplicate
+            ? `${selectedSubjectOrigins.get(subject.name) ?? "이미"} 선택`
+            : isFull
+              ? `택${group.choose} 완료`
+              : null;
 
           return (
             <button
@@ -818,7 +842,12 @@ function ChoiceGroupRoadmap({
                 )}
                 {isDuplicate && (
                   <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600">
-                    선택됨
+                    {conflictLabel}
+                  </span>
+                )}
+                {isFull && (
+                  <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
+                    {conflictLabel}
                   </span>
                 )}
               </div>
@@ -1063,6 +1092,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     [profiles, selectedProfileIds],
   );
   const selectedSubjectSet = useMemo(() => new Set(Object.values(selection).flat()), [selection]);
+  const selectedSubjectOrigins = useMemo(
+    () => (cohort ? buildSelectedSubjectOrigins(selection, cohort) : new Map<string, string>()),
+    [cohort, selection],
+  );
   const recommendedNames = useMemo(() => {
     const names = new Set<string>();
     locations.forEach((location) => {
@@ -1936,6 +1969,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                             group={group}
                             selection={selection[id] ?? []}
                             selectedSubjectSet={selectedSubjectSet}
+                            selectedSubjectOrigins={selectedSubjectOrigins}
                             recommendedNames={recommendedNames}
                             onToggle={handleToggleSubject}
                           />
