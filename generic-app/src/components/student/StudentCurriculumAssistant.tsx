@@ -2122,6 +2122,30 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </p>
               )}
             </div>
+
+            {summary && (
+              <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-blue-700">나의 로드맵</p>
+                    <p className="mt-1 text-sm font-bold text-slate-950">
+                      선택 {summary.selectedCount}개 · 예상 학점 {summary.totalCredits}/{summary.expectedCredits}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      추천 과목을 담았다면 로드맵에서 학기별 선택 조건을 확인하세요.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMode("roadmap")}
+                    className="flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white"
+                  >
+                    로드맵 만들기
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </section>
+            )}
           </div>
         )}
 
