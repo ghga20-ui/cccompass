@@ -441,6 +441,60 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("추천 조건 1개")).not.toBeNull();
   });
 
+  it("summarizes subject explorer results with selected and recommended counts", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "explorer-summary-choice",
+                      label: "Explorer Summary Choice",
+                      choose: 2,
+                      subjects: [
+                        { name: "Physics Option", credits: 3, area: "Science" },
+                        { name: "Biology Option", credits: 3, area: "Science" },
+                        { name: "History Option", credits: 3, area: "Social" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        selectedTagIds: ["area:Science"],
+        selection: {
+          "2026:2:1:explorer-summary-choice": ["Physics Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByLabelText("탐색 결과 표시 과목 2개")).not.toBeNull();
+    expect(screen.queryByLabelText("탐색 결과 선택 과목 1개")).not.toBeNull();
+    expect(screen.queryByLabelText("탐색 결과 추천 과목 2개")).not.toBeNull();
+  });
+
   it("marks the current bottom-nav tab for app navigation", () => {
     render(
       <StudentCurriculumAssistant
@@ -1184,7 +1238,7 @@ describe("student assistant selectable grade calculations", () => {
 
     expect(screen.queryAllByText("Grade 2 Option").length).toBeGreaterThan(0);
     expect(screen.queryAllByText("로드맵 선택됨").length).toBeGreaterThan(1);
-    expect(screen.queryByText("선택됨")).not.toBeNull();
+    expect(screen.queryAllByText("선택됨").length).toBeGreaterThan(0);
     expect(screen.queryByText("로드맵에서 보기")).not.toBeNull();
     expect(screen.queryByLabelText("로드맵 선택 과목 1개")).not.toBeNull();
     expect(screen.queryByText("Grade 3 Option")).toBeNull();

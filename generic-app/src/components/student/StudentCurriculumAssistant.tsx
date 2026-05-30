@@ -1990,6 +1990,18 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       )
       .slice(0, 8);
   }, [profileQuery, profiles]);
+  const exploreResultSummary = useMemo(() => {
+    const uniqueNames = new Set(filteredSubjects.map((location) => location.subject.name));
+    const selectedCount = Array.from(uniqueNames).filter((name) => selectedSubjectSet.has(name)).length;
+    const recommendedCount = Array.from(uniqueNames).filter((name) => recommendedNames.has(name)).length;
+
+    return {
+      subjectCount: uniqueNames.size,
+      selectedCount,
+      recommendedCount,
+      unselectedCount: Math.max(uniqueNames.size - selectedCount, 0),
+    };
+  }, [filteredSubjects, recommendedNames, selectedSubjectSet]);
   const homeRecommendationPreview = useMemo(() => {
     if (!hasRecommendationCriteria) return [];
 
@@ -3263,6 +3275,26 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 ) : (
                   <p className="mt-2 text-xs text-slate-500">조건 없이 전체 2·3학년 선택과목을 보고 있습니다.</p>
                 )}
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="rounded-md bg-white px-2 py-2 text-center" aria-label={`탐색 결과 표시 과목 ${exploreResultSummary.subjectCount}개`}>
+                    <p className="text-[10px] font-bold text-slate-500">표시</p>
+                    <p className="mt-0.5 text-sm font-black text-slate-950">
+                      {exploreResultSummary.subjectCount}
+                    </p>
+                  </div>
+                  <div className="rounded-md bg-white px-2 py-2 text-center" aria-label={`탐색 결과 선택 과목 ${exploreResultSummary.selectedCount}개`}>
+                    <p className="text-[10px] font-bold text-blue-600">선택됨</p>
+                    <p className="mt-0.5 text-sm font-black text-blue-700">
+                      {exploreResultSummary.selectedCount}
+                    </p>
+                  </div>
+                  <div className="rounded-md bg-white px-2 py-2 text-center" aria-label={`탐색 결과 추천 과목 ${exploreResultSummary.recommendedCount}개`}>
+                    <p className="text-[10px] font-bold text-emerald-600">추천</p>
+                    <p className="mt-0.5 text-sm font-black text-emerald-700">
+                      {exploreResultSummary.recommendedCount}
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
