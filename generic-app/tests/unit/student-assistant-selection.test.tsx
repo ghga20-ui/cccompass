@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   buildSubjectAvailability,
@@ -298,8 +298,48 @@ describe("student assistant selectable grade calculations", () => {
 
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
-    expect(screen.queryByRole("button", { name: /Remaining Option/ })).not.toBeNull();
-    expect(screen.queryByRole("button", { name: /Completed Option/ })).toBeNull();
+    expect(screen.queryAllByRole("button", { name: /Remaining Option/ }).length).toBeGreaterThan(0);
+    expect(screen.queryAllByRole("button", { name: /Completed Option/ })).toHaveLength(0);
     expect(screen.queryByText("Required Korean")).toBeNull();
+  });
+
+  it("opens subject details from roadmap choice options", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "roadmap" })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Grade 2 Option 과목 상세 보기/ }));
+
+    expect(screen.queryByText(/Grade 2 Option은/)).not.toBeNull();
   });
 });

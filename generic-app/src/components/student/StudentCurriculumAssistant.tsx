@@ -864,6 +864,7 @@ function ChoiceGroupRoadmap({
   selectedSubjectOrigins,
   recommendedNames,
   onToggle,
+  onDetails,
 }: {
   cohort: CurriculumCohort;
   grade: number;
@@ -874,6 +875,7 @@ function ChoiceGroupRoadmap({
   selectedSubjectOrigins: Map<string, string>;
   recommendedNames: Set<string>;
   onToggle: (groupId: string, group: ChoiceGroup, subject: CurriculumSubject) => void;
+  onDetails: (location: SubjectLocation) => void;
 }) {
   const id = groupKey(cohort, grade, semester, group);
   const isComplete = selection.length >= group.choose;
@@ -911,41 +913,63 @@ function ChoiceGroupRoadmap({
               : null;
 
           return (
-            <button
+            <div
               key={subjectKey(subject)}
-              type="button"
-              disabled={disabled}
-              onClick={() => onToggle(id, group, subject)}
               className={cx(
-                "min-h-14 rounded-md border px-3 py-2 text-left transition",
+                "flex min-h-14 overflow-hidden rounded-md border text-left transition",
                 isSelected
                   ? "border-blue-600 bg-blue-600 text-white"
                   : isRecommended
                     ? "border-emerald-200 bg-emerald-50 text-slate-950"
                     : "border-slate-200 bg-slate-50 text-slate-950 hover:border-blue-300",
-                disabled && "cursor-not-allowed opacity-45",
+                disabled && !isSelected && "opacity-55",
               )}
             >
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-sm font-semibold leading-5">{subject.name}</span>
-                {isRecommended && !isSelected && (
-                  <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                    추천
-                  </span>
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => onToggle(id, group, subject)}
+                className={cx(
+                  "min-w-0 flex-1 px-3 py-2 text-left transition active:scale-[0.99]",
+                  disabled ? "cursor-not-allowed" : "cursor-pointer",
                 )}
-                {isDuplicate && (
-                  <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600">
-                    {conflictLabel}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-sm font-semibold leading-5">{subject.name}</span>
+                  <span className="flex shrink-0 flex-wrap justify-end gap-1">
+                    {isRecommended && !isSelected && (
+                      <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                        추천
+                      </span>
+                    )}
+                    {isDuplicate && (
+                      <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600">
+                        {conflictLabel}
+                      </span>
+                    )}
+                    {isFull && (
+                      <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
+                        {conflictLabel}
+                      </span>
+                    )}
                   </span>
+                </div>
+                <SubjectMeta subject={subject} light={isSelected} />
+              </button>
+              <button
+                type="button"
+                onClick={() => onDetails({ cohort, grade, semester, group, subject })}
+                className={cx(
+                  "flex w-11 shrink-0 items-center justify-center border-l transition",
+                  isSelected
+                    ? "border-white/20 text-white/80 hover:bg-white/10 hover:text-white"
+                    : "border-slate-200 text-slate-400 hover:bg-white hover:text-blue-600",
                 )}
-                {isFull && (
-                  <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
-                    {conflictLabel}
-                  </span>
-                )}
-              </div>
-              <SubjectMeta subject={subject} light={isSelected} />
-            </button>
+                aria-label={`${subject.name} 과목 상세 보기`}
+              >
+                <Info className="h-4 w-4" />
+              </button>
+            </div>
           );
         })}
       </div>
@@ -2690,6 +2714,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                             selectedSubjectOrigins={selectedSubjectOrigins}
                             recommendedNames={recommendedNames}
                             onToggle={handleToggleSubject}
+                            onDetails={setActiveSubject}
                           />
                         );
                       })}
