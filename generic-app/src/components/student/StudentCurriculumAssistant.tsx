@@ -71,6 +71,7 @@ type SharedAssistantState = {
   selectedArea?: string;
   selectedCategory?: string;
   subjectSelectionFilter?: SubjectSelectionFilter;
+  showOnlyIncompleteGroups?: boolean;
   profileQuery?: string;
   search?: string;
   selection?: SelectionState;
@@ -1226,7 +1227,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
-  const [showOnlyIncompleteGroups, setShowOnlyIncompleteGroups] = useState(false);
+  const [showOnlyIncompleteGroups, setShowOnlyIncompleteGroups] = useState(
+    initialSharedState.showOnlyIncompleteGroups === true,
+  );
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -1487,6 +1490,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedArea,
       selectedCategory,
       subjectSelectionFilter,
+      showOnlyIncompleteGroups,
       profileQuery,
       search,
       selection,
@@ -1503,6 +1507,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     selectedProfileIds,
     selectedTagIds,
     selection,
+    showOnlyIncompleteGroups,
     subjectSelectionFilter,
   ]);
 
@@ -1609,6 +1614,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedArea,
       selectedCategory,
       subjectSelectionFilter,
+      showOnlyIncompleteGroups,
       profileQuery,
       search,
       selection,

@@ -246,4 +246,60 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
     expect(screen.queryByText("Grade 3 Option")).toBeNull();
   });
+
+  it("restores the shared incomplete-roadmap filter", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [{ name: "Required Korean", credits: 4 }],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-complete",
+                      label: "Complete Choice",
+                      choose: 1,
+                      subjects: [{ name: "Completed Option", credits: 3 }],
+                    },
+                    {
+                      id: "grade-2-incomplete",
+                      label: "Incomplete Choice",
+                      choose: 1,
+                      subjects: [{ name: "Remaining Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        showOnlyIncompleteGroups: true,
+        selection: {
+          "2026:2:1:grade-2-complete": ["Completed Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByRole("button", { name: /Remaining Option/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /Completed Option/ })).toBeNull();
+    expect(screen.queryByText("Required Korean")).toBeNull();
+  });
 });
