@@ -35,6 +35,7 @@ type StudentCurriculumAssistantProps = {
 
 type ViewMode = "home" | "recommend" | "roadmap" | "subjects";
 type SelectionState = Record<string, string[]>;
+type SubjectSelectionFilter = "all" | "selected" | "unselected";
 
 type SubjectLocation = {
   cohort: CurriculumCohort;
@@ -1195,6 +1196,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [selectedCategory, setSelectedCategory] = useState(initialSharedState.selectedCategory ?? "전체");
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState(initialSharedState.search ?? "");
+  const [subjectSelectionFilter, setSubjectSelectionFilter] = useState<SubjectSelectionFilter>("all");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
@@ -1285,6 +1287,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     if (search.trim()) labels.push(`검색: ${search.trim()}`);
     if (activeSelectedArea !== "전체") labels.push(activeSelectedArea);
     if (activeSelectedCategory !== "전체") labels.push(activeSelectedCategory);
+    if (subjectSelectionFilter === "selected") labels.push("로드맵 선택됨");
+    if (subjectSelectionFilter === "unselected") labels.push("미선택 과목");
     selectedProfiles.forEach((profile) => labels.push(profile.title));
     selectedTagIds.forEach((tagId) => {
       const tag = tags.find((candidate) => candidate.id === tagId);
@@ -1299,6 +1303,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     search,
     selectedProfiles,
     selectedTagIds,
+    subjectSelectionFilter,
     tags,
   ]);
 
@@ -1318,8 +1323,21 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       const matchesArea = activeSelectedArea === "전체" || inferSubjectArea(location) === activeSelectedArea;
       const matchesCategory =
         activeSelectedCategory === "전체" || inferSubjectCategory(location) === activeSelectedCategory;
+      const isSelected = selectedSubjectSet.has(location.subject.name);
+      const matchesSelectionState =
+        subjectSelectionFilter === "all" ||
+        (subjectSelectionFilter === "selected" && isSelected) ||
+        (subjectSelectionFilter === "unselected" && !isSelected);
 
-      return matchesSearch && matchesTag && matchesProfile && matchesGrade && matchesArea && matchesCategory;
+      return (
+        matchesSearch &&
+        matchesTag &&
+        matchesProfile &&
+        matchesGrade &&
+        matchesArea &&
+        matchesCategory &&
+        matchesSelectionState
+      );
     }).sort((a, b) => {
       if (selectedProfiles.length < 2) {
         return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
@@ -1338,6 +1356,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     search,
     selectedProfiles,
     selectedTagIds,
+    selectedSubjectSet,
+    subjectSelectionFilter,
     subjectLocations,
     tags,
   ]);
@@ -1481,6 +1501,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setSelectedTagIds([]);
     setSelectedProfileId(null);
     setSelectedProfileIds([]);
+    setSubjectSelectionFilter("all");
     setProfileQuery("");
   };
 
@@ -2042,6 +2063,27 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </button>
                   );
                 })}
+              </div>
+              <div className="mt-3 grid grid-cols-3 rounded-lg bg-slate-100 p-1">
+                {[
+                  { value: "all", label: "전체" },
+                  { value: "selected", label: "선택됨" },
+                  { value: "unselected", label: "미선택" },
+                ].map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setSubjectSelectionFilter(item.value as SubjectSelectionFilter)}
+                    className={cx(
+                      "min-h-9 rounded-md px-2 text-xs font-bold transition",
+                      subjectSelectionFilter === item.value
+                        ? "bg-white text-blue-700 shadow-sm"
+                        : "text-slate-500",
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
               <div className="mt-3 rounded-lg bg-slate-50 p-3">
                 <div className="flex items-center justify-between gap-3">
