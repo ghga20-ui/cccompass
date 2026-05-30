@@ -1798,6 +1798,33 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 placeholder="예: 공학, 의생명, 사회, 경제, 예술"
                 className="h-11 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
+              {selectedProfiles.length > 0 && (
+                <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50/70 p-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <p className="text-xs font-bold text-blue-700">선택한 진로·학과</p>
+                    <span className="text-xs font-semibold text-blue-600">{selectedProfiles.length}/3</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProfiles.map((profile) => (
+                      <button
+                        key={`selected-profile:${profile.id}`}
+                        type="button"
+                        onClick={() => {
+                          setSelectedProfileIds((current) => {
+                            const next = current.filter((id) => id !== profile.id);
+                            setSelectedProfileId(next[0] ?? null);
+                            return next;
+                          });
+                        }}
+                        className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm"
+                      >
+                        {profile.title}
+                        <X className="h-3.5 w-3.5 text-slate-400" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="mt-3 space-y-2">
                 {filteredProfiles.map((profile) => {
                   const active = selectedProfileIds.includes(profile.id);
@@ -1918,7 +1945,17 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     2·3학년 선택과목만 보여줍니다.
                   </p>
                 </div>
-                {mode === "recommend" && <Sparkles className="h-5 w-5 text-blue-600" />}
+                {mode === "recommend" ? (
+                  <button
+                    type="button"
+                    onClick={() => setMode("home")}
+                    className="shrink-0 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
+                  >
+                    조건 수정
+                  </button>
+                ) : (
+                  <Sparkles className="h-5 w-5 text-blue-600" />
+                )}
               </div>
 
               <div className="grid gap-2 sm:grid-cols-[1fr_1.4fr]">
