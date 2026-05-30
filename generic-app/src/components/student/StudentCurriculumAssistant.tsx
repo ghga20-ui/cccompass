@@ -1503,6 +1503,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
   );
+  const roadmapCompletionRate = summary?.totalGroups
+    ? Math.round((summary.completedGroups / summary.totalGroups) * 100)
+    : 0;
   const nextIncompleteGroups = useMemo(
     () => (cohort ? getNextIncompleteGroups(selection, cohort) : []),
     [cohort, selection],
@@ -2145,6 +2148,59 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 <p className="mt-1 text-lg font-bold">{subjectLocations.length}</p>
               </div>
             </section>
+
+            {summary && (
+              <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-blue-950">나의 선택 진행</h3>
+                    <p className="mt-1 text-xs leading-5 text-blue-900/70">
+                      선택 {summary.selectedCount}개 · 완료 {summary.completedGroups}/{summary.totalGroups}묶음
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black text-blue-700">
+                    {roadmapCompletionRate}%
+                  </span>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                  <div className="h-full rounded-full bg-blue-600" style={{ width: `${roadmapCompletionRate}%` }} />
+                </div>
+                {selectedSubjectNames.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {selectedSubjectNames.slice(0, 5).map((name) => (
+                      <span key={`home-selected:${name}`} className="rounded-full bg-white px-2 py-1 text-xs font-bold text-blue-800">
+                        {name}
+                      </span>
+                    ))}
+                    {selectedSubjectNames.length > 5 && (
+                      <span className="rounded-full bg-white px-2 py-1 text-xs font-bold text-blue-800">
+                        +{selectedSubjectNames.length - 5}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-xs leading-5 text-blue-900/70">
+                    아직 담은 과목이 없습니다. 추천 과목을 보거나 로드맵에서 직접 선택할 수 있습니다.
+                  </p>
+                )}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMode("recommend")}
+                    className="h-10 rounded-lg border border-blue-200 bg-white text-xs font-bold text-blue-700"
+                  >
+                    추천 보기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode("roadmap")}
+                    className="h-10 rounded-lg bg-blue-600 text-xs font-bold text-white"
+                  >
+                    로드맵 이어하기
+                  </button>
+                </div>
+              </section>
+            )}
 
             <section className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="mb-3 flex items-center gap-2">
