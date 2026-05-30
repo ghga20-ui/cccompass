@@ -416,8 +416,11 @@ describe("student assistant selectable grade calculations", () => {
 
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
-    const detailButtons = screen.getAllByRole("button", { name: "과목 상세 보기" });
-    fireEvent.click(detailButtons[detailButtons.length - 1]);
+    expect(screen.getByText("선택 불가")).not.toBeNull();
+    expect(screen.getByText("이 선택 묶음의 선택 조건이 가득 찼습니다.")).not.toBeNull();
+    expect(screen.getByRole("button", { name: /로드맵에서 조정/ })).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Third Option 과목 상세 보기" }));
 
     expect(screen.getByText("선택 불가: 이 선택 묶음의 선택 조건이 가득 찼습니다.")).not.toBeNull();
 

@@ -815,6 +815,7 @@ function SubjectCard({
   location,
   selected = false,
   selectedOrigin,
+  addBlockedReason,
   recommendationBadge,
   recommendationReason,
   onClick,
@@ -823,11 +824,13 @@ function SubjectCard({
   location: SubjectLocation;
   selected?: boolean;
   selectedOrigin?: string;
+  addBlockedReason?: string | null;
   recommendationBadge?: string;
   recommendationReason?: string;
   onClick?: () => void;
   onDetails?: () => void;
 }) {
+  const cannotAdd = !selected && Boolean(addBlockedReason);
   const content = (
     <>
       <div className="flex items-start justify-between gap-3">
@@ -851,6 +854,14 @@ function SubjectCard({
               {selectedOrigin}
             </p>
           )}
+        </div>
+      )}
+      {cannotAdd && (
+        <div className="mt-2 rounded-md border border-amber-100 bg-amber-50 px-2 py-1.5">
+          <p className="text-[10px] font-bold text-amber-700">선택 불가</p>
+          <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-amber-700">
+            {addBlockedReason}
+          </p>
         </div>
       )}
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -896,16 +907,19 @@ function SubjectCard({
               "flex min-h-10 items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold",
               selected
                 ? "bg-blue-50 text-blue-700"
-                : "bg-white text-blue-700",
+                : cannotAdd
+                  ? "bg-slate-50 text-slate-600"
+                  : "bg-white text-blue-700",
             )}
           >
-            {selected ? "로드맵에서 보기" : "로드맵에 담기"}
+            {selected ? "로드맵에서 보기" : cannotAdd ? "로드맵에서 조정" : "로드맵에 담기"}
             <ArrowRight className="h-3.5 w-3.5" />
           </button>
           {onDetails && (
           <button
             type="button"
             onClick={onDetails}
+            aria-label={`${location.subject.name} 과목 상세 보기`}
             className="flex min-h-10 items-center justify-center gap-1.5 border-l border-slate-100 px-3 py-2 text-xs font-bold text-slate-500"
           >
             <Info className="h-3.5 w-3.5" />
@@ -2752,6 +2766,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                                   location={location}
                                   selected={selectedSubjectSet.has(location.subject.name)}
                                   selectedOrigin={selectedSubjectOrigins.get(location.subject.name)}
+                                  addBlockedReason={getRoadmapAddBlockReason(location, selection)}
                                   recommendationBadge={recommendationBadge}
                                   recommendationReason={buildRecommendationReason({
                                     location,
@@ -2786,6 +2801,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         location={location}
                         selected={selectedSubjectSet.has(location.subject.name)}
                         selectedOrigin={selectedSubjectOrigins.get(location.subject.name)}
+                        addBlockedReason={getRoadmapAddBlockReason(location, selection)}
                         recommendationBadge={recommendationBadge}
                         recommendationReason={buildRecommendationReason({
                           location,
