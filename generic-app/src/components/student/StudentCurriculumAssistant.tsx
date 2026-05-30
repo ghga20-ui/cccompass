@@ -1372,10 +1372,30 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
 
     try {
-      await navigator.clipboard.writeText(url);
+      const browserNavigator = navigator as Navigator & {
+        share?: (data: ShareData) => Promise<void>;
+        clipboard?: Clipboard;
+      };
+
+      if (browserNavigator.share) {
+        await browserNavigator.share({
+          title: `${curriculum.schoolName} 선택과목 로드맵`,
+          text: `${cohort ? cohortDisplayLabel(cohort) : ""} 선택과목 로드맵`,
+          url,
+        });
+        return;
+      }
+
+      if (!browserNavigator.clipboard) throw new Error("Clipboard API is unavailable.");
+      await browserNavigator.clipboard.writeText(url);
       showToast("공유 링크를 복사했습니다.");
     } catch {
-      showToast("주소창의 링크를 복사해 주세요.");
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast("공유 링크를 복사했습니다.");
+      } catch {
+        showToast("공유 실패 - 주소창의 링크를 복사해 주세요.");
+      }
     }
   };
 
