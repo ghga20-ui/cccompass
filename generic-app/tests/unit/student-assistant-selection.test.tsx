@@ -411,6 +411,7 @@ describe("student assistant selectable grade calculations", () => {
 
     expect(screen.queryByText("선택 진행률")).not.toBeNull();
     expect(screen.queryByText("1개 묶음이 남았습니다.")).not.toBeNull();
+    expect(screen.queryAllByText("1개 더 선택").length).toBeGreaterThan(1);
     expect(screen.queryAllByRole("button", { name: /Remaining Option/ }).length).toBeGreaterThan(0);
     expect(screen.queryAllByRole("button", { name: /Completed Option/ })).toHaveLength(0);
     expect(screen.queryByText("Required Korean")).toBeNull();

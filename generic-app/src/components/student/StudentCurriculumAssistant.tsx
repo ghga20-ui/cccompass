@@ -891,6 +891,8 @@ function ChoiceGroupRoadmap({
 }) {
   const id = groupKey(cohort, grade, semester, group);
   const isComplete = selection.length >= group.choose;
+  const remainingCount = Math.max(group.choose - selection.length, 0);
+  const completionRate = group.choose > 0 ? Math.min((selection.length / group.choose) * 100, 100) : 0;
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
@@ -909,6 +911,22 @@ function ChoiceGroupRoadmap({
         >
           {selection.length}/{group.choose}
         </span>
+      </div>
+      <div className="mb-2 rounded-md bg-slate-50 px-2.5 py-2">
+        <div className="flex items-center justify-between gap-2 text-xs font-semibold">
+          <span className={isComplete ? "text-emerald-700" : "text-slate-600"}>
+            {isComplete ? "선택 완료" : `${remainingCount}개 더 선택`}
+          </span>
+          <span className="text-slate-500">
+            {selection.length}/{group.choose}개
+          </span>
+        </div>
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
+          <div
+            className={cx("h-full rounded-full", isComplete ? "bg-emerald-500" : "bg-blue-600")}
+            style={{ width: `${completionRate}%` }}
+          />
+        </div>
       </div>
 
       <div className="grid gap-1.5 sm:grid-cols-2">
