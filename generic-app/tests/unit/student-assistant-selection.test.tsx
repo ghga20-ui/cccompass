@@ -2021,6 +2021,12 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("로드맵 완성")).not.toBeNull();
     expect(screen.queryByText(/2·3학년 선택 조건을 모두 채웠습니다/)).not.toBeNull();
     expect(screen.queryByRole("button", { name: "링크 공유" })).not.toBeNull();
+    const gradeSummary = screen.getByLabelText("학년별 선택 과목 요약");
+    expect(gradeSummary.textContent).toContain("3학점");
+
+    fireEvent.click(screen.getByRole("button", { name: "Grade 2 Option 학년별 선택 요약에서 상세 보기" }));
+
+    expect(screen.getByRole("dialog", { name: "Grade 2 Option" })).not.toBeNull();
   });
 
   it("removes a selected subject from the roadmap summary", () => {

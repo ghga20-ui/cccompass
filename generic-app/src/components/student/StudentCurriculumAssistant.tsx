@@ -2022,6 +2022,37 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
     return byName;
   }, [locations, selectedSubjectSet]);
+  const selectedRoadmapByGrade = useMemo(() => {
+    if (!cohort) return [];
+
+    return selectableGrades(cohort)
+      .map((grade) => {
+        const items = grade.semesters.flatMap((semester) =>
+          semester.choiceGroups.flatMap((group) => {
+            const id = groupKey(cohort, grade.grade, semester.semester, group);
+            const selectedNames = selection[id] ?? [];
+
+            return selectedNames.map((name) => {
+              const subject = group.subjects.find((candidate) => candidate.name === name);
+
+              return {
+                name,
+                credits: subject?.credits ?? group.creditsEach ?? 0,
+                semester: semester.semester,
+                groupLabel: group.label,
+              };
+            });
+          }),
+        );
+
+        return {
+          grade: grade.grade,
+          credits: items.reduce((sum, item) => sum + item.credits, 0),
+          items,
+        };
+      })
+      .filter((grade) => grade.items.length > 0);
+  }, [cohort, selection]);
   const gradeProgress = useMemo(() => {
     if (!cohort) return [];
 
@@ -4217,6 +4248,47 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   </p>
                 )}
               </div>
+              {selectedRoadmapByGrade.length > 0 && (
+                <div className="mt-3 rounded-lg bg-blue-50 p-3" aria-label="학년별 선택 과목 요약">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-blue-700">학년별 선택 과목 요약</p>
+                      <p className="mt-0.5 text-xs text-blue-900/70">
+                        상담이나 공유 전에 선택한 과목 구성을 확인하세요.
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-black text-blue-700">
+                      {selectedSubjectNames.length}개
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedRoadmapByGrade.map((grade) => (
+                      <section key={`selected-grade-summary:${grade.grade}`} className="rounded-md bg-white px-3 py-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-black text-slate-900">{grade.grade}학년</p>
+                          <span className="text-xs font-bold text-blue-700">{grade.credits}학점</span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {grade.items.map((item) => (
+                            <button
+                              key={`${grade.grade}:${item.semester}:${item.groupLabel}:${item.name}`}
+                              type="button"
+                              onClick={() => {
+                                const selectedLocation = selectedSubjectLocations.get(item.name);
+                                if (selectedLocation) setActiveSubject(selectedLocation);
+                              }}
+                              className="rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-800 transition hover:bg-blue-100"
+                              aria-label={`${item.name} 학년별 선택 요약에서 상세 보기`}
+                            >
+                              {item.name} · {item.semester}학기
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="mt-3 rounded-lg bg-slate-50 p-3">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <p className="text-xs font-bold text-slate-600">선택한 과목</p>
