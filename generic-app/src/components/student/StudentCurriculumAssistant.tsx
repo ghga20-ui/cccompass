@@ -982,7 +982,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
     const canvas = document.createElement("canvas");
     const width = 900;
-    const height = 520;
+    const height = 780;
     const dpr = 2;
     canvas.width = width * dpr;
     canvas.height = height * dpr;
@@ -1001,16 +1001,60 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     ctx.fillStyle = "#0f172a";
     ctx.font = "700 24px Arial, sans-serif";
     ctx.fillText(`예상 이수 학점 ${summary.totalCredits}/${summary.expectedCredits}`, 40, 140);
+    let y = 182;
+    gradeProgress.forEach((progress, index) => {
+      const x = 40 + index * 410;
+      ctx.fillStyle =
+        progress.totalGroups > 0 && progress.completedGroups >= progress.totalGroups
+          ? "#ecfdf5"
+          : "#ffffff";
+      ctx.fillRect(x, y - 26, 370, 72);
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "700 18px Arial, sans-serif";
+      ctx.fillText(`${progress.grade}학년`, x + 16, y);
+      ctx.font = "600 14px Arial, sans-serif";
+      ctx.fillStyle = "#475569";
+      ctx.fillText(`${progress.completedGroups}/${progress.totalGroups} 묶음`, x + 16, y + 24);
+      ctx.fillStyle = "#2563eb";
+      ctx.fillText(`${progress.totalCredits}/${progress.expectedCredits}학점`, x + 190, y + 24);
+    });
+
+    y = 290;
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "700 18px Arial, sans-serif";
+    ctx.fillText("학기별 선택 현황", 40, y);
+    y += 34;
+    selectableGrades(cohort).forEach((grade) => {
+      grade.semesters.forEach((semester) => {
+        const progress = calculateSemesterProgress(cohort, grade, semester, selection);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(40, y - 22, 820, 38);
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 14px Arial, sans-serif";
+        ctx.fillText(`${grade.grade}학년 ${semester.semester}학기`, 56, y + 2);
+        ctx.fillStyle = "#64748b";
+        ctx.fillText(`${progress.completedGroups}/${progress.totalGroups} 묶음`, 270, y + 2);
+        ctx.fillStyle = "#2563eb";
+        ctx.fillText(`${progress.totalCredits}/${progress.expectedCredits}학점`, 420, y + 2);
+        y += 48;
+      });
+    });
+
+    y += 10;
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "700 18px Arial, sans-serif";
+    ctx.fillText("선택 과목", 40, y);
+    y += 34;
     ctx.font = "500 16px Arial, sans-serif";
     ctx.fillStyle = "#475569";
     const selected = summary.selectedNames.length > 0 ? summary.selectedNames : ["선택한 과목이 없습니다."];
-    selected.slice(0, 18).forEach((name, index) => {
+    selected.slice(0, 10).forEach((name, index) => {
       const x = 40 + (index % 2) * 410;
-      const y = 190 + Math.floor(index / 2) * 34;
+      const subjectY = y + Math.floor(index / 2) * 34;
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(x, y - 21, 360, 26);
+      ctx.fillRect(x, subjectY - 21, 360, 26);
       ctx.fillStyle = "#0f172a";
-      ctx.fillText(name, x + 12, y - 3);
+      ctx.fillText(name, x + 12, subjectY - 3);
     });
     const link = document.createElement("a");
     link.download = `${curriculum.schoolName}-선택과목-로드맵.png`;
