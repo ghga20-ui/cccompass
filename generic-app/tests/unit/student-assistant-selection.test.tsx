@@ -1132,6 +1132,55 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("이 묶음의 선택 조건을 채웠습니다.")).not.toBeNull();
   });
 
+  it("shows a completion panel when every roadmap choice is filled", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("로드맵 완성")).not.toBeNull();
+    expect(screen.queryByText(/2·3학년 선택 조건을 모두 채웠습니다/)).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "링크 공유" })).not.toBeNull();
+  });
+
   it("removes a selected subject from the roadmap summary", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

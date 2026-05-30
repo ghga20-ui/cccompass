@@ -3236,6 +3236,37 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   이미지 저장
                 </button>
               </div>
+              {summary.totalGroups > 0 && summary.completedGroups >= summary.totalGroups && (
+                <div className="mt-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+                  <div className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                    <div>
+                      <p className="text-sm font-bold text-emerald-800">로드맵 완성</p>
+                      <p className="mt-1 text-xs leading-5 text-emerald-900/70">
+                        2·3학년 선택 조건을 모두 채웠습니다. 공유 링크나 이미지로 저장해 상담 자료로 사용할 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-white text-xs font-bold text-emerald-700 ring-1 ring-emerald-100"
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                      링크 공유
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleExport}
+                      className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 text-xs font-bold text-white"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      이미지 저장
+                    </button>
+                  </div>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowOnlyIncompleteGroups((current) => !current)}
