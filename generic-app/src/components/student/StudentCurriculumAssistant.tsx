@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
+  Briefcase,
   BookOpen,
   Check,
   ChevronDown,
@@ -12,6 +13,7 @@ import {
   GraduationCap,
   Home,
   Info,
+  ListChecks,
   Search,
   Share2,
   Sparkles,
@@ -616,6 +618,75 @@ function buildSubjectOverview(subject: CurriculumSubject) {
   return `${subject.name}은 ${subject.credits}학점 선택과목입니다. 편제표의 같은 선택 묶음 안에서 다른 과목과 비교해 선택할 수 있습니다.`;
 }
 
+function buildRecommendedFor(location: SubjectLocation) {
+  const area = inferSubjectArea(location);
+  const subjectName = location.subject.name;
+  const rules = [
+    { label: "수학·과학 문제 해결을 좋아하는 학생", keywords: ["수학", "과학", "물리", "화학", "생명", "지구", "미적분", "기하"] },
+    { label: "사회 현상과 제도, 시사 이슈를 탐구하고 싶은 학생", keywords: ["사회", "경제", "정치", "법", "윤리", "역사", "지리"] },
+    { label: "언어, 문학, 읽기와 쓰기 활동에 관심 있는 학생", keywords: ["국어", "문학", "독서", "언어", "작문", "영어"] },
+    { label: "보건, 생명, 환경, 의생명 분야 진로를 고민하는 학생", keywords: ["보건", "간호", "생명", "인체", "식품", "환경"] },
+    { label: "예술적 표현, 창작, 공연·매체 활동에 관심 있는 학생", keywords: ["음악", "미술", "연극", "예술", "매체", "창작"] },
+    { label: "기술, 정보, 공학적 설계와 실습에 관심 있는 학생", keywords: ["정보", "프로그래밍", "인공지능", "기술", "공학", "로봇"] },
+  ];
+  const haystack = `${area} ${subjectName} ${location.group.label} ${location.subject.rawText ?? ""}`;
+
+  return rules
+    .filter((rule) => rule.keywords.some((keyword) => haystack.includes(keyword)))
+    .map((rule) => rule.label)
+    .slice(0, 3);
+}
+
+function buildLearningKeywords(location: SubjectLocation) {
+  const haystack = `${inferSubjectArea(location)} ${location.subject.name} ${location.group.label} ${
+    location.subject.rawText ?? ""
+  }`;
+  const keywords = [
+    "탐구",
+    "분석",
+    "토론",
+    "실험",
+    "설계",
+    "자료 해석",
+    "문제 해결",
+    "창작",
+    "의사소통",
+    "진로 연계",
+  ];
+
+  return keywords.filter((keyword) => haystack.includes(keyword)).slice(0, 5);
+}
+
+function buildSubjectAvailability(cohort: CurriculumCohort, subjectName: string) {
+  return selectableGrades(cohort).flatMap((grade) =>
+    grade.semesters.flatMap((semester) => {
+      const required = semester.requiredSubjects
+        .filter((subject) => subject.name === subjectName)
+        .map((subject) => ({
+          grade: grade.grade,
+          semester: semester.semester,
+          label: "필수 이수",
+          type: "required" as const,
+          credits: subject.credits,
+        }));
+      const choices = semester.choiceGroups.flatMap((group) =>
+        group.subjects
+          .filter((subject) => subject.name === subjectName)
+          .map((subject) => ({
+            grade: grade.grade,
+            semester: semester.semester,
+            label: group.label,
+            type: "choice" as const,
+            choose: group.choose,
+            credits: subject.credits,
+          })),
+      );
+
+      return [...required, ...choices];
+    }),
+  );
+}
+
 function inferSubjectArea(location: SubjectLocation) {
   if (location.subject.area) return location.subject.area;
 
@@ -921,6 +992,9 @@ function SubjectDetailPanel({
   const peerSubjects = location.group.subjects
     .filter((candidate) => candidate.name !== subject.name)
     .slice(0, 8);
+  const recommendedFor = buildRecommendedFor(location);
+  const learningKeywords = buildLearningKeywords(location);
+  const availability = buildSubjectAvailability(location.cohort, subject.name);
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6">
@@ -929,7 +1003,7 @@ function SubjectDetailPanel({
           <div className="min-w-0">
             <p className="text-xs font-bold text-blue-600">{gradeLabel(location.grade, location.semester)}</p>
             <h2 className="mt-1 text-xl font-bold text-slate-950">{subject.name}</h2>
-            <SubjectMeta subject={subject} />
+            <SubjectMeta subject={subject} location={location} />
           </div>
           <button
             type="button"
@@ -961,6 +1035,63 @@ function SubjectDetailPanel({
               </div>
             </section>
           )}
+
+          {recommendedFor.length > 0 && (
+            <section className="rounded-lg bg-sky-50 p-3">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-sky-700" />
+                <h3 className="text-sm font-bold text-sky-900">이 과목을 들으면 좋은 학생</h3>
+              </div>
+              <ul className="mt-2 space-y-1.5">
+                {recommendedFor.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm leading-6 text-sky-900/75">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <section className="rounded-lg bg-slate-50 p-3">
+            <div className="flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-slate-600" />
+              <h3 className="text-sm font-bold text-slate-900">학습·탐구 키워드</h3>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {Array.from(new Set([inferSubjectArea(location), inferSubjectCategory(location), ...learningKeywords])).map((keyword) => (
+                <span
+                  key={keyword}
+                  className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-lg bg-slate-50 p-3">
+            <div className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4 text-slate-600" />
+              <h3 className="text-sm font-bold text-slate-900">학교 개설 정보</h3>
+            </div>
+            <div className="mt-2 space-y-2">
+              {availability.map((item, index) => (
+                <div
+                  key={`${item.grade}-${item.semester}-${item.label}-${index}`}
+                  className="rounded-md bg-white px-3 py-2 text-xs leading-5 text-slate-600"
+                >
+                  <span className="font-bold text-slate-900">
+                    {gradeLabel(item.grade, item.semester)}
+                  </span>
+                  {" · "}
+                  {item.type === "choice" ? `${item.label}에서 택${item.choose}` : item.label}
+                  {" · "}
+                  {item.credits}학점
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="rounded-lg bg-slate-50 p-3">
             <h3 className="text-sm font-bold text-slate-900">편제표 위치</h3>
