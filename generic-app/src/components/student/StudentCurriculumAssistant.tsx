@@ -1208,6 +1208,17 @@ function SubjectDetailPanel({
 }) {
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (!location) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [location, onClose]);
+
   if (!location) return null;
 
   const subject = location.subject;
@@ -1236,17 +1247,28 @@ function SubjectDetailPanel({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6">
-      <div className="mx-auto flex max-h-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 bg-slate-950/35 px-4 py-6"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="subject-detail-title"
+        className="mx-auto flex max-h-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+      >
         <div className="flex items-start justify-between gap-3 border-b border-slate-200 p-4">
           <div className="min-w-0">
             <p className="text-xs font-bold text-blue-600">{gradeLabel(location.grade, location.semester)}</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-950">{subject.name}</h2>
+            <h2 id="subject-detail-title" className="mt-1 text-xl font-bold text-slate-950">{subject.name}</h2>
             <SubjectMeta subject={subject} location={location} />
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label="과목 상세 닫기"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600"
           >
             <X className="h-4 w-4" />

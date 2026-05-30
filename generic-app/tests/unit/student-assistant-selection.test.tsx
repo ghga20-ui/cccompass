@@ -491,6 +491,30 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("closes subject details with Escape and backdrop clicks", () => {
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects" })}`);
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
+    expect(screen.getByRole("dialog", { name: "경제" })).not.toBeNull();
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByRole("dialog", { name: "경제" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
+    const dialog = screen.getByRole("dialog", { name: "경제" });
+    const backdrop = dialog.parentElement;
+    if (!backdrop) throw new Error("Expected subject detail backdrop");
+
+    fireEvent.mouseDown(backdrop);
+    expect(screen.queryByRole("dialog", { name: "경제" })).toBeNull();
+  });
+
   it("lets students recover from an empty subject result", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects", search: "없는과목" })}`);
 
