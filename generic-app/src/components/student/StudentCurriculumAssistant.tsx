@@ -219,6 +219,12 @@ function cohortDisplayLabel(cohort: CurriculumCohort) {
   return `${cohort.entranceYear}학년도 입학생`;
 }
 
+function objectParticle(text: string) {
+  const lastChar = text.trim().charCodeAt(text.trim().length - 1);
+  if (lastChar < 0xac00 || lastChar > 0xd7a3) return "을";
+  return (lastChar - 0xac00) % 28 === 0 ? "를" : "을";
+}
+
 function countRequiredCredits(cohort: CurriculumCohort) {
   return requiredSubjectsForSelectableGrades(cohort).reduce((sum, subject) => sum + subject.credits, 0);
 }
@@ -1804,7 +1810,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setMode("roadmap");
     showToast(
       canAdd
-        ? `${location.subject.name}을 로드맵에 담았습니다.`
+        ? `${location.subject.name}${objectParticle(location.subject.name)} 로드맵에 담았습니다.`
         : "선택 조건이 가득 찼습니다. 로드맵에서 먼저 조정해 주세요.",
     );
   };
