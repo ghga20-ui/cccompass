@@ -1197,6 +1197,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [search, setSearch] = useState(initialSharedState.search ?? "");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
+  const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const cohort = useMemo(
@@ -2078,21 +2079,36 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
             </section>
 
-            {mode === "recommend" && selectedProfiles.length > 0 && (
+            {mode === "recommend" && (selectedProfiles.length > 0 || selectedTagIds.length > 0) && (
               <section className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-bold text-slate-950">선택한 진로·학과</h3>
+                    <h3 className="text-sm font-bold text-slate-950">선택한 추천 조건</h3>
                     <p className="mt-1 text-xs text-slate-500">
-                      여러 목표를 고르면 공통 추천과 전용 추천을 함께 비교합니다.
+                      진로·학과와 관심 영역을 기준으로 과목을 추천합니다.
                     </p>
                   </div>
                   <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-600">
-                    {selectedProfiles.length}/3
+                    {selectedProfiles.length + selectedTagIds.length}개
                   </span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
+                  {selectedTagIds.map((tagId) => {
+                    const tag = tags.find((candidate) => candidate.id === tagId);
+                    if (!tag) return null;
+
+                    return (
+                      <button
+                        key={`selected-tag:${tag.id}`}
+                        type="button"
+                        onClick={() => toggleTag(tag.id)}
+                        className="rounded-full bg-slate-950 px-3 py-1.5 text-xs font-bold text-white"
+                      >
+                        {tag.label} ×
+                      </button>
+                    );
+                  })}
                   {selectedProfiles.map((profile) => (
                     <button
                       key={profile.id}
@@ -2110,6 +2126,59 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </button>
                   ))}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowRecommendationCriteria((current) => !current)}
+                  className="mt-3 flex w-full items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-left text-xs font-bold text-slate-700"
+                >
+                  추천 기준 자세히 보기
+                  <ChevronDown
+                    className={cx(
+                      "h-4 w-4 text-slate-500 transition",
+                      showRecommendationCriteria && "rotate-180",
+                    )}
+                  />
+                </button>
+
+                {showRecommendationCriteria && (
+                  <div className="mt-3 space-y-2">
+                    {selectedTagIds.map((tagId) => {
+                      const tag = tags.find((candidate) => candidate.id === tagId);
+                      if (!tag) return null;
+
+                      return (
+                        <div key={`criteria-tag:${tag.id}`} className="rounded-lg bg-slate-50 p-3">
+                          <p className="text-xs font-bold text-slate-900">{tag.label}</p>
+                          <p className="mt-1 text-xs leading-5 text-slate-500">{tag.description}</p>
+                        </div>
+                      );
+                    })}
+                    {selectedProfiles.map((profile) => (
+                      <div key={`criteria-profile:${profile.id}`} className="rounded-lg bg-blue-50 p-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-bold text-blue-900">{profile.title}</p>
+                            <p className="mt-1 text-xs leading-5 text-blue-900/70">{profile.description}</p>
+                          </div>
+                          <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-bold text-blue-700">
+                            {subjectLocations.filter((location) => profileMatches(profile, location.subject, tags)).length}개
+                          </span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {profile.keywords.slice(0, 6).map((keyword) => (
+                            <span
+                              key={`${profile.id}:${keyword}`}
+                              className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-blue-700"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {selectedProfiles.length >= 2 && (
                   <div className="mt-4 space-y-3">
