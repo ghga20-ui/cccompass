@@ -356,6 +356,14 @@ function profileMatches(profile: RecommendationProfile, subject: CurriculumSubje
   return profile.keywords.some((keyword) => haystack.includes(keyword));
 }
 
+function countMatchingProfiles(
+  profiles: RecommendationProfile[],
+  subject: CurriculumSubject,
+  tags: InterestTag[],
+) {
+  return profiles.filter((profile) => profileMatches(profile, subject, tags)).length;
+}
+
 function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; light?: boolean }) {
   const labels = [subject.area, subject.category].filter(
     (label): label is string => typeof label === "string" && label.length > 0,
@@ -389,11 +397,13 @@ function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; l
 function SubjectCard({
   location,
   selected = false,
+  recommendationBadge,
   onClick,
   onDetails,
 }: {
   location: SubjectLocation;
   selected?: boolean;
+  recommendationBadge?: string;
   onClick?: () => void;
   onDetails?: () => void;
 }) {
@@ -412,6 +422,11 @@ function SubjectCard({
         </span>
       </div>
       <SubjectMeta subject={location.subject} />
+      {recommendationBadge && (
+        <span className="mt-2 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+          {recommendationBadge}
+        </span>
+      )}
     </>
   );
 
@@ -726,6 +741,16 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
 
       return matchesSearch && matchesTag && matchesProfile && matchesGrade;
+    }).sort((a, b) => {
+      if (selectedProfiles.length < 2) {
+        return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
+      }
+
+      const aMatches = countMatchingProfiles(selectedProfiles, a.subject, tags);
+      const bMatches = countMatchingProfiles(selectedProfiles, b.subject, tags);
+
+      if (aMatches !== bMatches) return bMatches - aMatches;
+      return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
     });
   }, [activeGrade, search, selectedProfiles, selectedTagIds, subjectLocations, tags]);
 
@@ -1166,15 +1191,28 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
             )}
 
             <div className="space-y-2">
-              {filteredSubjects.map((location) => (
-                <SubjectCard
-                  key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
-                  location={location}
-                  selected={selectedSubjectSet.has(location.subject.name)}
-                  onClick={() => selectRecommendation(location)}
-                  onDetails={() => setActiveSubject(location)}
-                />
-              ))}
+              {filteredSubjects.map((location) => {
+                const matchingProfileCount = countMatchingProfiles(selectedProfiles, location.subject, tags);
+                const recommendationBadge =
+                  selectedProfiles.length >= 2 && matchingProfileCount === selectedProfiles.length
+                    ? "공통 추천"
+                    : selectedProfiles.length >= 2 && matchingProfileCount > 0
+                      ? `${matchingProfileCount}개 목표 추천`
+                      : recommendedNames.has(location.subject.name)
+                        ? "추천"
+                        : undefined;
+
+                return (
+                  <SubjectCard
+                    key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
+                    location={location}
+                    selected={selectedSubjectSet.has(location.subject.name)}
+                    recommendationBadge={recommendationBadge}
+                    onClick={() => selectRecommendation(location)}
+                    onDetails={() => setActiveSubject(location)}
+                  />
+                );
+              })}
               {filteredSubjects.length === 0 && (
                 <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-500">
                   조건에 맞는 2·3학년 선택과목이 없습니다.
