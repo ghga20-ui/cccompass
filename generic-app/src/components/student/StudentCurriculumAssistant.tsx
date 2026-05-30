@@ -1864,7 +1864,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
       <div className="mx-auto max-w-lg px-4 py-4">
         {mode === "home" && (
-          <div className="space-y-4">
+          <div className="space-y-4 pb-24">
             <section className="rounded-xl border border-slate-200 bg-white p-5">
               <h2 className="text-2xl font-bold leading-tight">
                 나에게 맞는
@@ -2025,16 +2025,18 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               )}
             </section>
 
-            <button
-              type="button"
-              onClick={() =>
-                setMode(selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "recommend" : "subjects")
-              }
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-600/20"
-            >
-              {selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "맞춤 과목 추천받기" : "전체 과목 탐색하기"}
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <section className="sticky bottom-[76px] z-20 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur">
+              <button
+                type="button"
+                onClick={() =>
+                  setMode(selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "recommend" : "subjects")
+                }
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-600/20"
+              >
+                {selectedTagIds.length > 0 || selectedProfiles.length > 0 ? "맞춤 과목 추천받기" : "전체 과목 탐색하기"}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </section>
           </div>
         )}
 
