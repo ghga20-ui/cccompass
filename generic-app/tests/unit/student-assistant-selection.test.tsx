@@ -642,6 +642,56 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("Grade 3 Option")).toBeNull();
   });
 
+  it("restores an autosaved roadmap selection from local storage", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.localStorage.setItem(
+      "student-curriculum-assistant:/",
+      encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      }),
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(screen.queryByLabelText("Grade 2 Option 선택 해제")).not.toBeNull();
+    expect(screen.queryByLabelText("로드맵 선택 과목 1개")).not.toBeNull();
+  });
+
   it("restores the shared incomplete-roadmap filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
