@@ -1278,10 +1278,6 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     }));
   }, [cohort, selection]);
 
-  const filteredGrades = useMemo(() => {
-    if (activeGrade === "all") return grades;
-    return grades.filter((grade) => grade.grade === activeGrade);
-  }, [activeGrade, grades]);
   const activeFilterLabels = useMemo(() => {
     const labels: string[] = [];
     if (activeGrade !== "all") labels.push(`${activeGrade}학년`);
@@ -2462,7 +2458,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
             </section>
 
-            {filteredGrades.map((grade) => (
+            {grades.map((grade) => (
               <div key={grade.grade} className="space-y-3">
                 {grade.semesters.map((semester: CurriculumSemester) => {
                   const semesterProgress = calculateSemesterProgress(cohort, grade, semester, selection);

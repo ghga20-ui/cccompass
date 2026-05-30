@@ -1,11 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   buildSubjectAvailability,
   choiceLocations,
   getGroupRecords,
   selectableGrades,
+  StudentCurriculumAssistant,
 } from "@/components/student/StudentCurriculumAssistant";
-import type { CurriculumCohort } from "@/lib/curriculum/schema";
+import type { CurriculumCohort, SchoolCurriculum } from "@/lib/curriculum/schema";
 
 const cohort: CurriculumCohort = {
   entranceYear: "2026",
@@ -65,6 +67,19 @@ const cohort: CurriculumCohort = {
   ],
 };
 
+function encodeState(state: Record<string, unknown>) {
+  return btoa(encodeURIComponent(JSON.stringify(state)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+  window.history.replaceState({}, "", "/");
+});
+
 describe("student assistant selectable grade calculations", () => {
   it("uses only grade 2 and 3 curriculum for student selection flows", () => {
     expect(selectableGrades(cohort).map((grade) => grade.grade)).toEqual([2, 3]);
@@ -90,5 +105,79 @@ describe("student assistant selectable grade calculations", () => {
         credits: 3,
       },
     ]);
+  });
+
+  it("shows the full grade 2 and 3 roadmap even when the explorer grade filter is active", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-1-hidden",
+                      label: "Grade 1 Hidden",
+                      choose: 1,
+                      subjects: [{ name: "Grade 1 Hidden Option", credits: 2 }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              grade: 3,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-3-choice",
+                      label: "Grade 3 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 3 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "roadmap", activeGrade: 2 })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryByText("Grade 3 Option")).not.toBeNull();
+    expect(screen.queryByText("Grade 1 Hidden Option")).toBeNull();
   });
 });
