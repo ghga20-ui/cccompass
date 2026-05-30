@@ -1786,10 +1786,27 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
   };
 
+  const canAddSubjectToRoadmap = (location: SubjectLocation) => {
+    const id = groupKey(location.cohort, location.grade, location.semester, location.group);
+    const selected = selection[id] ?? [];
+    if (selected.includes(location.subject.name)) return false;
+    if (Object.entries(selection).some(([groupId, names]) => groupId !== id && names.includes(location.subject.name))) {
+      return false;
+    }
+    if (location.group.choose === 1) return true;
+    return selected.length < location.group.choose;
+  };
+
   const selectRecommendation = (location: SubjectLocation) => {
     const id = groupKey(location.cohort, location.grade, location.semester, location.group);
+    const canAdd = canAddSubjectToRoadmap(location);
     handleToggleSubject(id, location.group, location.subject);
     setMode("roadmap");
+    showToast(
+      canAdd
+        ? `${location.subject.name}을 로드맵에 담았습니다.`
+        : "선택 조건이 가득 찼습니다. 로드맵에서 먼저 조정해 주세요.",
+    );
   };
 
   const goToRoadmapSubject = (location: SubjectLocation) => {
