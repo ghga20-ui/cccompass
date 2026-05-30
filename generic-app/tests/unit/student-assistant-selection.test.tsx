@@ -1088,6 +1088,54 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("1개 더 선택해야 합니다.")).not.toBeNull();
   });
 
+  it("shows peer subjects as comparison cards in subject details", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "compare-choice",
+                      label: "Compare Choice",
+                      choose: 1,
+                      subjects: [
+                        { name: "경제", credits: 3, area: "Social" },
+                        { name: "창의 디자인", credits: 3, area: "Arts" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects" })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
+
+    expect(screen.queryByText("같은 묶음의 비교 과목")).not.toBeNull();
+    expect(screen.queryByText("같은 선택 묶음 안에서 대체 선택할 수 있는 과목입니다.")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "창의 디자인 비교 과목 상세 보기" }));
+
+    expect(screen.getByRole("dialog", { name: "창의 디자인" })).not.toBeNull();
+  });
+
   it("shows feedback when a subject is added to the roadmap from a card", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

@@ -1291,7 +1291,9 @@ function SubjectDetailPanel({
   const openPeerSubject = (peerLocation: SubjectLocation) => {
     onOpenSubject(peerLocation);
     window.setTimeout(() => {
-      detailScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      if (typeof detailScrollRef.current?.scrollTo === "function") {
+        detailScrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }, 0);
   };
 
@@ -1479,25 +1481,53 @@ function SubjectDetailPanel({
           {peerLocations.length > 0 && (
             <section className="rounded-lg bg-slate-50 p-3">
               <h3 className="text-sm font-bold text-slate-900">같은 묶음의 비교 과목</h3>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {peerLocations.map((peerLocation) => (
+              <p className="mt-1 text-xs leading-5 text-slate-500">
+                같은 선택 묶음 안에서 대체 선택할 수 있는 과목입니다.
+              </p>
+              <div className="mt-2 space-y-1.5">
+                {peerLocations.map((peerLocation) => {
+                  const peerSelected = selectedSubjectSet.has(peerLocation.subject.name);
+
+                  return (
+                    <button
+                      key={subjectKey(peerLocation.subject)}
+                      type="button"
+                      onClick={() => openPeerSubject(peerLocation)}
+                      aria-label={`${peerLocation.subject.name} 비교 과목 상세 보기`}
+                      className={cx(
+                        "w-full rounded-md bg-white px-3 py-2 text-left transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
+                        peerSelected ? "text-blue-700 ring-1 ring-blue-100" : "text-slate-700",
+                      )}
+                    >
+                      <span className="flex items-start justify-between gap-2">
+                        <span className="min-w-0">
+                          <span className="block text-sm font-bold leading-5">{peerLocation.subject.name}</span>
+                          <SubjectMeta subject={peerLocation.subject} location={peerLocation} />
+                        </span>
+                        <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">
+                          {peerSelected ? "선택됨" : "비교"}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+                {location.group.subjects.length - 1 > peerLocations.length && (
+                  <p className="rounded-md bg-white px-3 py-2 text-xs font-semibold text-slate-500">
+                    외 {location.group.subjects.length - 1 - peerLocations.length}개 과목이 더 있습니다. 로드맵에서 전체 묶음을 확인하세요.
+                  </p>
+                )}
+                {location.group.subjects.length - 1 > peerLocations.length && (
                   <button
-                    key={subjectKey(peerLocation.subject)}
                     type="button"
-                    onClick={() => openPeerSubject(peerLocation)}
-                    className={cx(
-                      "rounded-md bg-white px-2 py-1 text-left text-xs font-semibold transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
-                      selectedSubjectSet.has(peerLocation.subject.name)
-                        ? "text-blue-700 ring-1 ring-blue-100"
-                        : "text-slate-600",
-                    )}
+                    onClick={() => {
+                      onGoRoadmap(location);
+                      onClose();
+                    }}
+                    className="w-full rounded-md bg-blue-600 px-3 py-2 text-xs font-bold text-white"
                   >
-                    {peerLocation.subject.name}
-                    {selectedSubjectSet.has(peerLocation.subject.name) && (
-                      <span className="ml-1 text-[10px] text-blue-600">선택됨</span>
-                    )}
+                    로드맵에서 전체 비교
                   </button>
-                ))}
+                )}
               </div>
             </section>
           )}
