@@ -3465,6 +3465,48 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
             </section>
 
+            {mode === "subjects" && hasRecommendationCriteria && (
+              <section className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-emerald-700">추천 조건 적용 중</p>
+                    <h3 className="mt-1 text-sm font-bold text-slate-950">
+                      {recommendationCriteriaLabels.slice(0, 2).join(", ")}
+                      {recommendationCriteriaLabels.length > 2
+                        ? ` 외 ${recommendationCriteriaLabels.length - 2}개`
+                        : ""}
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-emerald-900/70">
+                      전체 과목 탐색도 현재 진로·관심 조건에 맞춰 좁혀져 있습니다.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={resetRecommendationCriteria}
+                    className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100"
+                  >
+                    조건 해제
+                  </button>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMode("recommend")}
+                    className="h-10 rounded-lg bg-emerald-600 px-3 text-xs font-bold text-white"
+                  >
+                    추천 결과 보기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode("home")}
+                    className="h-10 rounded-lg bg-white px-3 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100"
+                  >
+                    조건 수정
+                  </button>
+                </div>
+              </section>
+            )}
+
             {mode === "recommend" && hasRecommendationCriteria && (
               <section className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">

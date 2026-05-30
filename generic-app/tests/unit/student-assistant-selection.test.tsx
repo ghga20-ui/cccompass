@@ -1068,6 +1068,36 @@ describe("student assistant selectable grade calculations", () => {
     expect(dialog.textContent).toContain("경제와 관심 진로를 연결한 탐구 질문 만들기");
   });
 
+  it("shows when subject exploration is narrowed by recommendation criteria", () => {
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        selectedProfileIds: ["career:business"],
+      })}`,
+    );
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.getByText("추천 조건 적용 중")).not.toBeNull();
+    expect(screen.getAllByText("경영학과").length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "추천 결과 보기" }));
+
+    expect(screen.getByRole("button", { name: "추천 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
+
+    fireEvent.click(screen.getByRole("button", { name: "과목 탭으로 이동" }));
+    fireEvent.click(screen.getByRole("button", { name: "조건 해제" }));
+
+    expect(screen.queryByText("추천 조건 적용 중")).toBeNull();
+    expect(screen.queryByLabelText("추천 조건 1개")).toBeNull();
+  });
+
   it("lets students recover from an empty subject result", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects", search: "없는과목" })}`);
 
