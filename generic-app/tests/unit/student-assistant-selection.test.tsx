@@ -418,6 +418,60 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("경제")).not.toBeNull();
   });
 
+  it("summarizes active recommendation criteria on the roadmap", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "science-choice",
+                      label: "Science Choice",
+                      choose: 1,
+                      subjects: [
+                        { name: "Physics Option", credits: 3, area: "Science" },
+                        { name: "History Option", credits: 3, area: "Social" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selectedTagIds: ["area:Science"],
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByText("추천 조건 반영")).not.toBeNull();
+    expect(screen.getByText("로드맵에서 추천 후보 1개를 표시하고 있습니다.")).not.toBeNull();
+    expect(screen.getAllByText("Science").length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "추천 보기" }));
+
+    expect(screen.getByRole("button", { name: "추천 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
+  });
+
   it("shows an empty state for unmatched career search on the home screen", () => {
     window.history.replaceState({}, "", `/?state=${encodeState({ profileQuery: "없는학과" })}`);
 

@@ -1571,6 +1571,15 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
     return names;
   }, [hasRecommendationCriteria, locations, selectedProfiles, selectedTagIds, tags]);
+  const recommendationCriteriaLabels = useMemo(() => {
+    const labels = selectedProfiles.map((profile) => profile.title);
+    selectedTagIds.forEach((tagId) => {
+      const tag = tags.find((candidate) => candidate.id === tagId);
+      if (tag) labels.push(tag.label);
+    });
+
+    return Array.from(new Set(labels));
+  }, [selectedProfiles, selectedTagIds, tags]);
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
@@ -2957,6 +2966,37 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                   </p>
                 </div>
               </div>
+              {hasRecommendationCriteria && (
+                <div className="mt-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-emerald-700">추천 조건 반영</p>
+                      <p className="mt-1 text-xs leading-5 text-emerald-900/70">
+                        로드맵에서 추천 후보 {recommendedNames.size}개를 표시하고 있습니다.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMode("recommend")}
+                      className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-emerald-700"
+                    >
+                      추천 보기
+                    </button>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {recommendationCriteriaLabels.slice(0, 6).map((label) => (
+                      <span key={`roadmap-criteria:${label}`} className="rounded-full bg-white px-2 py-1 text-[10px] font-bold text-emerald-700">
+                        {label}
+                      </span>
+                    ))}
+                    {recommendationCriteriaLabels.length > 6 && (
+                      <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold text-emerald-700">
+                        +{recommendationCriteriaLabels.length - 6}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="mt-3 flex gap-2">
                 <button
                   type="button"
