@@ -327,6 +327,21 @@ function calculateSelectionSummary(selection: SelectionState, cohort: Curriculum
   };
 }
 
+function getNextIncompleteGroups(selection: SelectionState, cohort: CurriculumCohort) {
+  return getGroupRecords(cohort)
+    .map((record) => {
+      const selected = selection[record.id] ?? [];
+
+      return {
+        ...record,
+        selectedCount: selected.length,
+        remainingCount: Math.max(record.group.choose - selected.length, 0),
+      };
+    })
+    .filter((record) => record.remainingCount > 0)
+    .slice(0, 3);
+}
+
 function buildSelectedSubjectOrigins(selection: SelectionState, cohort: CurriculumCohort) {
   const records = getGroupRecords(cohort);
   const recordById = new Map(records.map((record) => [record.id, record]));
@@ -1246,6 +1261,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   }, [locations, selectedProfiles, selectedTagIds, tags]);
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
+    [cohort, selection],
+  );
+  const nextIncompleteGroups = useMemo(
+    () => (cohort ? getNextIncompleteGroups(selection, cohort) : []),
     [cohort, selection],
   );
   const selectedSubjectNames = useMemo(() => Array.from(selectedSubjectSet), [selectedSubjectSet]);
@@ -2209,6 +2228,32 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </div>
                   );
                 })}
+              </div>
+              <div className="mt-3 rounded-lg bg-amber-50 p-3">
+                <p className="text-xs font-bold text-amber-700">
+                  {nextIncompleteGroups.length > 0 ? "다음에 채울 선택 묶음" : "선택 조건 완료"}
+                </p>
+                {nextIncompleteGroups.length > 0 ? (
+                  <div className="mt-2 space-y-1.5">
+                    {nextIncompleteGroups.map((record) => (
+                      <div
+                        key={record.id}
+                        className="flex items-center justify-between gap-3 rounded-md bg-white px-2.5 py-2 text-xs"
+                      >
+                        <span className="min-w-0 truncate font-semibold text-slate-700">
+                          {gradeLabel(record.grade, record.semester)} · {record.group.label}
+                        </span>
+                        <span className="shrink-0 font-bold text-amber-700">
+                          {record.remainingCount}개 더 선택
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-1 text-xs leading-5 text-amber-700">
+                    모든 선택 묶음을 채웠습니다. 공유하거나 이미지로 저장해도 됩니다.
+                  </p>
+                )}
               </div>
               <div className="mt-3 rounded-lg bg-slate-50 p-3">
                 <div className="mb-2 flex items-center justify-between gap-3">
