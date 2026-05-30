@@ -1292,6 +1292,7 @@ function SubjectDetailPanel({
   onSelect,
   onGoRoadmap,
   onOpenSubject,
+  onRemoveSelected,
 }: {
   location: SubjectLocation | null;
   selected: boolean;
@@ -1306,6 +1307,7 @@ function SubjectDetailPanel({
   onSelect: (location: SubjectLocation) => void;
   onGoRoadmap: (location: SubjectLocation) => void;
   onOpenSubject: (location: SubjectLocation) => void;
+  onRemoveSelected: (subjectName: string) => void;
 }) {
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -1445,13 +1447,25 @@ function SubjectDetailPanel({
 
           {selected && (
             <section className="rounded-lg bg-emerald-50 p-3">
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-700" />
-                <h3 className="text-sm font-bold text-emerald-900">로드맵에 선택한 과목</h3>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-emerald-700" />
+                    <h3 className="text-sm font-bold text-emerald-900">로드맵에 선택한 과목</h3>
+                  </div>
+                  <p className="mt-1 text-sm leading-6 text-emerald-900/75">
+                    {selectedOrigin ? `${selectedOrigin}에 담겨 있습니다.` : "현재 로드맵에 담겨 있습니다."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onRemoveSelected(subject.name)}
+                  className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-red-600 ring-1 ring-red-100"
+                  aria-label={`${subject.name} 상세에서 선택 해제`}
+                >
+                  해제
+                </button>
               </div>
-              <p className="mt-1 text-sm leading-6 text-emerald-900/75">
-                {selectedOrigin ? `${selectedOrigin}에 담겨 있습니다.` : "현재 로드맵에 담겨 있습니다."}
-              </p>
             </section>
           )}
 
@@ -2242,6 +2256,11 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
       return next;
     });
+  };
+
+  const removeSelectedSubjectWithToast = (subjectName: string) => {
+    removeSelectedSubject(subjectName);
+    showToast(`${subjectName}${objectParticle(subjectName)} 로드맵에서 해제했습니다.`);
   };
 
   const resetAllSelection = () => {
@@ -3988,6 +4007,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         onSelect={selectRecommendation}
         onGoRoadmap={goToRoadmapSubject}
         onOpenSubject={setActiveSubject}
+        onRemoveSelected={removeSelectedSubjectWithToast}
       />
       <BottomNav
         mode={mode}

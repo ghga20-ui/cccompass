@@ -1691,6 +1691,58 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByText("이 묶음의 선택 조건을 채웠습니다.")).not.toBeNull();
   });
 
+  it("removes a selected subject directly from subject details", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByLabelText("Grade 2 Option 선택 과목 상세 보기"));
+    fireEvent.click(screen.getByRole("button", { name: "Grade 2 Option 상세에서 선택 해제" }));
+
+    expect(screen.queryByText("로드맵에 선택한 과목")).toBeNull();
+    expect(screen.queryByLabelText("로드맵 선택 과목 1개")).toBeNull();
+    expect(screen.queryByText("Grade 2 Option을 로드맵에서 해제했습니다.")).not.toBeNull();
+  });
+
   it("shows a completion panel when every roadmap choice is filled", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
