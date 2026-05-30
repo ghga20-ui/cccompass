@@ -311,6 +311,7 @@ describe("student assistant selectable grade calculations", () => {
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
     expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryAllByText("로드맵 선택됨").length).toBeGreaterThan(1);
     expect(screen.queryByText("Grade 3 Option")).toBeNull();
   });
 

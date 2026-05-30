@@ -775,6 +775,7 @@ function SubjectMeta({
 function SubjectCard({
   location,
   selected = false,
+  selectedOrigin,
   recommendationBadge,
   recommendationReason,
   onClick,
@@ -782,6 +783,7 @@ function SubjectCard({
 }: {
   location: SubjectLocation;
   selected?: boolean;
+  selectedOrigin?: string;
   recommendationBadge?: string;
   recommendationReason?: string;
   onClick?: () => void;
@@ -802,6 +804,16 @@ function SubjectCard({
         </span>
       </div>
       <SubjectMeta subject={location.subject} location={location} />
+      {selected && (
+        <div className="mt-2 rounded-md border border-blue-100 bg-white px-2 py-1.5">
+          <p className="text-[10px] font-bold text-blue-700">로드맵 선택됨</p>
+          {selectedOrigin && (
+            <p className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-slate-600">
+              {selectedOrigin}
+            </p>
+          )}
+        </div>
+      )}
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
         <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">
           우리 학교 개설
@@ -2465,6 +2477,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                                   key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
                                   location={location}
                                   selected={selectedSubjectSet.has(location.subject.name)}
+                                  selectedOrigin={selectedSubjectOrigins.get(location.subject.name)}
                                   recommendationBadge={recommendationBadge}
                                   recommendationReason={buildRecommendationReason({
                                     location,
@@ -2498,6 +2511,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                         key={`${location.grade}-${location.semester}-${location.group.id}-${subjectKey(location.subject)}`}
                         location={location}
                         selected={selectedSubjectSet.has(location.subject.name)}
+                        selectedOrigin={selectedSubjectOrigins.get(location.subject.name)}
                         recommendationBadge={recommendationBadge}
                         recommendationReason={buildRecommendationReason({
                           location,
