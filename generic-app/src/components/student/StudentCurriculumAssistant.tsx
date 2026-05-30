@@ -439,6 +439,32 @@ function buildSubjectOverview(subject: CurriculumSubject) {
   return `${subject.name}은 ${subject.credits}학점 선택과목입니다. 편제표의 같은 선택 묶음 안에서 다른 과목과 비교해 선택할 수 있습니다.`;
 }
 
+function inferSubjectArea(location: SubjectLocation) {
+  if (location.subject.area) return location.subject.area;
+
+  const haystack = `${location.subject.name} ${location.group.label}`;
+  const rules = [
+    { label: "국어", keywords: ["국어", "문학", "독서", "언어", "화법", "작문"] },
+    { label: "수학", keywords: ["수학", "대수", "미적분", "기하", "확률"] },
+    { label: "영어", keywords: ["영어"] },
+    { label: "사회", keywords: ["사회", "경제", "정치", "윤리", "세계", "지리", "역사", "법"] },
+    { label: "과학", keywords: ["과학", "물리", "화학", "생명", "지구", "실험"] },
+    { label: "생활·교양", keywords: ["일본어", "중국어", "한자", "정보", "기술", "가정", "보건", "심리"] },
+    { label: "예술·체육", keywords: ["음악", "미술", "연극", "체육", "스포츠", "예술"] },
+    { label: "전문·융합", keywords: ["조리", "간호", "인공지능", "융합", "탐구"] },
+  ];
+
+  return rules.find((rule) => rule.keywords.some((keyword) => haystack.includes(keyword)))?.label ?? "기타";
+}
+
+function inferSubjectCategory(location: SubjectLocation) {
+  if (location.subject.category) return location.subject.category;
+  if (location.group.label.includes("증배")) return "증배";
+  if (location.subject.name.includes("실험") || location.subject.name.includes("탐구")) return "심화·탐구";
+
+  return "선택과목";
+}
+
 function SubjectMeta({ subject, light = false }: { subject: CurriculumSubject; light?: boolean }) {
   const labels = [subject.area, subject.category].filter(
     (label): label is string => typeof label === "string" && label.length > 0,
@@ -803,6 +829,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     initialSharedState.selectedProfileIds ??
       (initialSharedState.selectedProfileId ? [initialSharedState.selectedProfileId] : []),
   );
+  const [selectedArea, setSelectedArea] = useState("전체");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
   const [search, setSearch] = useState("");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
@@ -819,6 +847,32 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const subjectLocations = useMemo(() => uniqueSubjects(locations), [locations]);
   const tags = useMemo(() => makeInterestTags(locations), [locations]);
   const profiles = useMemo(() => makeRecommendationProfiles(tags, locations), [locations, tags]);
+  const areaOptions = useMemo(
+    () => [
+      "전체",
+      ...Array.from(
+        new Set(
+          subjectLocations
+            .map(inferSubjectArea)
+            .filter((area): area is string => typeof area === "string" && area.length > 0),
+        ),
+      ),
+    ],
+    [subjectLocations],
+  );
+  const categoryOptions = useMemo(
+    () => [
+      "전체",
+      ...Array.from(
+        new Set(
+          subjectLocations
+            .map(inferSubjectCategory)
+            .filter((category) => typeof category === "string" && category.length > 0),
+        ),
+      ),
+    ],
+    [subjectLocations],
+  );
   const selectedProfiles = useMemo(
     () => profiles.filter((profile) => selectedProfileIds.includes(profile.id)),
     [profiles, selectedProfileIds],
@@ -868,8 +922,11 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         ? selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
         : true;
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
+      const matchesArea = selectedArea === "전체" || inferSubjectArea(location) === selectedArea;
+      const matchesCategory =
+        selectedCategory === "전체" || inferSubjectCategory(location) === selectedCategory;
 
-      return matchesSearch && matchesTag && matchesProfile && matchesGrade;
+      return matchesSearch && matchesTag && matchesProfile && matchesGrade && matchesArea && matchesCategory;
     }).sort((a, b) => {
       if (selectedProfiles.length < 2) {
         return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
@@ -881,7 +938,16 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       if (aMatches !== bMatches) return bMatches - aMatches;
       return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
     });
-  }, [activeGrade, search, selectedProfiles, selectedTagIds, subjectLocations, tags]);
+  }, [
+    activeGrade,
+    search,
+    selectedArea,
+    selectedCategory,
+    selectedProfiles,
+    selectedTagIds,
+    subjectLocations,
+    tags,
+  ]);
 
   const filteredProfiles = useMemo(() => {
     const query = profileQuery.trim();
@@ -1279,6 +1345,38 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
+                {areaOptions.map((area) => (
+                  <button
+                    key={`area-filter:${area}`}
+                    type="button"
+                    onClick={() => setSelectedArea(area)}
+                    className={cx(
+                      "rounded-full px-2.5 py-1.5 text-xs font-bold",
+                      selectedArea === area ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-600",
+                    )}
+                  >
+                    {area}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-2 flex flex-wrap gap-2">
+                {categoryOptions.map((category) => (
+                  <button
+                    key={`category-filter:${category}`}
+                    type="button"
+                    onClick={() => setSelectedCategory(category)}
+                    className={cx(
+                      "rounded-full px-2.5 py-1.5 text-xs font-bold",
+                      selectedCategory === category ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600",
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-2 flex flex-wrap gap-2">
                 {tags.map((tag) => {
                   const active = selectedTagIds.includes(tag.id);
                   return (
