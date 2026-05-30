@@ -564,6 +564,64 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByLabelText("학년별 선택 과목 요약").textContent).not.toContain("Hidden Grade 1 Option");
   });
 
+  it("ignores a shared grade 1 subject filter", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-1-choice",
+                      label: "Grade 1 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Hidden Grade 1 Option", credits: 2 }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "subjects", activeGrade: 1 })}`);
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect((screen.getByDisplayValue("전체 학년") as HTMLSelectElement).value).toBe("all");
+    expect(screen.queryByText("Hidden Grade 1 Option")).toBeNull();
+    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryByText("조건에 맞는 2·3학년 선택과목이 없습니다.")).toBeNull();
+  });
+
   it("marks the current bottom-nav tab for app navigation", () => {
     render(
       <StudentCurriculumAssistant

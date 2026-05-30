@@ -1926,6 +1926,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     [cohort, rawSelection],
   );
   const grades = useMemo(() => (cohort ? selectableGrades(cohort) : []), [cohort]);
+  const activeSelectableGrade = useMemo(
+    () => (activeGrade !== "all" && grades.some((grade) => grade.grade === activeGrade) ? activeGrade : "all"),
+    [activeGrade, grades],
+  );
   const locations = useMemo(() => (cohort ? choiceLocations(cohort) : []), [cohort]);
   const subjectLocations = useMemo(() => uniqueSubjects(locations), [locations]);
   const tags = useMemo(() => makeInterestTags(locations), [locations]);
@@ -2113,7 +2117,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
   const activeFilterLabels = useMemo(() => {
     const labels: string[] = [];
-    if (activeGrade !== "all") labels.push(`${activeGrade}학년`);
+    if (activeSelectableGrade !== "all") labels.push(`${activeSelectableGrade}학년`);
     if (search.trim()) labels.push(`검색: ${search.trim()}`);
     if (activeSelectedArea !== "전체") labels.push(activeSelectedArea);
     if (activeSelectedCategory !== "전체") labels.push(activeSelectedCategory);
@@ -2128,7 +2132,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
     return Array.from(new Set(labels));
   }, [
-    activeGrade,
+    activeSelectableGrade,
     activeSelectedArea,
     activeSelectedCategory,
     onlyExamSubjects,
@@ -2153,7 +2157,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         selectedTagIds,
         selectedProfiles,
       });
-      const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
+      const matchesGrade = activeSelectableGrade === "all" || location.grade === activeSelectableGrade;
       const matchesArea = activeSelectedArea === "전체" || inferSubjectArea(location) === activeSelectedArea;
       const matchesCategory =
         activeSelectedCategory === "전체" || inferSubjectCategory(location) === activeSelectedCategory;
@@ -2185,7 +2189,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       return a.grade - b.grade || a.semester - b.semester || a.subject.name.localeCompare(b.subject.name);
     });
   }, [
-    activeGrade,
+    activeSelectableGrade,
     activeSelectedArea,
     activeSelectedCategory,
     onlyExamSubjects,
@@ -2337,7 +2341,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     persistSharedState({
       mode,
       cohortYear: cohort?.entranceYear,
-      activeGrade,
+      activeGrade: activeSelectableGrade,
       selectedTagIds,
       selectedProfileId,
       selectedProfileIds,
@@ -2351,7 +2355,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selection,
     });
   }, [
-    activeGrade,
+    activeSelectableGrade,
     cohort?.entranceYear,
     mode,
     onlyExamSubjects,
@@ -3345,7 +3349,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               <div className="grid gap-2 sm:grid-cols-[1fr_1.4fr]">
                 <label className="relative block">
                   <select
-                    value={activeGrade}
+                    value={activeSelectableGrade}
                     onChange={(event) => {
                       const value = event.target.value;
                       setActiveGrade(value === "all" ? "all" : Number(value));
