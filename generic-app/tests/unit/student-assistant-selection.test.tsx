@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildSubjectAvailability,
   choiceLocations,
@@ -946,6 +946,66 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryAllByRole("button", { name: /Remaining Option/ }).length).toBeGreaterThan(0);
     expect(screen.queryByText("Complete Choice")).toBeNull();
     expect(screen.queryByText("Required Korean")).toBeNull();
+  });
+
+  it("moves directly to the next incomplete roadmap group", () => {
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-complete",
+                      label: "Complete Choice",
+                      choose: 1,
+                      subjects: [{ name: "Completed Option", credits: 3 }],
+                    },
+                    {
+                      id: "grade-2-incomplete",
+                      label: "Incomplete Choice",
+                      choose: 1,
+                      subjects: [{ name: "Remaining Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "roadmap",
+        selection: {
+          "2026:2:1:grade-2-complete": ["Completed Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /다음 미완료: .*Incomplete Choice/ }));
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
   });
 
   it("opens subject details from roadmap choice options", () => {
