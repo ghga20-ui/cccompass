@@ -3166,6 +3166,42 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
+                {selectedSubjectNames.length > 0 && (
+                  <div className="mt-3 rounded-lg bg-white/70 p-3">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <p className="text-xs font-bold text-blue-700">담은 과목</p>
+                      <span className="text-xs font-semibold text-blue-600">{selectedSubjectNames.length}개</span>
+                    </div>
+                    <div className="flex max-h-20 flex-wrap gap-1.5 overflow-y-auto">
+                      {selectedSubjectNames.map((name) => (
+                        <span
+                          key={`explore-selected:${name}`}
+                          className="inline-flex overflow-hidden rounded-full bg-white text-xs font-semibold text-slate-700 ring-1 ring-blue-100"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const selectedLocation = selectedSubjectLocations.get(name);
+                              if (selectedLocation) setActiveSubject(selectedLocation);
+                            }}
+                            className="px-2 py-1 transition hover:text-blue-700"
+                            aria-label={`${name} 선택 과목 상세 보기`}
+                          >
+                            {name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedSubject(name)}
+                            className="border-l border-blue-100 px-1.5 py-1 text-slate-400 transition hover:bg-red-50 hover:text-red-500"
+                            aria-label={`${name} 선택 해제`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </section>
             )}
           </div>

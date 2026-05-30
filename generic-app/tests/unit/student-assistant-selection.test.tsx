@@ -187,7 +187,7 @@ describe("student assistant selectable grade calculations", () => {
 
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
-    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryAllByText("Grade 2 Option").length).toBeGreaterThan(0);
     expect(screen.queryByText("Grade 3 Option")).not.toBeNull();
     expect(screen.queryByText("Grade 1 Hidden Option")).toBeNull();
   });
@@ -861,7 +861,7 @@ describe("student assistant selectable grade calculations", () => {
 
     render(<StudentCurriculumAssistant curriculum={curriculum} />);
 
-    expect(screen.queryByText("Grade 2 Option")).not.toBeNull();
+    expect(screen.queryAllByText("Grade 2 Option").length).toBeGreaterThan(0);
     expect(screen.queryAllByText("로드맵 선택됨").length).toBeGreaterThan(1);
     expect(screen.queryByText("선택됨")).not.toBeNull();
     expect(screen.queryByText("로드맵에서 보기")).not.toBeNull();
@@ -1204,6 +1204,59 @@ describe("student assistant selectable grade calculations", () => {
     fireEvent.click(screen.getByRole("button", { name: /로드맵에 담기/ }));
 
     expect(screen.queryByText("Grade 2 Option을 로드맵에 담았습니다.")).not.toBeNull();
+  });
+
+  it("lets students remove selected subjects from the explorer roadmap summary", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "grade-2-choice",
+                      label: "Grade 2 Choice",
+                      choose: 1,
+                      subjects: [{ name: "Grade 2 Option", credits: 3 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({
+        mode: "subjects",
+        selection: {
+          "2026:2:1:grade-2-choice": ["Grade 2 Option"],
+        },
+      })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.queryByText("담은 과목")).not.toBeNull();
+    expect(screen.queryByText("1개")).not.toBeNull();
+
+    fireEvent.click(screen.getByLabelText("Grade 2 Option 선택 해제"));
+
+    expect(screen.queryByLabelText("Grade 2 Option 선택 해제")).toBeNull();
+    expect(screen.queryByText("담은 과목")).toBeNull();
   });
 
   it("explains why a full roadmap choice option is disabled", () => {
