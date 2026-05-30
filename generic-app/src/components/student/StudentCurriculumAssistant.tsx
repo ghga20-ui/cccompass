@@ -2560,6 +2560,57 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         {mode === "roadmap" && summary && (
           <div className="space-y-4">
             <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              {(() => {
+                const completionRate =
+                  summary.totalGroups > 0
+                    ? Math.round((summary.completedGroups / summary.totalGroups) * 100)
+                    : 0;
+                const complete = summary.totalGroups > 0 && summary.completedGroups >= summary.totalGroups;
+
+                return (
+                  <div
+                    className={cx(
+                      "mb-4 rounded-lg border p-3",
+                      complete
+                        ? "border-emerald-100 bg-emerald-50"
+                        : "border-blue-100 bg-blue-50",
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p
+                          className={cx(
+                            "text-xs font-bold",
+                            complete ? "text-emerald-700" : "text-blue-700",
+                          )}
+                        >
+                          선택 진행률
+                        </p>
+                        <p className="mt-1 text-sm font-bold text-slate-950">
+                          {complete ? "모든 선택 조건을 채웠습니다." : `${nextIncompleteGroups.length}개 묶음이 남았습니다.`}
+                        </p>
+                      </div>
+                      <span
+                        className={cx(
+                          "rounded-full px-2.5 py-1 text-sm font-black",
+                          complete ? "bg-white text-emerald-700" : "bg-white text-blue-700",
+                        )}
+                      >
+                        {completionRate}%
+                      </span>
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                      <div
+                        className={cx(
+                          "h-full rounded-full transition-all",
+                          complete ? "bg-emerald-500" : "bg-blue-600",
+                        )}
+                        style={{ width: `${completionRate}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-bold">나의 선택 로드맵</h2>
