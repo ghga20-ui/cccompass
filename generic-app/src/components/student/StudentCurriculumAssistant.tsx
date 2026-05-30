@@ -1075,7 +1075,10 @@ function BottomNav({
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur">
+    <nav
+      aria-label="학생 선택과목 도우미 하단 메뉴"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur"
+    >
       <div className="mx-auto grid h-16 max-w-lg grid-cols-4">
         {items.map((item) => {
           const Icon = item.icon;
@@ -1086,9 +1089,11 @@ function BottomNav({
               key={item.mode}
               type="button"
               onClick={() => setMode(item.mode)}
+              aria-current={active ? "page" : undefined}
+              aria-label={active ? `${item.label} 탭, 현재 화면` : `${item.label} 탭으로 이동`}
               className={cx(
-                "flex flex-col items-center justify-center gap-1 text-xs font-semibold",
-                active ? "text-blue-600" : "text-slate-500",
+                "mx-1 my-2 flex flex-col items-center justify-center gap-1 rounded-xl text-xs font-semibold transition-colors",
+                active ? "bg-blue-50 text-blue-600" : "text-slate-500 hover:bg-slate-50 hover:text-slate-700",
               )}
             >
               <span className="relative">

@@ -301,6 +301,28 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.queryByLabelText("추천 조건 1개")).not.toBeNull();
   });
 
+  it("marks the current bottom-nav tab for app navigation", () => {
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    const nav = screen.getByRole("navigation", { name: "학생 선택과목 도우미 하단 메뉴" });
+    const homeTab = screen.getByRole("button", { name: "홈 탭, 현재 화면" });
+    const roadmapTab = screen.getByRole("button", { name: "로드맵 탭으로 이동" });
+
+    expect(nav).not.toBeNull();
+    expect(homeTab.getAttribute("aria-current")).toBe("page");
+
+    fireEvent.click(roadmapTab);
+
+    expect(screen.getByRole("button", { name: "로드맵 탭, 현재 화면" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(screen.getByRole("button", { name: "홈 탭으로 이동" }).getAttribute("aria-current")).toBeNull();
+  });
+
   it("restores the shared roadmap-selection subject filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",
