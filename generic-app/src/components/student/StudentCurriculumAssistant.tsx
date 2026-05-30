@@ -1207,6 +1207,7 @@ function SubjectDetailPanel({
   onOpenSubject: (location: SubjectLocation) => void;
 }) {
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (!location) return;
@@ -1217,6 +1218,7 @@ function SubjectDetailPanel({
     };
 
     document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
@@ -1271,6 +1273,7 @@ function SubjectDetailPanel({
             <SubjectMeta subject={subject} location={location} />
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="과목 상세 닫기"

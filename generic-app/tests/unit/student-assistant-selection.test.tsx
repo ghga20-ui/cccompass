@@ -503,6 +503,7 @@ describe("student assistant selectable grade calculations", () => {
     fireEvent.click(screen.getByRole("button", { name: "경제 과목 상세 보기" }));
     expect(screen.getByRole("dialog", { name: "경제" })).not.toBeNull();
     expect(document.body.style.overflow).toBe("hidden");
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "과목 상세 닫기" }));
 
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByRole("dialog", { name: "경제" })).toBeNull();
