@@ -1910,6 +1910,19 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
   };
 
+  const removeSelectedSubject = (subjectName: string) => {
+    setSelection((current) => {
+      const next = Object.fromEntries(
+        Object.entries(current).map(([groupId, names]) => [
+          groupId,
+          names.filter((name) => name !== subjectName),
+        ]),
+      );
+
+      return next;
+    });
+  };
+
   const canAddSubjectToRoadmap = (location: SubjectLocation) => {
     return !getRoadmapAddBlockReason(location, selection);
   };
@@ -3124,20 +3137,32 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                       const selectedLocation = selectedSubjectLocations.get(name);
 
                       return (
-                        <button
+                        <span
                           key={name}
-                          type="button"
-                          onClick={() => {
-                            if (selectedLocation) setActiveSubject(selectedLocation);
-                          }}
-                          className={cx(
-                            "rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-700",
-                            selectedLocation && "transition hover:text-blue-700 hover:ring-2 hover:ring-blue-100",
-                          )}
-                          aria-label={`${name} 선택 과목 상세 보기`}
+                          className="inline-flex overflow-hidden rounded-full bg-white text-xs font-semibold text-slate-700 ring-1 ring-slate-100"
                         >
-                          {name}
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (selectedLocation) setActiveSubject(selectedLocation);
+                            }}
+                            className={cx(
+                              "px-2 py-1",
+                              selectedLocation && "transition hover:text-blue-700",
+                            )}
+                            aria-label={`${name} 선택 과목 상세 보기`}
+                          >
+                            {name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedSubject(name)}
+                            className="border-l border-slate-100 px-1.5 py-1 text-slate-400 transition hover:bg-red-50 hover:text-red-500"
+                            aria-label={`${name} 선택 해제`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
                       );
                     })}
                   </div>
