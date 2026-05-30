@@ -1483,6 +1483,13 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setProfileQuery("");
   };
 
+  const scrollToRoadmapGrade = (grade: number) => {
+    document.getElementById(`roadmap-grade-${grade}`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const toggleProfile = (profile: RecommendationProfile) => {
     const active = selectedProfileIds.includes(profile.id);
 
@@ -2382,10 +2389,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     progress.totalGroups > 0 && progress.completedGroups >= progress.totalGroups;
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={progress.grade}
+                      onClick={() => scrollToRoadmapGrade(progress.grade)}
                       className={cx(
-                        "rounded-lg px-3 py-2",
+                        "rounded-lg px-3 py-2 text-left transition hover:ring-2 hover:ring-blue-100",
                         complete ? "bg-emerald-50 text-emerald-700" : "bg-slate-50 text-slate-600",
                       )}
                     >
@@ -2398,7 +2407,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                       <p className="mt-1 text-base font-bold">
                         {progress.totalCredits}/{progress.expectedCredits}학점
                       </p>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -2459,7 +2468,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
             </section>
 
             {grades.map((grade) => (
-              <div key={grade.grade} className="space-y-3">
+              <div key={grade.grade} id={`roadmap-grade-${grade.grade}`} className="scroll-mt-80 space-y-3">
                 {grade.semesters.map((semester: CurriculumSemester) => {
                   const semesterProgress = calculateSemesterProgress(cohort, grade, semester, selection);
                   const semesterComplete =
