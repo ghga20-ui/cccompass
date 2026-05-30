@@ -1533,26 +1533,55 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const handleExport = () => {
     if (!cohort || !summary) return;
 
-    const canvas = document.createElement("canvas");
     const width = 900;
-    const height = 780;
     const dpr = 2;
+    const pad = 40;
+    const chipHeight = 28;
+    const font = "Arial, sans-serif";
+    const exportGrades = selectableGrades(cohort);
+    const selected = summary.selectedNames.length > 0 ? summary.selectedNames : ["선택한 과목이 없습니다."];
+    const selectedRows = Math.ceil(selected.length / 2);
+    const height =
+      92 +
+      88 +
+      96 +
+      62 +
+      exportGrades.reduce((total, grade) => total + grade.semesters.length * 48, 0) +
+      54 +
+      selectedRows * 34 +
+      52;
+    const canvas = document.createElement("canvas");
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.scale(dpr, dpr);
+
+    const roundedRect = (x: number, y: number, rectWidth: number, rectHeight: number, radius: number) => {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + rectWidth - radius, y);
+      ctx.quadraticCurveTo(x + rectWidth, y, x + rectWidth, y + radius);
+      ctx.lineTo(x + rectWidth, y + rectHeight - radius);
+      ctx.quadraticCurveTo(x + rectWidth, y + rectHeight, x + rectWidth - radius, y + rectHeight);
+      ctx.lineTo(x + radius, y + rectHeight);
+      ctx.quadraticCurveTo(x, y + rectHeight, x, y + rectHeight - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    };
+
     ctx.fillStyle = "#f8fafc";
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = "#2563eb";
     ctx.fillRect(0, 0, width, 92);
     ctx.fillStyle = "#ffffff";
-    ctx.font = "700 28px Arial, sans-serif";
+    ctx.font = `700 28px ${font}`;
     ctx.fillText(`${curriculum.schoolName} 선택과목 로드맵`, 40, 56);
-    ctx.font = "500 16px Arial, sans-serif";
+    ctx.font = `500 16px ${font}`;
     ctx.fillText(cohortDisplayLabel(cohort), 40, 80);
     ctx.fillStyle = "#0f172a";
-    ctx.font = "700 24px Arial, sans-serif";
+    ctx.font = `700 24px ${font}`;
     ctx.fillText(`예상 이수 학점 ${summary.totalCredits}/${summary.expectedCredits}`, 40, 140);
     let y = 182;
     gradeProgress.forEach((progress, index) => {
@@ -1561,11 +1590,12 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         progress.totalGroups > 0 && progress.completedGroups >= progress.totalGroups
           ? "#ecfdf5"
           : "#ffffff";
-      ctx.fillRect(x, y - 26, 370, 72);
+      roundedRect(x, y - 26, 370, 72, 12);
+      ctx.fill();
       ctx.fillStyle = "#0f172a";
-      ctx.font = "700 18px Arial, sans-serif";
+      ctx.font = `700 18px ${font}`;
       ctx.fillText(`${progress.grade}학년`, x + 16, y);
-      ctx.font = "600 14px Arial, sans-serif";
+      ctx.font = `600 14px ${font}`;
       ctx.fillStyle = "#475569";
       ctx.fillText(`${progress.completedGroups}/${progress.totalGroups} 묶음`, x + 16, y + 24);
       ctx.fillStyle = "#2563eb";
@@ -1574,16 +1604,17 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
     y = 290;
     ctx.fillStyle = "#0f172a";
-    ctx.font = "700 18px Arial, sans-serif";
+    ctx.font = `700 18px ${font}`;
     ctx.fillText("학기별 선택 현황", 40, y);
     y += 34;
-    selectableGrades(cohort).forEach((grade) => {
+    exportGrades.forEach((grade) => {
       grade.semesters.forEach((semester) => {
         const progress = calculateSemesterProgress(cohort, grade, semester, selection);
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(40, y - 22, 820, 38);
+        roundedRect(40, y - 22, 820, 38, 8);
+        ctx.fill();
         ctx.fillStyle = "#0f172a";
-        ctx.font = "600 14px Arial, sans-serif";
+        ctx.font = `600 14px ${font}`;
         ctx.fillText(`${grade.grade}학년 ${semester.semester}학기`, 56, y + 2);
         ctx.fillStyle = "#64748b";
         ctx.fillText(`${progress.completedGroups}/${progress.totalGroups} 묶음`, 270, y + 2);
@@ -1595,20 +1626,31 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
 
     y += 10;
     ctx.fillStyle = "#0f172a";
-    ctx.font = "700 18px Arial, sans-serif";
+    ctx.font = `700 18px ${font}`;
     ctx.fillText("선택 과목", 40, y);
     y += 34;
-    ctx.font = "500 16px Arial, sans-serif";
+    ctx.font = `500 16px ${font}`;
     ctx.fillStyle = "#475569";
-    const selected = summary.selectedNames.length > 0 ? summary.selectedNames : ["선택한 과목이 없습니다."];
-    selected.slice(0, 10).forEach((name, index) => {
+    selected.forEach((name, index) => {
       const x = 40 + (index % 2) * 410;
       const subjectY = y + Math.floor(index / 2) * 34;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(x, subjectY - 21, 360, 26);
+      const chipWidth = Math.min(360, ctx.measureText(name).width + 24);
+      ctx.fillStyle = summary.selectedNames.length > 0 ? "#ffffff" : "#f1f5f9";
+      roundedRect(x, subjectY - 21, chipWidth, chipHeight, 8);
+      ctx.fill();
       ctx.fillStyle = "#0f172a";
       ctx.fillText(name, x + 12, subjectY - 3);
     });
+    y += selectedRows * 34 + 18;
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = `500 12px ${font}`;
+    ctx.fillText("2·3학년 선택과목 기준", pad, y);
+    ctx.fillText(
+      "범용 선택과목 도우미",
+      width - pad - ctx.measureText("범용 선택과목 도우미").width,
+      y,
+    );
+
     const link = document.createElement("a");
     link.download = `${curriculum.schoolName}-선택과목-로드맵.png`;
     link.href = canvas.toDataURL("image/png");
