@@ -2711,11 +2711,35 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </div>
                 {selectedSubjectNames.length > 0 ? (
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {selectedSubjectNames.slice(0, 5).map((name) => (
-                      <span key={`home-selected:${name}`} className="rounded-full bg-white px-2 py-1 text-xs font-bold text-blue-800">
-                        {name}
-                      </span>
-                    ))}
+                    {selectedSubjectNames.slice(0, 5).map((name) => {
+                      const selectedLocation = selectedSubjectLocations.get(name);
+
+                      return (
+                        <span
+                          key={`home-selected:${name}`}
+                          className="inline-flex overflow-hidden rounded-full bg-white text-xs font-bold text-blue-800 ring-1 ring-blue-100"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (selectedLocation) setActiveSubject(selectedLocation);
+                            }}
+                            className="px-2 py-1 transition hover:text-blue-600"
+                            aria-label={`${name} 홈 선택 과목 상세 보기`}
+                          >
+                            {name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedSubjectWithToast(name)}
+                            className="border-l border-blue-100 px-1.5 py-1 text-blue-300 transition hover:bg-red-50 hover:text-red-500"
+                            aria-label={`${name} 홈에서 선택 해제`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      );
+                    })}
                     {selectedSubjectNames.length > 5 && (
                       <span className="rounded-full bg-white px-2 py-1 text-xs font-bold text-blue-800">
                         +{selectedSubjectNames.length - 5}
