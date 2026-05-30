@@ -351,6 +351,23 @@ describe("student assistant selectable grade calculations", () => {
     );
   });
 
+  it("asks for a recommendation condition before showing the recommendation list", () => {
+    window.history.replaceState({}, "", `/?state=${encodeState({ mode: "recommend" })}`);
+
+    render(
+      <StudentCurriculumAssistant
+        curriculum={{ schoolName: "Test High School", sourceYear: "2026", cohorts: [cohort] }}
+      />,
+    );
+
+    expect(screen.getByText("관심 분야를 먼저 선택해주세요")).not.toBeNull();
+    expect(screen.queryByText(/추천 후보/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "홈에서 조건 고르기" }));
+
+    expect(screen.getByRole("button", { name: "홈 탭, 현재 화면" }).getAttribute("aria-current")).toBe("page");
+  });
+
   it("restores the shared roadmap-selection subject filter", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

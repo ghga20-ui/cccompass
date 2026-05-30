@@ -1482,6 +1482,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     () => profiles.filter((profile) => selectedProfileIds.includes(profile.id)),
     [profiles, selectedProfileIds],
   );
+  const hasRecommendationCriteria = selectedProfiles.length > 0 || selectedTagIds.length > 0;
   const selectedSubjectSet = useMemo(() => new Set(Object.values(selection).flat()), [selection]);
   const selectedSubjectOrigins = useMemo(
     () => (cohort ? buildSelectedSubjectOrigins(selection, cohort) : new Map<string, string>()),
@@ -1489,6 +1490,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   );
   const recommendedNames = useMemo(() => {
     const names = new Set<string>();
+    if (!hasRecommendationCriteria) return names;
+
     locations.forEach((location) => {
       if (
         tagMatches(tags, selectedTagIds, location.subject) ||
@@ -1498,7 +1501,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       }
     });
     return names;
-  }, [locations, selectedProfiles, selectedTagIds, tags]);
+  }, [hasRecommendationCriteria, locations, selectedProfiles, selectedTagIds, tags]);
   const summary = useMemo(
     () => (cohort ? calculateSelectionSummary(selection, cohort) : null),
     [cohort, selection],
@@ -2516,7 +2519,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </div>
             </section>
 
-            {mode === "recommend" && (selectedProfiles.length > 0 || selectedTagIds.length > 0) && (
+            {mode === "recommend" && hasRecommendationCriteria && (
               <section className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
@@ -2649,6 +2652,26 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               </section>
             )}
 
+            {mode === "recommend" && !hasRecommendationCriteria && (
+              <section className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 text-base font-bold text-slate-950">관심 분야를 먼저 선택해주세요</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  홈에서 진로·학과나 관심 영역을 고르면 2·3학년 선택과목 중 맞춤 추천만 보여줍니다.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setMode("home")}
+                  className="mt-4 h-11 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white"
+                >
+                  홈에서 조건 고르기
+                </button>
+              </section>
+            )}
+
+            {(mode === "subjects" || hasRecommendationCriteria) && (
             <div className="space-y-3">
               {mode === "recommend"
                 ? recommendationSections.map((section) => {
@@ -2757,6 +2780,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                 </p>
               )}
             </div>
+            )}
 
             {summary && (
               <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">
