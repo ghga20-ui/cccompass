@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -65,6 +65,10 @@ type SharedAssistantState = {
   selectedTagIds?: string[];
   selectedProfileId?: string | null;
   selectedProfileIds?: string[];
+  selectedArea?: string;
+  selectedCategory?: string;
+  profileQuery?: string;
+  search?: string;
   selection?: SelectionState;
 };
 
@@ -105,10 +109,33 @@ function decodeSharedState(value: string | null): SharedAssistantState {
   }
 }
 
+function getStorageKey() {
+  if (typeof window === "undefined") return "";
+
+  return `student-curriculum-assistant:${window.location.pathname}`;
+}
+
 function getInitialSharedState(): SharedAssistantState {
   if (typeof window === "undefined") return {};
 
-  return decodeSharedState(new URLSearchParams(window.location.search).get("state"));
+  const queryState = new URLSearchParams(window.location.search).get("state");
+  if (queryState) return decodeSharedState(queryState);
+
+  try {
+    return decodeSharedState(window.localStorage.getItem(getStorageKey()));
+  } catch {
+    return {};
+  }
+}
+
+function persistSharedState(state: SharedAssistantState) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(getStorageKey(), encodeSharedState(state));
+  } catch {
+    // Local storage can be unavailable in private or restricted browser modes.
+  }
 }
 
 function buildShareUrl(state: SharedAssistantState) {
@@ -821,7 +848,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
   const [cohortYear, setCohortYear] = useState(initialCohortYear);
   const [activeGrade, setActiveGrade] = useState<number | "all">(initialSharedState.activeGrade ?? "all");
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialSharedState.selectedTagIds ?? []);
-  const [profileQuery, setProfileQuery] = useState("");
+  const [profileQuery, setProfileQuery] = useState(initialSharedState.profileQuery ?? "");
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
     initialSharedState.selectedProfileId ?? null,
   );
@@ -829,10 +856,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     initialSharedState.selectedProfileIds ??
       (initialSharedState.selectedProfileId ? [initialSharedState.selectedProfileId] : []),
   );
-  const [selectedArea, setSelectedArea] = useState("전체");
-  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [selectedArea, setSelectedArea] = useState(initialSharedState.selectedArea ?? "전체");
+  const [selectedCategory, setSelectedCategory] = useState(initialSharedState.selectedCategory ?? "전체");
   const [activeSubject, setActiveSubject] = useState<SubjectLocation | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSharedState.search ?? "");
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [toast, setToast] = useState<string | null>(null);
 
@@ -873,6 +900,8 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     ],
     [subjectLocations],
   );
+  const activeSelectedArea = areaOptions.includes(selectedArea) ? selectedArea : "전체";
+  const activeSelectedCategory = categoryOptions.includes(selectedCategory) ? selectedCategory : "전체";
   const selectedProfiles = useMemo(
     () => profiles.filter((profile) => selectedProfileIds.includes(profile.id)),
     [profiles, selectedProfileIds],
@@ -922,9 +951,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         ? selectedProfiles.some((profile) => profileMatches(profile, location.subject, tags))
         : true;
       const matchesGrade = activeGrade === "all" || location.grade === activeGrade;
-      const matchesArea = selectedArea === "전체" || inferSubjectArea(location) === selectedArea;
+      const matchesArea = activeSelectedArea === "전체" || inferSubjectArea(location) === activeSelectedArea;
       const matchesCategory =
-        selectedCategory === "전체" || inferSubjectCategory(location) === selectedCategory;
+        activeSelectedCategory === "전체" || inferSubjectCategory(location) === activeSelectedCategory;
 
       return matchesSearch && matchesTag && matchesProfile && matchesGrade && matchesArea && matchesCategory;
     }).sort((a, b) => {
@@ -940,9 +969,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     });
   }, [
     activeGrade,
+    activeSelectedArea,
+    activeSelectedCategory,
     search,
-    selectedArea,
-    selectedCategory,
     selectedProfiles,
     selectedTagIds,
     subjectLocations,
@@ -992,6 +1021,34 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     window.setTimeout(() => setToast(null), 2200);
   }, []);
 
+  useEffect(() => {
+    persistSharedState({
+      mode,
+      cohortYear: cohort?.entranceYear,
+      activeGrade,
+      selectedTagIds,
+      selectedProfileId,
+      selectedProfileIds,
+      selectedArea,
+      selectedCategory,
+      profileQuery,
+      search,
+      selection,
+    });
+  }, [
+    activeGrade,
+    cohort?.entranceYear,
+    mode,
+    profileQuery,
+    search,
+    selectedArea,
+    selectedCategory,
+    selectedProfileId,
+    selectedProfileIds,
+    selectedTagIds,
+    selection,
+  ]);
+
   const toggleTag = (id: string) => {
     setSelectedTagIds((current) =>
       current.includes(id) ? current.filter((tagId) => tagId !== id) : [...current, id],
@@ -1033,6 +1090,10 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedTagIds,
       selectedProfileId,
       selectedProfileIds,
+      selectedArea,
+      selectedCategory,
+      profileQuery,
+      search,
       selection,
     });
 
@@ -1162,6 +1223,9 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
               setCohortYear(event.target.value);
               setSelection({});
               setActiveGrade("all");
+              setSelectedArea("전체");
+              setSelectedCategory("전체");
+              setSearch("");
             }}
             className="h-9 rounded-md border border-slate-200 bg-slate-50 px-2 text-xs font-bold outline-none"
           >
