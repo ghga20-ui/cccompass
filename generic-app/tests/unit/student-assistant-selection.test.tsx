@@ -615,6 +615,54 @@ describe("student assistant selectable grade calculations", () => {
     expect(screen.getByText("경제")).not.toBeNull();
   });
 
+  it("filters the subject explorer to exam-related subjects", () => {
+    const curriculum: SchoolCurriculum = {
+      schoolName: "Test High School",
+      sourceYear: "2026",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026 entrance",
+          grades: [
+            {
+              grade: 2,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [],
+                  choiceGroups: [
+                    {
+                      id: "exam-filter-choice",
+                      label: "Exam Filter Choice",
+                      choose: 1,
+                      subjects: [
+                        { name: "경제", credits: 3, area: "Social" },
+                        { name: "창의 디자인", credits: 3, area: "Arts" },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    window.history.replaceState(
+      {},
+      "",
+      `/?state=${encodeState({ mode: "subjects", onlyExamSubjects: true })}`,
+    );
+
+    render(<StudentCurriculumAssistant curriculum={curriculum} />);
+
+    expect(screen.getByRole("button", { name: "수능 관련" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByText("경제")).not.toBeNull();
+    expect(screen.queryByText("창의 디자인")).toBeNull();
+    expect(screen.getAllByText("수능 관련").length).toBeGreaterThan(1);
+  });
+
   it("explains blocked roadmap additions inside subject details", () => {
     const curriculum: SchoolCurriculum = {
       schoolName: "Test High School",

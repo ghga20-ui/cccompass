@@ -71,6 +71,7 @@ type SharedAssistantState = {
   selectedArea?: string;
   selectedCategory?: string;
   subjectSelectionFilter?: SubjectSelectionFilter;
+  onlyExamSubjects?: boolean;
   showOnlyIncompleteGroups?: boolean;
   profileQuery?: string;
   search?: string;
@@ -790,6 +791,38 @@ function inferSubjectCategory(location: SubjectLocation) {
   if (location.subject.name.includes("실험") || location.subject.name.includes("탐구")) return "심화·탐구";
 
   return "선택과목";
+}
+
+function isExamRelatedSubject(subject: CurriculumSubject) {
+  const haystack = [subject.name, subject.area, subject.category, subject.rawText]
+    .filter(Boolean)
+    .join(" ");
+  const examKeywords = [
+    "수능",
+    "대학수학능력시험",
+    "화법과 작문",
+    "언어와 매체",
+    "확률과 통계",
+    "미적분",
+    "기하",
+    "영어",
+    "한국사",
+    "생활과 윤리",
+    "윤리와 사상",
+    "한국지리",
+    "세계지리",
+    "동아시아사",
+    "세계사",
+    "경제",
+    "정치와 법",
+    "사회문화",
+    "물리학",
+    "화학",
+    "생명과학",
+    "지구과학",
+  ];
+
+  return examKeywords.some((keyword) => haystack.includes(keyword));
 }
 
 function SubjectMeta({
@@ -1528,6 +1561,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       ? initialSharedState.subjectSelectionFilter
       : "all",
   );
+  const [onlyExamSubjects, setOnlyExamSubjects] = useState(initialSharedState.onlyExamSubjects === true);
   const [selection, setSelection] = useState<SelectionState>(initialSharedState.selection ?? {});
   const [collapsedSemesterIds, setCollapsedSemesterIds] = useState<Set<string>>(() => new Set());
   const [showRecommendationCriteria, setShowRecommendationCriteria] = useState(false);
@@ -1648,6 +1682,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     if (search.trim()) labels.push(`검색: ${search.trim()}`);
     if (activeSelectedArea !== "전체") labels.push(activeSelectedArea);
     if (activeSelectedCategory !== "전체") labels.push(activeSelectedCategory);
+    if (onlyExamSubjects) labels.push("수능 관련");
     if (subjectSelectionFilter === "selected") labels.push("로드맵 선택됨");
     if (subjectSelectionFilter === "unselected") labels.push("미선택 과목");
     selectedProfiles.forEach((profile) => labels.push(profile.title));
@@ -1661,6 +1696,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     activeGrade,
     activeSelectedArea,
     activeSelectedCategory,
+    onlyExamSubjects,
     search,
     selectedProfiles,
     selectedTagIds,
@@ -1686,6 +1722,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       const matchesArea = activeSelectedArea === "전체" || inferSubjectArea(location) === activeSelectedArea;
       const matchesCategory =
         activeSelectedCategory === "전체" || inferSubjectCategory(location) === activeSelectedCategory;
+      const matchesExam = !onlyExamSubjects || isExamRelatedSubject(location.subject);
       const isSelected = selectedSubjectSet.has(location.subject.name);
       const matchesSelectionState =
         subjectSelectionFilter === "all" ||
@@ -1698,6 +1735,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
         matchesGrade &&
         matchesArea &&
         matchesCategory &&
+        matchesExam &&
         matchesSelectionState
       );
     }).sort((a, b) => {
@@ -1715,6 +1753,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     activeGrade,
     activeSelectedArea,
     activeSelectedCategory,
+    onlyExamSubjects,
     search,
     selectedProfiles,
     selectedTagIds,
@@ -1832,6 +1871,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedArea,
       selectedCategory,
       subjectSelectionFilter,
+      onlyExamSubjects,
       showOnlyIncompleteGroups,
       profileQuery,
       search,
@@ -1841,6 +1881,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     activeGrade,
     cohort?.entranceYear,
     mode,
+    onlyExamSubjects,
     profileQuery,
     search,
     selectedArea,
@@ -1877,6 +1918,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setSelectedProfileId(null);
     setSelectedProfileIds([]);
     setSubjectSelectionFilter("all");
+    setOnlyExamSubjects(false);
     setProfileQuery("");
   };
 
@@ -1890,6 +1932,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
     setSelectedProfileId(null);
     setSelectedProfileIds([]);
     setSubjectSelectionFilter("all");
+    setOnlyExamSubjects(false);
     setShowOnlyIncompleteGroups(false);
     setCollapsedSemesterIds(new Set());
     setActiveSubject(null);
@@ -2015,6 +2058,7 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
       selectedArea,
       selectedCategory,
       subjectSelectionFilter,
+      onlyExamSubjects,
       showOnlyIncompleteGroups,
       profileQuery,
       search,
@@ -2609,6 +2653,22 @@ export function StudentCurriculumAssistant({ curriculum }: StudentCurriculumAssi
                     </button>
                   );
                 })}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setOnlyExamSubjects((current) => !current)}
+                  className={cx(
+                    "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                    onlyExamSubjects
+                      ? "border-violet-200 bg-violet-100 text-violet-700"
+                      : "border-slate-200 bg-slate-50 text-slate-600",
+                  )}
+                  aria-pressed={onlyExamSubjects}
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  수능 관련
+                </button>
               </div>
               <div className="mt-3 grid grid-cols-3 rounded-lg bg-slate-100 p-1">
                 {[
