@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -12,15 +13,22 @@ import {
 } from "@/lib/hyoja/school-adapter";
 import { getInternalReturnPath } from "@/lib/hyoja/share-routes";
 
+type SubjectDetailParams = { id: string } | Promise<{ id: string }>;
+
+function isPromiseParams(params: SubjectDetailParams): params is Promise<{ id: string }> {
+  return typeof (params as { then?: unknown }).then === "function";
+}
+
 export default function SubjectDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: SubjectDetailParams;
 }) {
+  const { id } = isPromiseParams(params) ? use(params) : params;
   const searchParams = useSearchParams();
   const { cohort } = useCohort();
   const { basePath, schoolData, subjectCatalog } = useHyojaRuntime();
-  const subject = subjectCatalog.getSubjectById(params.id);
+  const subject = subjectCatalog.getSubjectById(id);
   const cohortData = getCohortData(schoolData, cohort);
   const returnPath = getInternalReturnPath(searchParams.get("from"), basePath);
 
