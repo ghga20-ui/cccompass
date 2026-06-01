@@ -166,7 +166,7 @@ describe("POST /api/curricula/upload", () => {
       formData: async () => {
         throw new Error("bad request");
       },
-    } as Request);
+    } as unknown as Request);
 
     expect(response.status).toBe(400);
     expect(await readJson(response)).toEqual({ error: "업로드 요청을 읽지 못했습니다." });
