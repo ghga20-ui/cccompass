@@ -1,0 +1,43 @@
+﻿Task 12 evidence bounded filesystem check
+Cleanup receipt: no ports, PIDs, browser contexts, or long-lived processes were spawned by this inventory slice.
+
+PASS required Task 11 screenshot task-11-public-home.png 58293
+PASS required Task 11 screenshot task-11-public-recommend.png 44089
+PASS required Task 11 screenshot task-11-public-roadmap.png 48242
+PASS required Task 11 screenshot task-11-public-subjects.png 61835
+PASS required Task 11 screenshot task-11-public-subject-detail.png 34775
+PASS required Task 11 screenshot task-11-grade-one-absent.png 61835
+PASS required Task 11 screenshot task-11-upload-publish.png 58956
+PASS required Task 12 inventory artifact task-12-evidence-status-pin.txt 1648
+PASS required Task 12 inventory artifact task-12-evidence-red.txt 1004
+PASS required Task 12 inventory artifact task-12-evidence-check.txt 2768
+PASS required Task 12 inventory artifact task-12-evidence-list.txt 5405
+PASS required Task 12 inventory artifact task-12-evidence-http.txt 66
+PASS required Task 12 inventory artifact task-12-evidence-status-final.txt 1849
+PASS observed Task 12 artifact task-12-docs-pin.txt 948
+PASS observed Task 12 artifact task-12-docs-red.txt 476
+PASS observed Task 12 artifact task-12-docs-scripts.txt 4469
+PASS observed Task 12 artifact task-12-docs-check.txt 119
+PASS observed Task 12 artifact task-12-docs-green.txt 1309
+PASS observed Task 12 artifact task-12-docs-http.txt 2076
+PASS observed Task 12 artifact task-12-lsp.txt 131
+PASS observed Task 12 artifact task-12-package-scripts.txt 1578
+PASS observed Task 12 artifact task-12-typecheck.txt 141
+PASS observed Task 12 artifact task-12-test.txt 8946
+PASS observed Task 12 artifact task-12-e2e.txt 19365
+PASS observed Task 12 artifact task-12-e2e-http.txt 6169
+PASS observed Task 12 artifact task-12-e2e-screenshots.txt 2881
+PASS observed Task 12 artifact task-12-forbidden-http.txt 290
+PASS observed Task 12 artifact task-12-security-scan.txt 16478
+PASS observed Task 12 artifact task-12-hardcoding-scan.txt 1726
+PASS observed Task 12 artifact task-12-grade1-scan.txt 7220
+PASS observed Task 12 artifact task-12-hardening-pin.txt 405
+PASS observed Task 12 artifact task-12-hardening-manual.txt 3869
+PASS observed Task 12 artifact task-12-hardening-cleanup.txt 540
+PASS observed Task 12 artifact task-12-diff-check.txt 1208
+PASS observed Task 12 artifact task-12-port-cleanup.txt 119
+PASS observed Task 12 artifact task-12-full-status-pin.txt 2526
+PASS observed Task 12 artifact task-12-verification-red.txt 19460
+PASS observed Task 12 artifact task-12-leak-red.txt 110
+PASS observed Task 12 artifact task-12-protected-route-timeout-red.txt 588
+PASS no prompt-injection-like public screenshot filenames found

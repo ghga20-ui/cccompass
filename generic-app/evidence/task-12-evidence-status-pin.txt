@@ -1,0 +1,46 @@
+﻿ M README.md
+ M evidence/task-11-e2e-db.json
+ M next-env.d.ts
+ M package.json
+ M playwright.config.ts
+ M tests/e2e/support/start-e2e-services.mjs
+ M vitest.config.ts
+?? evidence/task-08-public-green.txt
+?? evidence/task-08-public-pin.txt
+?? evidence/task-08-public-red.txt
+?? evidence/task-12-build.txt
+?? evidence/task-12-devserver.err.log
+?? evidence/task-12-devserver.out.log
+?? evidence/task-12-diff-check.txt
+?? evidence/task-12-docs-check.txt
+?? evidence/task-12-docs-devserver.err.log
+?? evidence/task-12-docs-devserver.out.log
+?? evidence/task-12-docs-devserver.pid
+?? evidence/task-12-docs-green.txt
+?? evidence/task-12-docs-http.txt
+?? evidence/task-12-docs-pin.txt
+?? evidence/task-12-docs-red.txt
+?? evidence/task-12-docs-scripts.txt
+?? evidence/task-12-e2e-http.txt
+?? evidence/task-12-e2e-screenshots.txt
+?? evidence/task-12-e2e.txt
+?? evidence/task-12-evidence-inventory.txt
+?? evidence/task-12-evidence-scan.txt
+?? evidence/task-12-forbidden-http.txt
+?? evidence/task-12-full-status-pin.txt
+?? evidence/task-12-grade1-scan.txt
+?? evidence/task-12-hardcoding-scan.txt
+?? evidence/task-12-hardening-cleanup.txt
+?? evidence/task-12-hardening-manual.txt
+?? evidence/task-12-hardening-pin.txt
+?? evidence/task-12-leak-red.txt
+?? evidence/task-12-lint.txt
+?? evidence/task-12-lsp.txt
+?? evidence/task-12-package-scripts.txt
+?? evidence/task-12-port-cleanup.txt
+?? evidence/task-12-protected-route-timeout-red.txt
+?? evidence/task-12-security-scan.txt
+?? evidence/task-12-test.txt
+?? evidence/task-12-typecheck.txt
+?? evidence/task-12-verification-red.txt
+?? tests/e2e/public-route.spec.ts
