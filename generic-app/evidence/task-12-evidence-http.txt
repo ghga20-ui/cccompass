@@ -1,2 +1,1 @@
-﻿HTTP_PROBE_FAIL
-원격 서버에 연결할 수 없습니다.
+﻿N/A - no dev server running; full verification owns live server channel
