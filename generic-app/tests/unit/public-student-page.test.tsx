@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   notFound: vi.fn(() => {
     throw new Error("notFound");
   }),
+  push: vi.fn(),
   pathname: "/s/student-share-token",
 }));
 
@@ -24,6 +25,9 @@ vi.mock("@/lib/db", () => ({
 vi.mock("next/navigation", () => ({
   notFound: mocks.notFound,
   usePathname: () => mocks.pathname,
+  useRouter: () => ({
+    push: mocks.push,
+  }),
 }));
 
 const publishedCurriculum = {
@@ -95,7 +99,9 @@ describe("public Hyoja share page", () => {
 
     expect(screen.getByText("Sample High School")).toBeInTheDocument();
     expect(
-      screen.getByText("나에게 맞는 선택과목을 찾아보자"),
+      screen.getByRole("heading", {
+        name: /나에게 맞는\s*선택과목을 찾아보자/,
+      }),
     ).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "학생 공개 하단 메뉴" })).toBeInTheDocument();
     expect(screen.queryByText("Grade 1 Hidden")).not.toBeInTheDocument();
