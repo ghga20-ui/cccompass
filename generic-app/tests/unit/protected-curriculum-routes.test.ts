@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   findDraft: vi.fn(),
   updateDraft: vi.fn(),
   upsertPublication: vi.fn(),
+  transaction: vi.fn(async (operations: unknown[]) => Promise.all(operations)),
 }));
 
 const validCurriculum = {
@@ -48,6 +49,7 @@ const validCurriculum = {
 
 vi.mock("@/lib/db", () => ({
   prisma: {
+    $transaction: mocks.transaction,
     curriculumDraft: {
       findUnique: mocks.findDraft,
       update: mocks.updateDraft,

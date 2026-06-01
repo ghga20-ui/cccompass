@@ -43,35 +43,39 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const publication = await prisma.curriculumPublication.upsert({
-      where: {
-        draftId: draft.id,
-      },
-      create: {
-        draftId: draft.id,
-        schoolName: validation.data.schoolName,
-        curriculumJson: validation.data,
-        shareToken: createShareToken(),
-        editToken: draft.editToken,
-      },
-      update: {
-        schoolName: validation.data.schoolName,
-        curriculumJson: validation.data,
-      },
-      select: {
-        shareToken: true,
-        editToken: true,
-      },
-    });
-
-    await prisma.curriculumDraft.update({
-      where: {
-        id: draft.id,
-      },
-      data: {
-        status: "published",
-      },
-    });
+    const [publication] = await prisma.$transaction([
+      prisma.curriculumPublication.upsert({
+        where: {
+          draftId: draft.id,
+        },
+        create: {
+          draftId: draft.id,
+          schoolName: validation.data.schoolName,
+          curriculumJson: validation.data,
+          shareToken: createShareToken(),
+          editToken: draft.editToken,
+        },
+        update: {
+          schoolName: validation.data.schoolName,
+          curriculumJson: validation.data,
+        },
+        select: {
+          shareToken: true,
+          editToken: true,
+        },
+      }),
+      prisma.curriculumDraft.update({
+        where: {
+          id: draft.id,
+        },
+        data: {
+          status: "published",
+        },
+        select: {
+          status: true,
+        },
+      }),
+    ]);
 
     return NextResponse.json({
       shareUrl: `/s/${publication.shareToken}`,
