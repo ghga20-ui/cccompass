@@ -1,34 +1,25 @@
-import { notFound } from "next/navigation";
-import { StudentCurriculumAssistant } from "@/components/student/StudentCurriculumAssistant";
-import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
-import { prisma } from "@/lib/db";
+"use client";
 
-type SharePageProps = {
-  params: Promise<{
-    shareToken: string;
-  }>;
-};
+import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 
-export default async function SharePage({ params }: SharePageProps) {
-  const { shareToken } = await params;
-  const publication = await prisma.curriculumPublication.findUnique({
-    where: {
-      shareToken,
-    },
-    select: {
-      curriculumJson: true,
-    },
-  });
+export default function ShareHomePage() {
+  const { schoolData } = useHyojaRuntime();
 
-  if (!publication) {
-    notFound();
-  }
-
-  const validation = schoolCurriculumSchema.safeParse(publication.curriculumJson);
-
-  if (!validation.success) {
-    notFound();
-  }
-
-  return <StudentCurriculumAssistant curriculum={validation.data} />;
+  return (
+    <section className="mx-auto max-w-lg px-5 py-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="/school-logo.png"
+          alt=""
+          className="h-12 w-12 rounded-full object-cover ring-1 ring-border"
+        />
+        <div>
+          <p className="text-sm font-medium text-primary">{schoolData.schoolName}</p>
+          <h1 className="text-2xl font-bold tracking-normal text-foreground">
+            나에게 맞는 선택과목을 찾아보자
+          </h1>
+        </div>
+      </div>
+    </section>
+  );
 }

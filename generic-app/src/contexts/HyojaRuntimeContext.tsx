@@ -2,7 +2,10 @@
 
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 import type { StudentSchoolData } from "@/lib/hyoja/school-adapter";
-import type { SubjectCatalog } from "@/lib/hyoja/subject-catalog";
+import {
+  createSubjectCatalog,
+  type SubjectCatalog,
+} from "@/lib/hyoja/subject-catalog";
 import { normalizeShareBasePath } from "@/lib/hyoja/share-routes";
 
 interface HyojaRuntimeContextType {
@@ -26,7 +29,7 @@ export function HyojaRuntimeProvider({
   children: ReactNode;
   shareToken: string;
   schoolData: StudentSchoolData;
-  subjectCatalog: SubjectCatalog;
+  subjectCatalog?: SubjectCatalog;
   basePath?: string;
 }) {
   const runtime = useMemo<HyojaRuntimeContextType>(
@@ -36,7 +39,7 @@ export function HyojaRuntimeProvider({
         basePath ?? `/s/${encodeURIComponent(shareToken)}`,
       ),
       schoolData,
-      subjectCatalog,
+      subjectCatalog: subjectCatalog ?? createSubjectCatalog(schoolData),
     }),
     [basePath, schoolData, shareToken, subjectCatalog],
   );
