@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ExhibitionMediaPanel } from "@/components/ExhibitionMediaPanel";
 import { getSubjectById } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
@@ -139,6 +140,11 @@ function SubjectDetailContent() {
             </p>
           </CardContent>
         </Card>
+
+        <ExhibitionMediaPanel
+          subjectId={subject.id}
+          subjectName={subject.name}
+        />
 
         {/* Recommended students */}
         {subject.recommendedFor && subject.recommendedFor.length > 0 && (

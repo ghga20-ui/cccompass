@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, GraduationCap, Search, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PortalActionCards } from "@/components/PortalActionCards";
 import { cn } from "@/lib/utils";
 import { interestTags, getDepartmentsByTagId } from "@/data/career-mapping";
 import { useCohort, type CohortYear } from "@/contexts/CohortContext";
@@ -140,6 +141,8 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      <PortalActionCards />
 
       {/* Cohort selection */}
       <section className="px-5 pb-4">
