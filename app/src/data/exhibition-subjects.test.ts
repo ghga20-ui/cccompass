@@ -48,3 +48,22 @@ test("area filters include the old exhibition professional-course subjects", () 
     true
   );
 });
+
+test("uses subject-specific descriptions for exhibition professional-course cards", () => {
+  const expectedDescriptions = {
+    food_and_nutrition:
+      "식품의 특성과 영양소, 건강한 식생활 관리 방법을 배우며 식품과 건강을 과학적으로 탐구하는 과목입니다.",
+    programming:
+      "문제를 작은 절차로 나누고 프로그래밍 언어로 구현하며, 소프트웨어로 생활 속 문제를 해결하는 방법을 배우는 과목입니다.",
+    tourism_japanese:
+      "관광 상황에서 필요한 일본어 표현과 일본 문화 이해를 바탕으로 여행, 서비스, 국제 교류 장면의 의사소통 능력을 기르는 과목입니다.",
+    tourism_chinese:
+      "관광 상황에서 필요한 중국어 표현과 중국 문화 이해를 바탕으로 여행, 서비스, 국제 교류 장면의 의사소통 능력을 기르는 과목입니다.",
+  } as const;
+
+  for (const [subjectId, description] of Object.entries(expectedDescriptions)) {
+    const subject = findSubject(subjectId);
+    assert.equal(subject.description, description);
+    assert.notEqual(subject.description, "농림·수산 분야의 전문 교과 과목입니다.");
+  }
+});
