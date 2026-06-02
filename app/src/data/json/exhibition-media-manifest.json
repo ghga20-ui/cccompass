@@ -1,0 +1,654 @@
+{
+  "economics": {
+    "subjectId": "economics",
+    "videoUrl": "https://www.youtube.com/embed/0_aBlJ_RJvA",
+    "posterImageSrc": "/exhibition/posters/economics.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/economics.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "economic_mathematics": {
+    "subjectId": "economic_mathematics",
+    "videoUrl": "https://www.youtube.com/embed/9tOFOf1toZA",
+    "posterImageSrc": "/exhibition/posters/economic_mathematics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "history_and_culture_of_science": {
+    "subjectId": "history_and_culture_of_science",
+    "videoUrl": "https://www.youtube.com/embed/pSxwRTeGQD0",
+    "posterImageSrc": "/exhibition/posters/history_and_culture_of_science.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "tourism_japanese": {
+    "subjectId": "tourism_japanese",
+    "videoUrl": "https://www.youtube.com/embed/FINLzjayooA",
+    "posterImageSrc": "/exhibition/posters/tourism_japanese.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "tourism_chinese": {
+    "subjectId": "tourism_chinese",
+    "videoUrl": "https://www.youtube.com/embed/88kMPW0iQLk",
+    "posterImageSrc": "/exhibition/posters/tourism_chinese.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "understanding_education": {
+    "subjectId": "understanding_education",
+    "videoUrl": "https://www.youtube.com/embed/70jNopze8N8",
+    "posterImageSrc": "/exhibition/posters/understanding_education.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/understanding_education.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "finance_and_economic_life": {
+    "subjectId": "finance_and_economic_life",
+    "videoUrl": "https://www.youtube.com/embed/U0o6_S5Mj1Q",
+    "posterImageSrc": "/exhibition/posters/finance_and_economic_life.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "technology_and_home_economics": {
+    "subjectId": "technology_and_home_economics",
+    "videoUrl": "https://youtu.be/KkZU175MDT0",
+    "posterImageSrc": "/exhibition/posters/technology_and_home_economics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "geometry": {
+    "subjectId": "geometry",
+    "videoUrl": "https://www.youtube.com/embed/8Aod7QTOGwk",
+    "posterImageSrc": "/exhibition/posters/geometry.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/geometry.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "climate_change_and_sustainability": {
+    "subjectId": "climate_change_and_sustainability",
+    "videoUrl": "https://www.youtube.com/embed/uJsLmXteHK0",
+    "posterImageSrc": "/exhibition/posters/climate_change_and_sustainability.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "climate_change_and_ecology": {
+    "subjectId": "climate_change_and_ecology",
+    "videoUrl": "https://www.youtube.com/embed/GciHwTXuT3I",
+    "posterImageSrc": "/exhibition/posters/climate_change_and_ecology.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "urban_future_exploration": {
+    "subjectId": "urban_future_exploration",
+    "videoUrl": "https://www.youtube.com/embed/4IFBK5DkfiU",
+    "posterImageSrc": "/exhibition/posters/urban_future_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "east_asian_history_journey": {
+    "subjectId": "east_asian_history_journey",
+    "videoUrl": "https://www.youtube.com/embed/5zNjdA033NE",
+    "posterImageSrc": "/exhibition/posters/east_asian_history_journey.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "drawing": {
+    "subjectId": "drawing",
+    "videoUrl": "https://www.youtube.com/embed/bgyxbYVyPFA",
+    "posterImageSrc": "/exhibition/posters/drawing.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "robotics_and_engineering": {
+    "subjectId": "robotics_and_engineering",
+    "videoUrl": "https://www.youtube.com/embed/LDObTHzsbYU",
+    "posterImageSrc": "/exhibition/posters/robotics_and_engineering.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "media_communication": {
+    "subjectId": "media_communication",
+    "videoUrl": "https://www.youtube.com/embed/FXuOBhUGMfU",
+    "posterImageSrc": "/exhibition/posters/media_communication.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "literature_and_media": {
+    "subjectId": "literature_and_media",
+    "videoUrl": "https://www.youtube.com/embed/nROB4jFf6OA",
+    "posterImageSrc": "/exhibition/posters/literature_and_media.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "physics": {
+    "subjectId": "physics",
+    "videoUrl": "https://www.youtube.com/embed/DLCGl1_koZM",
+    "posterImageSrc": "/exhibition/posters/physics.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/physics.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "matter_and_energy": {
+    "subjectId": "matter_and_energy",
+    "videoUrl": "https://www.youtube.com/embed/TGCLDHltX14",
+    "posterImageSrc": "/exhibition/posters/matter_and_energy.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "art_appreciation_and_criticism": {
+    "subjectId": "art_appreciation_and_criticism",
+    "videoUrl": "https://www.youtube.com/embed/mr3mDRz9qfE",
+    "posterImageSrc": "/exhibition/posters/art_appreciation_and_criticism.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "art_and_media": {
+    "subjectId": "art_and_media",
+    "videoUrl": "https://www.youtube.com/embed/mKbKL1mE_NY",
+    "posterImageSrc": "/exhibition/posters/art_and_media.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "calculus_2": {
+    "subjectId": "calculus_2",
+    "videoUrl": "https://www.youtube.com/embed/aivWo4ATnI8",
+    "posterImageSrc": "/exhibition/posters/calculus_2.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "law_and_society": {
+    "subjectId": "law_and_society",
+    "videoUrl": "https://www.youtube.com/embed/O204GKfvar0",
+    "posterImageSrc": "/exhibition/posters/law_and_society.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "critical_questions_and_creative_solutions": {
+    "subjectId": "critical_questions_and_creative_solutions",
+    "videoUrl": "https://www.youtube.com/embed/Fi3xvG_JA9w",
+    "posterImageSrc": "/exhibition/posters/critical_questions_and_creative_solutions.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "social_issues_exploration": {
+    "subjectId": "social_issues_exploration",
+    "videoUrl": "https://www.youtube.com/embed/mmNMLgJNF1Q",
+    "posterImageSrc": "/exhibition/posters/social_issues_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "society_and_culture": {
+    "subjectId": "society_and_culture",
+    "videoUrl": "https://www.youtube.com/embed/QQ6eCi1e-4s",
+    "posterImageSrc": "/exhibition/posters/society_and_culture.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/society_and_culture.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "life_science": {
+    "subjectId": "life_science",
+    "videoUrl": "https://www.youtube.com/embed/lz7aXRp6seA",
+    "posterImageSrc": "/exhibition/posters/life_science.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/life_science.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "genetics": {
+    "subjectId": "genetics",
+    "videoUrl": "https://www.youtube.com/embed/3Rgx4x7lU5A",
+    "posterImageSrc": "/exhibition/posters/genetics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "world_culture_and_english": {
+    "subjectId": "world_culture_and_english",
+    "videoUrl": "https://www.youtube.com/embed/ZgZLotD3xn4",
+    "posterImageSrc": "/exhibition/posters/world_culture_and_english.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/world_culture_and_english.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "world_history": {
+    "subjectId": "world_history",
+    "videoUrl": "https://www.youtube.com/embed/fzwfwpsCTls",
+    "posterImageSrc": "/exhibition/posters/world_history.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/world_history.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "global_citizenship_and_geography": {
+    "subjectId": "global_citizenship_and_geography",
+    "videoUrl": "https://www.youtube.com/embed/NTLdLT6QuFk",
+    "posterImageSrc": "/exhibition/posters/global_citizenship_and_geography.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/global_citizenship_and_geography.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "cells_and_metabolism": {
+    "subjectId": "cells_and_metabolism",
+    "videoUrl": "https://www.youtube.com/embed/a_z8twlbKzE",
+    "posterImageSrc": "/exhibition/posters/cells_and_metabolism.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "food_and_nutrition": {
+    "subjectId": "food_and_nutrition",
+    "videoUrl": "https://www.youtube.com/embed/X02aBQYh7MU",
+    "posterImageSrc": "/exhibition/posters/food_and_nutrition.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "practical_statistics": {
+    "subjectId": "practical_statistics",
+    "videoUrl": "https://www.youtube.com/embed/cMj3e02_f8M",
+    "posterImageSrc": "/exhibition/posters/practical_statistics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "advanced_english_reading_and_writing": {
+    "subjectId": "advanced_english_reading_and_writing",
+    "videoUrl": "https://www.youtube.com/embed/87sXqs2CF8o",
+    "posterImageSrc": "/exhibition/posters/advanced_english_reading_and_writing.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "child_development_and_parenting": {
+    "subjectId": "child_development_and_parenting",
+    "videoUrl": "https://www.youtube.com/embed/uH4LFCa8_ms",
+    "posterImageSrc": "/exhibition/posters/child_development_and_parenting.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "language_life_exploration": {
+    "subjectId": "language_life_exploration",
+    "videoUrl": "https://www.youtube.com/embed/0WKt3FqT7-4",
+    "posterImageSrc": "/exhibition/posters/language_life_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "language_life_and_hanja": {
+    "subjectId": "language_life_and_hanja",
+    "videoUrl": "https://www.youtube.com/embed/efn9r3EtigI",
+    "posterImageSrc": "/exhibition/posters/language_life_and_hanja.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/language_life_and_hanja.png",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "travel_geography": {
+    "subjectId": "travel_geography",
+    "videoUrl": "https://www.youtube.com/embed/Lun4bw30D4M",
+    "posterImageSrc": "/exhibition/posters/travel_geography.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "exploring_modern_world_through_history": {
+    "subjectId": "exploring_modern_world_through_history",
+    "videoUrl": "https://www.youtube.com/embed/ZJoC4Ntdkhg",
+    "posterImageSrc": "/exhibition/posters/exploring_modern_world_through_history.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "mechanics_and_energy": {
+    "subjectId": "mechanics_and_energy",
+    "videoUrl": "https://www.youtube.com/embed/MRZI0pOkGso",
+    "posterImageSrc": "/exhibition/posters/mechanics_and_energy.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "english_literature_reading": {
+    "subjectId": "english_literature_reading",
+    "videoUrl": "https://www.youtube.com/embed/zejx1WGIwzA",
+    "posterImageSrc": "/exhibition/posters/english_literature_reading.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "exercise_and_health": {
+    "subjectId": "exercise_and_health",
+    "videoUrl": "https://www.youtube.com/embed/w3Z0u99jbeA",
+    "posterImageSrc": "/exhibition/posters/exercise_and_health.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "ethical_issues_exploration": {
+    "subjectId": "ethical_issues_exploration",
+    "videoUrl": "https://www.youtube.com/embed/Fbtv0fu1NPE",
+    "posterImageSrc": "/exhibition/posters/ethical_issues_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "ethics_and_thought": {
+    "subjectId": "ethics_and_thought",
+    "videoUrl": "https://www.youtube.com/embed/bEDsa_jWdho",
+    "posterImageSrc": "/exhibition/posters/ethics_and_thought.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/ethics_and_thought.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "convergence_science_exploration": {
+    "subjectId": "convergence_science_exploration",
+    "videoUrl": "https://www.youtube.com/embed/B_Pf_5_xGCc",
+    "posterImageSrc": "/exhibition/posters/convergence_science_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "music_appreciation_and_criticism": {
+    "subjectId": "music_appreciation_and_criticism",
+    "videoUrl": "https://www.youtube.com/embed/DG7PSbT2KXQ",
+    "posterImageSrc": "/exhibition/posters/music_appreciation_and_criticism.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "music_performance_and_creation": {
+    "subjectId": "music_performance_and_creation",
+    "videoUrl": "https://www.youtube.com/embed/TjEb3yIp2ss",
+    "posterImageSrc": "/exhibition/posters/music_performance_and_creation.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "humans_and_psychology": {
+    "subjectId": "humans_and_psychology",
+    "videoUrl": "https://www.youtube.com/embed/qtLy-b-9j-M",
+    "posterImageSrc": "/exhibition/posters/humans_and_psychology.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/humans_and_psychology.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "ai_basics": {
+    "subjectId": "ai_basics",
+    "videoUrl": "https://www.youtube.com/embed/d41NqjBjicY",
+    "posterImageSrc": "/exhibition/posters/ai_basics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "ai_mathematics": {
+    "subjectId": "ai_mathematics",
+    "videoUrl": "https://www.youtube.com/embed/FEtbfSytQIE",
+    "posterImageSrc": "/exhibition/posters/ai_mathematics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "ai_ethics": {
+    "subjectId": "ai_ethics",
+    "videoUrl": "https://www.youtube.com/embed/o5npR6t0JSo",
+    "posterImageSrc": "/exhibition/posters/ai_ethics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "humanities_and_ethics": {
+    "subjectId": "humanities_and_ethics",
+    "videoUrl": "https://www.youtube.com/embed/Vci4WsQ0EvU",
+    "posterImageSrc": "/exhibition/posters/humanities_and_ethics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "japanese_culture": {
+    "subjectId": "japanese_culture",
+    "videoUrl": "https://www.youtube.com/embed/vCtVRef19zU",
+    "posterImageSrc": "/exhibition/posters/japanese_culture.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "japanese": {
+    "subjectId": "japanese",
+    "videoUrl": "https://youtu.be/NpG5wNY7314",
+    "posterImageSrc": "/exhibition/posters/japanese.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/japanese.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "japanese_conversation": {
+    "subjectId": "japanese_conversation",
+    "videoUrl": "https://www.youtube.com/embed/9dZlaKg-XqY",
+    "posterImageSrc": "/exhibition/posters/japanese_conversation.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "electromagnetism_and_quantum": {
+    "subjectId": "electromagnetism_and_quantum",
+    "videoUrl": "https://www.youtube.com/embed/-i6RPx2oAl0",
+    "posterImageSrc": "/exhibition/posters/electromagnetism_and_quantum.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "information_technology": {
+    "subjectId": "information_technology",
+    "videoUrl": "https://www.youtube.com/embed/1b9ng0mpv78",
+    "posterImageSrc": "/exhibition/posters/information_technology.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/information_technology.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "informatics_science": {
+    "subjectId": "informatics_science",
+    "videoUrl": "https://www.youtube.com/embed/gIKWU5XApNs",
+    "posterImageSrc": "/exhibition/posters/informatics_science.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "politics": {
+    "subjectId": "politics",
+    "videoUrl": "https://www.youtube.com/embed/hfmDUANu5is",
+    "posterImageSrc": "/exhibition/posters/politics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "thematic_reading": {
+    "subjectId": "thematic_reading",
+    "videoUrl": "https://www.youtube.com/embed/8Q1caHc7mFQ",
+    "posterImageSrc": "/exhibition/posters/thematic_reading.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/thematic_reading.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "chinese_culture": {
+    "subjectId": "chinese_culture",
+    "videoUrl": "https://www.youtube.com/embed/-CpNJdwnmnc",
+    "posterImageSrc": "/exhibition/posters/chinese_culture.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "chinese": {
+    "subjectId": "chinese",
+    "videoUrl": "https://www.youtube.com/embed/2hXbvtxNp6g",
+    "posterImageSrc": "/exhibition/posters/chinese.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/chinese.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "chinese_conversation": {
+    "subjectId": "chinese_conversation",
+    "videoUrl": "https://www.youtube.com/embed/w4NpIFohDaw",
+    "posterImageSrc": "/exhibition/posters/chinese_conversation.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "earth_science": {
+    "subjectId": "earth_science",
+    "videoUrl": "https://www.youtube.com/embed/3kgV_v-UzrM",
+    "posterImageSrc": "/exhibition/posters/earth_science.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/earth_science.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "earth_system_science": {
+    "subjectId": "earth_system_science",
+    "videoUrl": "https://www.youtube.com/embed/_hJf1LUne_c",
+    "posterImageSrc": "/exhibition/posters/earth_system_science.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "intellectual_property_basics": {
+    "subjectId": "intellectual_property_basics",
+    "videoUrl": "https://www.youtube.com/embed/DOd2u5Lc8EA",
+    "posterImageSrc": "/exhibition/posters/intellectual_property_basics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "creative_engineering_design": {
+    "subjectId": "creative_engineering_design",
+    "videoUrl": "https://www.youtube.com/embed/EBoAHUQ1Ws8",
+    "posterImageSrc": "/exhibition/posters/creative_engineering_design.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "programming": {
+    "subjectId": "programming",
+    "videoUrl": "https://www.youtube.com/embed/liadb1OGY68",
+    "posterImageSrc": "/exhibition/posters/programming.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "korean_geography_exploration": {
+    "subjectId": "korean_geography_exploration",
+    "videoUrl": "https://www.youtube.com/embed/wfxQhI2JavI",
+    "posterImageSrc": "/exhibition/posters/korean_geography_exploration.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "classical_chinese_reading": {
+    "subjectId": "classical_chinese_reading",
+    "videoUrl": "https://www.youtube.com/embed/naP7ra1iHAc",
+    "posterImageSrc": "/exhibition/posters/classical_chinese_reading.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "chorus_and_ensemble": {
+    "subjectId": "chorus_and_ensemble",
+    "videoUrl": "https://www.youtube.com/embed/-CknlxCeUA8",
+    "posterImageSrc": "/exhibition/posters/chorus_and_ensemble.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "planetary_and_space_science": {
+    "subjectId": "planetary_and_space_science",
+    "videoUrl": "https://www.youtube.com/embed/HNLNsR3f9Xw",
+    "posterImageSrc": "/exhibition/posters/planetary_and_space_science.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "changes_in_the_modern_world": {
+    "subjectId": "changes_in_the_modern_world",
+    "videoUrl": "https://www.youtube.com/embed/uBLcKmsqJyQ",
+    "posterImageSrc": "/exhibition/posters/changes_in_the_modern_world.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "modern_society_and_ethics": {
+    "subjectId": "modern_society_and_ethics",
+    "videoUrl": "https://www.youtube.com/embed/8vwP6cadisA",
+    "posterImageSrc": "/exhibition/posters/modern_society_and_ethics.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  },
+  "chemistry": {
+    "subjectId": "chemistry",
+    "videoUrl": "https://www.youtube.com/embed/Kwhsvl59mBE",
+    "posterImageSrc": "/exhibition/posters/chemistry.jpg",
+    "studentPosterImageSrc": "/exhibition/student-posters/chemistry.jpg",
+    "studentPosterPriority": true,
+    "notes": [
+      "Student-made poster should be used when available."
+    ]
+  },
+  "world_of_chemical_reactions": {
+    "subjectId": "world_of_chemical_reactions",
+    "videoUrl": "https://www.youtube.com/embed/iVXbps_JeOU",
+    "posterImageSrc": "/exhibition/posters/world_of_chemical_reactions.jpg",
+    "studentPosterImageSrc": null,
+    "studentPosterPriority": false,
+    "notes": []
+  }
+}
