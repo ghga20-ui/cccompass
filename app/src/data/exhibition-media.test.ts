@@ -85,3 +85,16 @@ test("keeps language_life_and_hanja metadata with student poster priority", () =
   assert.equal(media.videoUrl, "https://www.youtube.com/embed/efn9r3EtigI");
   assert.equal(media.notes.includes("Student-made poster should be used when available."), true);
 });
+
+test("uses the revised world culture and English video link", () => {
+  const mediaId = "world_culture_and_english";
+  const media = getExhibitionMedia(mediaId);
+
+  assert.equal(media.videoUrl, "https://youtu.be/CALs8Gc1xcg");
+  assert.equal(
+    getVideoEmbedUrl(mediaId),
+    "https://www.youtube.com/embed/CALs8Gc1xcg"
+  );
+  assert.equal(media.studentPosterImageSrc, "/exhibition/student-posters/world_culture_and_english.jpg");
+  assert.equal(media.studentPosterPriority, true);
+});
