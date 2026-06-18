@@ -1,0 +1,1 @@
+typescript-language-server unavailable; fallback evidence: task-12-typecheck.txt passed via pnpm run typecheck

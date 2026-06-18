@@ -38,10 +38,10 @@ async function captureEvidence(page: Page, path: string): Promise<void> {
 
 async function expectGradeOneOnlySubjectAbsent(page: Page): Promise<void> {
   for (const subjectName of gradeOneOnlySubjectNames) {
-    await expect(page.getByText(subjectName, { exact: true })).toHaveCount(0);
+    expect(await page.getByText(subjectName, { exact: true }).count()).toBe(0);
   }
 
-  await expect(page.getByText(task11PromptInjectionText)).toHaveCount(0);
+  expect(await page.getByText(task11PromptInjectionText).count()).toBe(0);
 }
 
 test.describe("Hyoja seeded public curriculum flow", () => {

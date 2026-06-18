@@ -12,6 +12,7 @@ const databaseUrl =
 process.env.DATABASE_URL = databaseUrl;
 process.env.CURRICULUM_PARSER_PROVIDER = "mock";
 process.env.CURRICULUM_STRUCTURER_PROVIDER = "mock";
+const e2ePort = process.env.E2E_PORT ?? "3100";
 writeFileSync(process.env.E2E_JSON_DB_PATH, JSON.stringify({ drafts: [], publications: [] }));
 
 let pgServer;
@@ -65,7 +66,7 @@ const next = spawnPortable("npx", [
   "--hostname",
   "127.0.0.1",
   "--port",
-  "3000",
+  e2ePort,
 ]);
 
 let shuttingDown = false;

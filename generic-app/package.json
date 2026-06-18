@@ -2,14 +2,18 @@
   "name": "generic-curriculum-assistant",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.7.0",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:public": "vitest run tests/unit/hyoja-ui-foundation.test.tsx tests/unit/hyoja-school-adapter.test.ts tests/unit/hyoja-subject-catalog.test.ts tests/unit/hyoja-runtime-routing.test.tsx tests/unit/hyoja-public-layout.test.tsx tests/unit/hyoja-home-page.test.tsx tests/unit/hyoja-recommend-page.test.tsx tests/unit/hyoja-roadmap-page.test.tsx tests/unit/hyoja-subjects-page.test.tsx tests/unit/public-student-page.test.tsx tests/unit/protected-curriculum-routes.test.ts tests/unit/publish-public-handoff.test.tsx",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:hyoja": "playwright test --project=chrome tests/e2e/hyoja-public-flow.spec.ts tests/e2e/hyoja-upload-publish.spec.ts",
+    "typecheck": "prisma generate && tsc --noEmit --pretty false",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push"

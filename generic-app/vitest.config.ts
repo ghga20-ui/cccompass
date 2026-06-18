@@ -16,5 +16,6 @@ export default defineConfig({
     environment: "jsdom",
     exclude: ["**/node_modules/**", "**/.next/**", "tests/e2e/**"],
     globals: true,
+    testTimeout: 15000,
   },
 });

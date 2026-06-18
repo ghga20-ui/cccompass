@@ -4,7 +4,9 @@ This app is separate from the Hyoja High School assistant in `app/`. Keep the ex
 
 ## Local Development
 
-Run commands from `generic-app/`. Create the environment file first, because database commands need `DATABASE_URL`.
+Run commands from `generic-app/`. This project uses pnpm through Corepack. If a global `pnpm` shim is not installed, prefix commands with `corepack pnpm`, for example `corepack pnpm install` and `corepack pnpm run dev`.
+
+Create the environment file first, because database commands need `DATABASE_URL`.
 
 ## Environment Variables
 
@@ -26,12 +28,12 @@ Use `mock` providers only for local smoke tests. Production should call the sepa
 Then install dependencies, generate the Prisma client, sync the database tables, and start the app:
 
 ```bash
-npm install
-npm run db:generate
-npm run dev
+pnpm install
+pnpm run db:generate
+pnpm run dev
 ```
 
-`db:generate` creates the Prisma client. For local throwaway databases, `npm run db:push` can still create or update tables from `prisma/schema.prisma`.
+`db:generate` creates the Prisma client. For local throwaway databases, `pnpm run db:push` can still create or update tables from `prisma/schema.prisma`.
 
 For Supabase deployments, apply the SQL migrations in `supabase/migrations` instead of relying on `db:push`.
 
@@ -58,17 +60,24 @@ The app sends uploaded file bytes to `POST /parse` and expects:
 Run these before shipping changes:
 
 ```bash
-npm run lint
-npm run test
-npm run test:e2e
-npm run build
+pnpm run test
+pnpm run lint
+pnpm run typecheck
+pnpm run build
+pnpm run test:e2e:hyoja
 ```
 
-For the upload and publish flow only:
+For the Hyoja-parity public surface only:
 
 ```bash
-npm run test:e2e -- tests/e2e/upload-publish.spec.ts
+pnpm run test:public
 ```
+
+The public student routes are share-token scoped: `/s/[shareToken]`, `/s/[shareToken]/recommend`, `/s/[shareToken]/roadmap`, `/s/[shareToken]/subjects`, and `/s/[shareToken]/subjects/[id]`. They reuse the Hyoja-style UI while loading the uploaded school's published curriculum at runtime.
+
+Grade 1 remains in the teacher review/edit data, but every public student route filters it out. Public recommendation, roadmap, subjects, and subject-detail views only expose grade 2 and grade 3 availability.
+
+The Hyoja E2E suite runs with real Chrome through Playwright. It uses a deterministic local E2E JSON store by default and keeps `tests/e2e/docker-compose.postgres.yml` for environments that prefer a real PostgreSQL test database. The E2E server defaults to port `3100`; override it with `E2E_PORT` if needed.
 
 ## Deployment
 

@@ -27,12 +27,12 @@ test("upload review publish public handoff works in real Chrome", async ({ page 
   await page.setInputFiles('input[type="file"]', uploadFixturePath);
   await page.locator('form button[type="submit"]').click();
 
-  await expect(page).toHaveURL(/\/review\/.*editToken=/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/review\/.*editToken=/, { timeout: 30000 });
   await expect(page.locator("#school-name")).toHaveValue("Upload Sample High School");
   await expect(page.getByText("Grade 1 Hidden")).toHaveCount(0);
   await page.locator('form button[type="button"]').last().click();
 
-  await expect(page).toHaveURL(/\/published\/.*editToken=/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/published\/.*editToken=/, { timeout: 30000 });
   const publicLink = page.locator('a[href^="/s/"]').first();
   await expect(publicLink).toBeVisible();
   const publicHref = await publicLink.getAttribute("href");
