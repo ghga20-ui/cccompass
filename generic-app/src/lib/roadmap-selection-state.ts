@@ -1,6 +1,6 @@
 export interface RoadmapSelectionState {
   cohort: string;
-  selections: Record<string, string>;
+  selections: Record<string, string[]>;
 }
 
 function encodeBase64Url(value: string) {
@@ -29,6 +29,31 @@ export function encodeRoadmapSelectionState(state: RoadmapSelectionState) {
   return encodeBase64Url(JSON.stringify(state));
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseSelections(
+  value: unknown,
+  validGroupIds: Set<string>,
+): Record<string, string[]> {
+  if (!isRecord(value)) return {};
+
+  return Object.fromEntries(
+    Object.entries(value).flatMap(([groupId, selection]) => {
+      if (!validGroupIds.has(groupId)) return [];
+      if (typeof selection === "string") return [[groupId, [selection]]];
+      if (!Array.isArray(selection)) return [];
+
+      const selectedSubjects = selection.filter(
+        (subject): subject is string => typeof subject === "string",
+      );
+
+      return selectedSubjects.length > 0 ? [[groupId, selectedSubjects]] : [];
+    }),
+  );
+}
+
 export function decodeRoadmapSelectionState(
   encoded: string | null | undefined,
   validGroupIds: Set<string>,
@@ -36,16 +61,12 @@ export function decodeRoadmapSelectionState(
   if (!encoded) return null;
 
   try {
-    const parsed = JSON.parse(decodeBase64Url(encoded)) as RoadmapSelectionState;
-    const selections = Object.fromEntries(
-      Object.entries(parsed.selections ?? {}).filter(([groupId]) =>
-        validGroupIds.has(groupId),
-      ),
-    );
+    const parsed: unknown = JSON.parse(decodeBase64Url(encoded));
+    if (!isRecord(parsed) || typeof parsed.cohort !== "string") return null;
 
     return {
       cohort: parsed.cohort,
-      selections,
+      selections: parseSelections(parsed.selections, validGroupIds),
     };
   } catch {
     return null;

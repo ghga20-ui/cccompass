@@ -1,0 +1,93 @@
+﻿F1 Plan Compliance Audit: hyoja-parity-generic-assistant
+Date: 2026-06-18
+Worktree: C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl
+App dir: C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl\generic-app
+Plan: C:\Users\admin\Desktop\2026_project\project2_curriculum\plans\hyoja-parity-generic-assistant.md
+Ledger: C:\Users\admin\Desktop\2026_project\project2_curriculum\.omo\start-work\ledger.jsonl
+
+VERDICT: APPROVE
+
+Manual-QA exact invocation:
+powershell -NoProfile -Command "Set-Location 'C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl'; git log --oneline --decorate -30; git status --short"
+PASS observable: all required task 1-12 commits are present in the 30-entry log window; status is clean or limited to final evidence artifacts.
+
+Required task commits:
+58d0518 feat(ui): add Hyoja parity foundation
+bde73b8 feat(data): adapt curriculum to Hyoja student data
+99c42d7 feat(subjects): add Hyoja catalog fallback
+f347bda feat(routing): add share-token Hyoja runtime
+23229bc feat(public): load Hyoja shell from share token
+e6d196f feat(public): port Hyoja home page
+4fd1482 feat(public): port Hyoja recommendations
+74ac076 feat(public): port Hyoja roadmap
+001a2b9 feat(public): port Hyoja subject pages
+14f95ea refactor(public): retire standalone student assistant
+5cfd83e test(e2e): cover Hyoja public curriculum flow
+194b13b chore(verification): document Hyoja parity checks
+
+Missing task commits:
+NONE
+
+Evidence inventory:
+Missing task evidence patterns: NONE
+Zero-byte task evidence files excluding no-output success probes (tsc) and superseded npm-install: NONE
+
+Top-level unchecked count from plan before F1 mark: 4
+Task 12 completion ledger found: True
+
+Manual-QA output: git log --oneline --decorate -30
+194b13b (HEAD -> codex/generic-curriculum-assistant-clean, origin/codex/generic-curriculum-assistant-clean) chore(verification): document Hyoja parity checks
+31b4725 chore: refresh task 12 evidence inventory
+c66a011 chore: add task 12 evidence inventory
+5cfd83e test(e2e): cover Hyoja public curriculum flow
+14f95ea refactor(public): retire standalone student assistant
+001a2b9 feat(public): port Hyoja subject pages
+74ac076 feat(public): port Hyoja roadmap
+4fd1482 feat(public): port Hyoja recommendations
+e6d196f feat(public): port Hyoja home page
+23229bc feat(public): load Hyoja shell from share token
+f347bda feat(routing): add share-token Hyoja runtime
+99c42d7 feat(subjects): add Hyoja catalog fallback
+bde73b8 feat(data): adapt curriculum to Hyoja student data
+58d0518 feat(ui): add Hyoja parity foundation
+93580d6 test: cover public roadmap selection flow
+ec1ade2 test: verify public student assistant route
+0702ecc fix: ignore invalid grade filters
+9f31903 feat: polish generic app landing page
+4b4c82b fix: sanitize shared roadmap selections
+6a06560 feat: summarize roadmap selections by grade
+90254e2 feat: clarify recommendation filters in subject explorer
+ee36b2b feat: add related career detail sections
+41d3cc8 feat: enrich generic subject details
+004bf92 feat: show recommendation competency guidance
+df8deda feat: show student grade labels for cohorts
+f00d604 feat: summarize recommendation semester progress
+bc32751 feat: summarize subject explorer results
+4eb3962 feat: share completed roadmap from home
+fe9748d feat: manage selected subjects from home
+8e7eacd feat: show roadmap recommendation criteria
+
+Manual-QA output: git status --short
+?? generic-app/evidence/final-f1-plan-compliance.txt
+?? generic-app/evidence/final-f2-code-quality.txt
+?? generic-app/evidence/final-f3-real-manual-qa.txt
+?? generic-app/evidence/final-f4-scope-fidelity.txt
+?? generic-app/evidence/handoff-status-2026-06-18.txt
+
+Port cleanup check:
+NO_LISTENERS_3000_3100_55432
+
+Adversarial probes:
+- malformed input: ruled out for audit-only commit/evidence inventory; no parser boundary exercised.
+- prompt injection: ruled out; no LLM boundary in audit.
+- cancel/resume: probed by rereading plan and ledger after continuation.
+- stale state: probed by reading plan, ledger, git log, and evidence from disk.
+- dirty worktree: probed by git status; dirty state limited to final evidence/handoff artifacts.
+- hung or long commands: probed; audit commands completed under timeout.
+- flaky tests: probed by checking recorded task evidence rather than trusting a summary line only.
+- misleading success output: probed by explicit missing-commit and missing-evidence arrays.
+- repeated interruptions: probed by ledger handoff and task 12 completion records.
+
+Cleanup receipt:
+- No servers, browsers, tmux sessions, containers, or temp dirs created by F1 rerun.
+- No listeners on 3000, 3100, or 55432 at cleanup check.

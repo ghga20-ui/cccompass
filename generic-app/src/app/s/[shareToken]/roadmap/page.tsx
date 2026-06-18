@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,20 +20,39 @@ import {
 export default function RoadmapPage() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { cohort } = useCohort();
+  const { cohort, cohortOptions, setCohort } = useCohort();
   const { basePath, schoolData } = useHyojaRuntime();
-  const cohortData = getCohortData(schoolData, cohort);
+  const allPublicGroupIds = useMemo(
+    () =>
+      new Set(
+        Object.values(schoolData.cohorts).flatMap((cohortItem) =>
+          cohortItem.selections.map((group) => group.id),
+        ),
+      ),
+    [schoolData],
+  );
+  const initialState = useMemo(
+    () => decodeRoadmapSelectionState(searchParams.get("state"), allPublicGroupIds),
+    [searchParams, allPublicGroupIds],
+  );
+  const initialCohort =
+    initialState && cohortOptions.some((option) => option.entranceYear === initialState.cohort)
+      ? initialState.cohort
+      : cohort;
+  const cohortData = getCohortData(schoolData, initialCohort);
   const validGroupIds = useMemo(
     () => new Set(cohortData?.selections.map((group) => group.id) ?? []),
     [cohortData],
   );
-  const initialState = useMemo(
-    () => decodeRoadmapSelectionState(searchParams.get("state"), validGroupIds),
-    [searchParams, validGroupIds],
-  );
-  const [selected, setSelected] = useState<Record<string, string>>(
+  const [selected, setSelected] = useState<Record<string, string[]>>(
     initialState?.selections ?? {},
   );
+
+  useEffect(() => {
+    if (initialCohort !== cohort) {
+      setCohort(initialCohort);
+    }
+  }, [cohort, initialCohort, setCohort]);
 
   if (!cohortData) {
     return (
@@ -47,24 +66,45 @@ export default function RoadmapPage() {
     );
   }
 
+  const activeCohortData = cohortData;
   const semesterConfigs = getStudentSemesterConfigs(cohortData);
-  const selectedCredits = Object.entries(selected).reduce((total, [groupId]) => {
-    const group = cohortData.selections.find((item) => item.id === groupId);
-    return total + (group?.creditsEach ?? 0);
+  const selectedCredits = Object.entries(selected).reduce((total, [groupId, subjects]) => {
+    const group = activeCohortData.selections.find((item) => item.id === groupId);
+    const selectedCount = Math.min(subjects.length, group?.choose ?? 0);
+    return total + selectedCount * (group?.creditsEach ?? 0);
   }, 0);
   const designatedCredits = cohortData.designated.reduce(
     (total, subject) => total + subject.credits,
     0,
   );
   const totalCredits = designatedCredits + selectedCredits;
-  const shareState = encodeRoadmapSelectionState({ cohort, selections: selected });
+  const shareState = encodeRoadmapSelectionState({
+    cohort: initialCohort,
+    selections: selected,
+  });
   const sharePath = buildShareHref(basePath, "/roadmap", { state: shareState });
 
   function toggleSelection(groupId: string, option: string) {
-    setSelected((current) => ({
-      ...current,
-      [groupId]: current[groupId] === option ? "" : option,
-    }));
+    const group = activeCohortData.selections.find((item) => item.id === groupId);
+    if (!group) return;
+
+    setSelected((current) => {
+      const selectedOptions = current[groupId] ?? [];
+      if (selectedOptions.includes(option)) {
+        return {
+          ...current,
+          [groupId]: selectedOptions.filter((selectedOption) => selectedOption !== option),
+        };
+      }
+
+      const nextOptions =
+        group.choose === 1 ? [option] : [...selectedOptions, option].slice(0, group.choose);
+
+      return {
+        ...current,
+        [groupId]: nextOptions,
+      };
+    });
   }
 
   async function copyShareLink() {
@@ -130,8 +170,10 @@ export default function RoadmapPage() {
                         </button>
                       ))}
                     </div>
-                    {selected[group.id] && (
-                      <p className="text-sm text-primary">{selected[group.id]}</p>
+                    {(selected[group.id]?.length ?? 0) > 0 && (
+                      <p className="text-sm text-primary">
+                        {selected[group.id]?.join(", ")}
+                      </p>
                     )}
                   </div>
                 ))}

@@ -1,7 +1,7 @@
 {
   "drafts": [
     {
-      "id": "ca68a3ef-71ba-4fb7-8b24-a24f552a348d",
+      "id": "01d5a712-ad6c-474c-b24f-39c2312430cb",
       "schoolName": "Upload Sample High School",
       "status": "published",
       "curriculumJson": {
@@ -64,14 +64,14 @@
       "sourceSnippets": [
         "테스트고등학교\n2026학년도 입학생 교육과정 편제표\n2학년 1학기 문학 4학점 필수\n2학년 1학기 선택A 택1 물리학 3학점 생명과학 3학점"
       ],
-      "editToken": "DalBobpDyOR2xUv-Euv4JmxZX7JnEmB_",
-      "createdAt": "2026-06-01T12:11:24.212Z",
-      "updatedAt": "2026-06-01T12:11:31.378Z"
+      "editToken": "d3tZg9HDdyB5d6DtGqgUvgCCQGRkrEsK",
+      "createdAt": "2026-06-18T06:50:02.776Z",
+      "updatedAt": "2026-06-18T06:50:11.399Z"
     }
   ],
   "publications": [
     {
-      "draftId": "ca68a3ef-71ba-4fb7-8b24-a24f552a348d",
+      "draftId": "01d5a712-ad6c-474c-b24f-39c2312430cb",
       "schoolName": "Upload Sample High School",
       "curriculumJson": {
         "schoolName": "Upload Sample High School",
@@ -128,10 +128,10 @@
           }
         ]
       },
-      "shareToken": "27KlNJBsdCAQpNZC1iYQwgyD-RWhAvph",
-      "editToken": "DalBobpDyOR2xUv-Euv4JmxZX7JnEmB_",
-      "createdAt": "2026-06-01T12:11:31.373Z",
-      "updatedAt": "2026-06-01T12:11:31.373Z"
+      "shareToken": "EFy1t-AKQw5hrQrGMvi_5DYB6YfokBj-",
+      "editToken": "d3tZg9HDdyB5d6DtGqgUvgCCQGRkrEsK",
+      "createdAt": "2026-06-18T06:50:11.368Z",
+      "updatedAt": "2026-06-18T06:50:11.368Z"
     }
   ]
 }
