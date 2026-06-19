@@ -15,5 +15,6 @@ services:
       # kordoc 어댑터 사용 (기본값은 mock이라 반드시 필요)
       - key: PARSER_ADAPTER
         value: kordoc
+      # pnpm 11.7.0은 Node 22.13+ 필요 (node:sqlite 빌트인)
       - key: NODE_VERSION
-        value: "20"
+        value: "22"
