@@ -3,7 +3,16 @@
   "installCommand": "corepack pnpm install --no-optional --no-frozen-lockfile",
   "functions": {
     "api/parse.ts": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "excludeFiles": [
+        "node_modules/.pnpm/onnxruntime-node@*/**",
+        "node_modules/.pnpm/sharp@*/**",
+        "node_modules/.pnpm/@huggingface+transformers@*/**",
+        "node_modules/.pnpm/@hyzyla+pdfium@*/**",
+        "node_modules/**/onnxruntime-node/**",
+        "node_modules/**/sharp/**",
+        "node_modules/**/libonnxruntime*.so"
+      ]
     }
   }
 }
