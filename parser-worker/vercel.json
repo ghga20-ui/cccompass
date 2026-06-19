@@ -4,7 +4,7 @@
   "functions": {
     "api/parse.ts": {
       "maxDuration": 60,
-      "excludeFiles": "{node_modules/**/onnxruntime-node/**,node_modules/**/sharp/**}"
+      "excludeFiles": "{**/onnxruntime-node/**,**/sharp/**,**/libonnxruntime*.so}"
     }
   }
 }
