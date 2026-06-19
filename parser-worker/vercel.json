@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "corepack pnpm install --no-optional",
+  "installCommand": "corepack pnpm install --no-optional --no-frozen-lockfile",
   "functions": {
     "api/parse.ts": {
       "maxDuration": 60
