@@ -1,4 +1,4 @@
-import { parse, type IRBlock } from "@clazic/kordoc";
+import { parse, type IRBlock } from "kordoc";
 import type { ParseResponse, ParserAdapter } from "../types.js";
 
 function collectTables(blocks: IRBlock[] | undefined) {
