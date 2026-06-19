@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "npm install --omit=optional",
+  "installCommand": "corepack pnpm install",
   "functions": {
     "api/parse.ts": {
       "maxDuration": 60
