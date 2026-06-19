@@ -1,0 +1,19 @@
+# Render Blueprint — curriculum parser worker
+# 배포: Render 대시보드 → New → Blueprint → 이 repo 선택
+# 또는 New → Web Service에서 아래 값을 수동 입력해도 됩니다.
+services:
+  - type: web
+    name: curriculum-parser-worker
+    runtime: node
+    plan: free
+    rootDir: parser-worker
+    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm run build
+    startCommand: pnpm run start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      # kordoc 어댑터 사용 (기본값은 mock이라 반드시 필요)
+      - key: PARSER_ADAPTER
+        value: kordoc
+      - key: NODE_VERSION
+        value: "20"
