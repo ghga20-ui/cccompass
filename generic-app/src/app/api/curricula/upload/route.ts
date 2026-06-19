@@ -6,6 +6,10 @@ import { getParserProvider } from "@/lib/parser";
 import { createShareToken } from "@/lib/tokens";
 import type { CohortMode, StructuringHints } from "@/lib/llm";
 
+// 파서(Render cold start 가능) + LLM 구조화를 한 요청에서 처리하므로
+// Vercel 기본 10초로는 부족하다. 상한까지 늘려 둔다.
+export const maxDuration = 60;
+
 const maxUploadBytes = 5 * 1024 * 1024;
 
 const allowedExtensions = new Set([".pdf", ".hwp", ".hwpx", ".xlsx", ".xlsm", ".docx"]);

@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { Upload } from "lucide-react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { Check, Loader2, Upload } from "lucide-react";
 
 type UploadResponse = {
   reviewUrl?: string;
@@ -9,6 +9,18 @@ type UploadResponse = {
 };
 
 const fallbackError = "업로드 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+
+// 진행 단계와 각 단계가 끝나는 누적 예상 시간(초).
+// 실측이 아니라 "멈춰있지 않다"는 진행감을 주기 위한 추정값입니다.
+const PROGRESS_STEPS = [
+  { label: "파서 서버 준비 중", until: 6 },
+  { label: "문서 읽는 중", until: 15 },
+  { label: "편제표 표 구조 분석 중", until: 35 },
+  { label: "AI가 과목 정보를 정리하는 중", until: Infinity },
+] as const;
+
+// 진행바가 이 시간(초)에 걸쳐 약 95%까지 차오릅니다. 실제 완료 시 100%.
+const EXPECTED_SECONDS = 55;
 
 async function readUploadResponse(response: Response): Promise<UploadResponse> {
   try {
@@ -24,11 +36,41 @@ async function readUploadResponse(response: Response): Promise<UploadResponse> {
   return {};
 }
 
+function getActiveStepIndex(elapsedSeconds: number) {
+  const index = PROGRESS_STEPS.findIndex((step) => elapsedSeconds < step.until);
+
+  return index === -1 ? PROGRESS_STEPS.length - 1 : index;
+}
+
 export default function CreatePage() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
   const [cohortMode, setCohortMode] = useState("auto");
+  const [elapsed, setElapsed] = useState(0);
+  const [done, setDone] = useState(false);
   const errorId = "curriculum-upload-error";
+  const startedAtRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isUploading) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      if (startedAtRef.current === null) {
+        return;
+      }
+
+      setElapsed((Date.now() - startedAtRef.current) / 1000);
+    }, 250);
+
+    return () => window.clearInterval(timer);
+  }, [isUploading]);
+
+  const activeStep = getActiveStepIndex(elapsed);
+  const progress = done
+    ? 100
+    : Math.min(95, Math.round((1 - Math.exp(-elapsed / EXPECTED_SECONDS)) * 100));
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,6 +79,9 @@ export default function CreatePage() {
     }
 
     setError("");
+    setDone(false);
+    setElapsed(0);
+    startedAtRef.current = Date.now();
     setIsUploading(true);
 
     try {
@@ -59,6 +104,7 @@ export default function CreatePage() {
         return;
       }
 
+      setDone(true);
       window.location.href = payload.reviewUrl;
     } catch {
       setError(fallbackError);
@@ -181,6 +227,72 @@ export default function CreatePage() {
           </form>
         </div>
       </section>
+
+      {isUploading ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-6 backdrop-blur-sm"
+        >
+          <div className="w-full max-w-md rounded-2xl bg-white p-7 shadow-xl">
+            <h2 className="text-lg font-bold text-slate-900">
+              편제표를 분석하고 있어요
+            </h2>
+
+            <div className="mt-5">
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full bg-[var(--primary)] transition-[width] duration-300 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="mt-2 text-right text-sm font-semibold text-slate-700">
+                {progress}%
+              </p>
+            </div>
+
+            <ul className="mt-5 space-y-3">
+              {PROGRESS_STEPS.map((step, index) => {
+                const isComplete = done || index < activeStep;
+                const isActive = !done && index === activeStep;
+
+                return (
+                  <li key={step.label} className="flex items-center gap-3 text-sm">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+                      {isComplete ? (
+                        <Check className="h-5 w-5 text-[var(--primary)]" aria-hidden="true" />
+                      ) : isActive ? (
+                        <Loader2
+                          className="h-4 w-4 animate-spin text-[var(--primary)]"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <span className="h-2 w-2 rounded-full bg-slate-300" />
+                      )}
+                    </span>
+                    <span
+                      className={
+                        isComplete
+                          ? "text-slate-500 line-through decoration-slate-300"
+                          : isActive
+                            ? "font-semibold text-slate-900"
+                            : "text-slate-400"
+                      }
+                    >
+                      {step.label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <p className="mt-6 text-xs text-slate-400">
+              경과 {Math.floor(elapsed)}초 · 보통 1분 내외 걸려요. 처음 업로드는 서버를
+              깨우느라 조금 더 걸릴 수 있어요.
+            </p>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
