@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Compass, Home, Map } from "lucide-react";
+import { BookOpen, Compass, Home, Map, Images } from "lucide-react";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import { buildShareHref } from "@/lib/hyoja/share-routes";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "/", label: "홈", icon: Home },
+  { path: "/exhibition", label: "전시관", icon: Images },
   { path: "/recommend", label: "추천", icon: Compass },
   { path: "/roadmap", label: "로드맵", icon: Map },
   { path: "/subjects", label: "과목", icon: BookOpen },
