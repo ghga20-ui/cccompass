@@ -4,8 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ChoiceGroupEditor } from "@/components/curriculum/ChoiceGroupEditor";
 import { SubjectEditor } from "@/components/curriculum/SubjectEditor";
+import {
+  createEmptyChoiceGroup,
+  createEmptySubject,
+} from "@/lib/curriculum/factory";
+import { expandSubjectBySplit } from "@/lib/curriculum/split-subjects";
 import type {
   ChoiceGroup,
+  CurriculumSemester,
   CurriculumSubject,
   SchoolCurriculum,
 } from "@/lib/curriculum/schema";
@@ -23,6 +29,9 @@ type ApiPayload = {
 
 const fallbackSaveError = "저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 const fallbackPublishError = "게시 중 문제가 발생했습니다. 저장 내용을 확인한 뒤 다시 시도해 주세요.";
+
+const secondaryButtonClass =
+  "inline-flex items-center justify-center rounded-md border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
 
 async function readApiPayload(response: Response): Promise<ApiPayload> {
   try {
@@ -83,6 +92,64 @@ export function CurriculumReviewForm({
       draft.cohorts[cohortIndex].grades[gradeIndex].semesters[
         semesterIndex
       ].choiceGroups[groupIndex] = group;
+    });
+  }
+
+  function semesterOf(
+    draft: SchoolCurriculum,
+    cohortIndex: number,
+    gradeIndex: number,
+    semesterIndex: number,
+  ): CurriculumSemester {
+    return draft.cohorts[cohortIndex].grades[gradeIndex].semesters[semesterIndex];
+  }
+
+  function addRequiredSubject(c: number, g: number, s: number) {
+    updateCurriculum((draft) => {
+      semesterOf(draft, c, g, s).requiredSubjects.push(createEmptySubject());
+    });
+  }
+
+  function removeRequiredSubject(c: number, g: number, s: number, subjectIndex: number) {
+    updateCurriculum((draft) => {
+      semesterOf(draft, c, g, s).requiredSubjects.splice(subjectIndex, 1);
+    });
+  }
+
+  function splitRequiredSubject(c: number, g: number, s: number, subjectIndex: number) {
+    updateCurriculum((draft) => {
+      const required = semesterOf(draft, c, g, s).requiredSubjects;
+      const expanded = expandSubjectBySplit(required[subjectIndex]);
+      required.splice(subjectIndex, 1, ...expanded);
+    });
+  }
+
+  function addChoiceGroup(c: number, g: number, s: number) {
+    updateCurriculum((draft) => {
+      const semester = semesterOf(draft, c, g, s);
+      semester.choiceGroups.push(createEmptyChoiceGroup(semester.choiceGroups));
+    });
+  }
+
+  function removeChoiceGroup(c: number, g: number, s: number, groupIndex: number) {
+    updateCurriculum((draft) => {
+      semesterOf(draft, c, g, s).choiceGroups.splice(groupIndex, 1);
+    });
+  }
+
+  // 집중이수(예: 정보↔한문 오인) 교정: 선택군 옵션을 같은 학기 지정과목으로 옮기고 그룹 제거.
+  function convertGroupToRequired(c: number, g: number, s: number, groupIndex: number) {
+    updateCurriculum((draft) => {
+      const semester = semesterOf(draft, c, g, s);
+      const group = semester.choiceGroups[groupIndex];
+      group.subjects.forEach((subject) => {
+        semester.requiredSubjects.push({
+          ...subject,
+          // creditsEach만 있던 그룹은 옵션 credits가 비어있을 수 있어 보충(positive 보장).
+          credits: subject.credits ?? group.creditsEach ?? 1,
+        });
+      });
+      semester.choiceGroups.splice(groupIndex, 1);
     });
   }
 
@@ -216,42 +283,104 @@ export function CurriculumReviewForm({
 
                   <div className="space-y-3">
                     <h5 className="text-base font-semibold text-slate-800">필수 과목</h5>
+                    {/* key는 인덱스 기반 — 과목 객체에 id가 없어 controlled로 동작 */}
                     {semester.requiredSubjects.map((subject, subjectIndex) => (
-                      <SubjectEditor
+                      <div
                         key={`required-${subjectIndex}`}
-                        subject={subject}
-                        labelPrefix={`cohort-${cohortIndex}-grade-${gradeIndex}-semester-${semesterIndex}-required-${subjectIndex}`}
-                        onChange={(updatedSubject) =>
-                          updateRequiredSubject(
-                            cohortIndex,
-                            gradeIndex,
-                            semesterIndex,
-                            subjectIndex,
-                            updatedSubject,
-                          )
-                        }
-                      />
+                        className="space-y-2 rounded-md border border-slate-200 bg-white p-3"
+                      >
+                        <SubjectEditor
+                          subject={subject}
+                          labelPrefix={`cohort-${cohortIndex}-grade-${gradeIndex}-semester-${semesterIndex}-required-${subjectIndex}`}
+                          onChange={(updatedSubject) =>
+                            updateRequiredSubject(
+                              cohortIndex,
+                              gradeIndex,
+                              semesterIndex,
+                              subjectIndex,
+                              updatedSubject,
+                            )
+                          }
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              splitRequiredSubject(cohortIndex, gradeIndex, semesterIndex, subjectIndex)
+                            }
+                            className={secondaryButtonClass}
+                          >
+                            과목명 분리
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeRequiredSubject(cohortIndex, gradeIndex, semesterIndex, subjectIndex)
+                            }
+                            className={secondaryButtonClass}
+                            aria-label={`${subject.name || "과목"} 삭제`}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
                     ))}
+                    <button
+                      type="button"
+                      onClick={() => addRequiredSubject(cohortIndex, gradeIndex, semesterIndex)}
+                      className={secondaryButtonClass}
+                    >
+                      + 과목 추가
+                    </button>
                   </div>
 
                   <div className="space-y-3">
                     <h5 className="text-base font-semibold text-slate-800">선택 그룹</h5>
                     {semester.choiceGroups.map((group, groupIndex) => (
-                      <ChoiceGroupEditor
-                        key={group.id}
-                        group={group}
-                        labelPrefix={`cohort-${cohortIndex}-grade-${gradeIndex}-semester-${semesterIndex}-group-${groupIndex}`}
-                        onChange={(updatedGroup) =>
-                          updateChoiceGroup(
-                            cohortIndex,
-                            gradeIndex,
-                            semesterIndex,
-                            groupIndex,
-                            updatedGroup,
-                          )
-                        }
-                      />
+                      <div key={group.id} className="space-y-2">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              convertGroupToRequired(cohortIndex, gradeIndex, semesterIndex, groupIndex)
+                            }
+                            className={secondaryButtonClass}
+                            title="이 선택군을 지정(필수) 과목으로 옮깁니다. 집중이수 교정에 사용하세요."
+                          >
+                            지정과목으로 전환
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeChoiceGroup(cohortIndex, gradeIndex, semesterIndex, groupIndex)
+                            }
+                            className={secondaryButtonClass}
+                          >
+                            선택군 삭제
+                          </button>
+                        </div>
+                        <ChoiceGroupEditor
+                          group={group}
+                          labelPrefix={`cohort-${cohortIndex}-grade-${gradeIndex}-semester-${semesterIndex}-group-${groupIndex}`}
+                          onChange={(updatedGroup) =>
+                            updateChoiceGroup(
+                              cohortIndex,
+                              gradeIndex,
+                              semesterIndex,
+                              groupIndex,
+                              updatedGroup,
+                            )
+                          }
+                        />
+                      </div>
                     ))}
+                    <button
+                      type="button"
+                      onClick={() => addChoiceGroup(cohortIndex, gradeIndex, semesterIndex)}
+                      className={secondaryButtonClass}
+                    >
+                      + 선택군 추가
+                    </button>
                   </div>
                 </section>
               ))}
