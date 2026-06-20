@@ -4,7 +4,7 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
-_최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅 12단계 전부 완료 + 배포·검증 끝**_
+_최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅(12단계) + 편집 기능(E1~E5) 전부 완료·배포·검증**_
 
 **포팅 완료 (TaskList #1~12 전부 ✅)**: 게시 페이지(/s/[shareToken]/*)가 효자고 main과 동등.
 - 게시 검증 완료: 의정부여고 게시본 `/s/cYrKU6tM1r2EYzxia3ubO_9T7YQkXF13`
@@ -12,25 +12,22 @@ _최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅 12단계 전
 - 배포됨: https://generic-curriculum-assistant.vercel.app
 - next build + tsc 통과, 콘솔 에러 0.
 
-**진행 중: 편집(수정) 기능 설계·구현 (2026-06-21 착수)**
+**편집(수정) 기능 완료 (2026-06-21, 편집 E1~E5 전부 ✅ 배포·E2E 검증)**
 
-배경: PDF/HWP 파싱이 자주 틀린다. 사용자가 게시 전 직접 고칠 수 있어야 함. 실제 발견된 오류 케이스:
-- (의정부여고 1학년) "정보↔한문"이 선택군으로 파싱됐는데 실제로는 **집중이수제**(1학기 정보 / 2학기 한문). 선택군 오인.
-- (의정부여고 2학년) 여러 과목이 한 칸에 **뭉쳐서** 하나의 긴 과목명으로 파싱됨. 분리 필요.
-- 읽어내지 못한 과목/선택군을 **직접 추가**해야 하는 경우도 있음.
+배경: PDF/HWP 파싱이 자주 틀려 사용자가 직접 고쳐야 함(선택군 오인, 과목명 뭉침, 미인식 과목).
 
-현재 편집 화면 한계(`/review/{draftId}`, `/edit/{editToken}` → CurriculumReviewForm + ChoiceGroupEditor + SubjectEditor):
-- ✅ 되는 것: 셀 값만 — 학교명/과목명/영역/학점/분류, 선택그룹명/택N
-- ❌ 안 되는 것: 과목·선택군·학기 **추가/삭제**, 선택군↔지정 **전환**, 뭉친 과목명 **분리** ← 사용자 요구 전부 여기 해당
-
-설계 결정 사항(사용자 답변 채울 것):
-- [ ] CRUD 단위: 과목/선택군/학기 어디까지 추가·삭제 허용?
-- [ ] 집중이수(↔) 처리: 데이터 모델에 집중이수 타입 추가 vs 학기별 지정과목으로 분해?
-- [ ] 편집 시점: 게시 전 review만 vs 게시 후 editToken 재편집도?
-- [ ] 파서 개선 vs 수동 수정 비중?
-- [ ] 뭉친 과목명 분리 UX (구분자 입력? 줄바꿈 분리?)
+확정 결정 & 구현:
+- CRUD: 과목·선택군·선택군내옵션 추가/삭제 (학기/학년 구조는 고정). 스키마 변경 없음.
+- 집중이수(정보↔한문 오인): "선택군 → 지정과목으로 전환" 버튼(convertGroupToRequired) — 옵션을 같은 학기 requiredSubjects로 옮기고 그룹 제거(credits 보충). 학기별 부적합은 삭제로 조정.
+- 뭉친 과목명: "과목명 분리" 버튼(splitMergedSubjectName, 구분자 /,·・、줄바꿈). 자동 아님, 버튼 트리거.
+- 게시 후 재편집: editToken으로 재진입(이미 백엔드 지원). 재게시 시 publish route revalidatePath(layout) + s/[shareToken] layout force-dynamic으로 라이브 즉시 반영. shareToken은 upsert update에서 유지.
+- 구현 파일: lib/curriculum/factory.ts, split-subjects.ts(+테스트), components/curriculum/ChoiceGroupEditor.tsx, CurriculumReviewForm.tsx, api/.../publish/route.ts, s/[shareToken]/layout.tsx, published 페이지.
+- 정책 변경(1학년 노출)으로 stale됐던 옛 효자고 테스트 6파일 새 정책에 맞게 갱신 → 전체 79개 테스트 통과.
+- E2E 검증: 업로드→리뷰에서 선택군 "지정과목 전환"(9→8)→게시→학생 로드맵에 8개 반영 확인. force-dynamic 즉시 반영 OK.
 
 **남은 잔여 작업(선택, 우선순위 낮음)**:
+- 편집 UX 개선 여지: 빈 name/0학점 저장 전 인라인 검증 경고, requiredSubjects key 인덱스 기반(중간 삭제 시 포커스 밀림), 미게시 변경 배지(draft vs publication updatedAt).
+- 파서 개선: 애초에 ↔/뭉침을 덜 틀리게(parser-worker 쪽) — 현재는 수동 수정으로 커버.
 - 메인에 PortalActionCards 미추가(BottomNav 5탭으로 진입 가능).
 - 전시관 hero가 effja 박람회 이미지 — 중립 이미지 교체 고려.
 - university-requirements 16모집단위는 2025대입 스냅샷.
