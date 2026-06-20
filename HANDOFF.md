@@ -33,9 +33,14 @@ _최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅(12단계) + 
 4. 입력 필드 정리: SubjectRow에서 **영역(area)·분류(category) 입력 제거**(과목명+학점만). 데이터값은 보존(DB 매칭으로 채워짐). SubjectEditor.tsx 삭제.
 - 신규: SubjectRow.tsx. 테스트 84개 통과. 적대적 리뷰 워크플로 wf_1b5e35db 진행.
 
+적대적 리뷰(wf_1b5e35db) 13개 확인 이슈 수정 완료(커밋됨):
+- 저장/게시 전 `schoolCurriculumSchema.safeParse` 게이트 → raw 400 대신 한글 안내(빈 과목명/0학점/잘못된 선택수).
+- choose 입력 정수화+clampGroup(floor), credits 입력 로컬문자열(빈칸 허용·양수만 반영·blur 복원), convertGroupToRequired 양수 가드+빈name 제외, SubjectRow stale split useEffect 리셋.
+- 테스트 84개 통과, 배포 완료.
+
 **남은 잔여 작업(선택, 우선순위 낮음)**:
-- 편집 UX: 빈 name/0학점 저장 전 인라인 검증 경고, 분리/삭제 후 textarea·포커스 안정성(key 인덱스 기반), 미게시 변경 배지.
-- 수동분리는 area/credits를 각 분리결과에 복제 → 사용자가 학점 재조정 필요(설계상 의도).
+- 수동분리는 area/credits를 각 분리결과에 복제 → 사용자가 학점 재조정 필요(설계상 의도, 뭉침 과목 credits 자체가 부정확).
+- 미게시 변경 배지(draft vs publication updatedAt), 입력 인라인 에러 표시(aria-invalid)는 미적용.
 - 파서 개선: ↔/뭉침을 parser 단에서 덜 틀리게 — 현재는 편집으로 커버.
 - 메인에 PortalActionCards 미추가(BottomNav 5탭으로 진입 가능).
 - 전시관 hero가 effja 박람회 이미지 — 중립 이미지 교체 고려.
