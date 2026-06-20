@@ -13,14 +13,22 @@ type ChoiceGroupEditorProps = {
 const secondaryButtonClass =
   "inline-flex items-center justify-center rounded-md border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
 
-// 옵션 수가 바뀔 때 choose/min/maxChoose 불변식을 보정한다.
+// 옵션 수/입력이 바뀔 때 choose/min/maxChoose 불변식(정수·범위)을 보정한다.
 function clampGroup(group: ChoiceGroup): ChoiceGroup {
   const length = group.subjects.length;
-  const choose = Math.min(Math.max(group.choose, 1), Math.max(length, 1));
+  const chooseInt = Math.floor(group.choose);
+  const choose = Math.min(
+    Math.max(Number.isFinite(chooseInt) ? chooseInt : 1, 1),
+    Math.max(length, 1),
+  );
   const maxChoose =
-    group.maxChoose !== undefined ? Math.min(group.maxChoose, length) : undefined;
+    group.maxChoose !== undefined
+      ? Math.min(Math.floor(group.maxChoose), length)
+      : undefined;
   const minChoose =
-    group.minChoose !== undefined ? Math.min(group.minChoose, choose) : undefined;
+    group.minChoose !== undefined
+      ? Math.min(Math.floor(group.minChoose), choose)
+      : undefined;
   return { ...group, choose, maxChoose, minChoose };
 }
 
@@ -89,12 +97,11 @@ export function ChoiceGroupEditor({
             max={group.subjects.length}
             step="1"
             value={group.choose}
-            onChange={(event) =>
-              onChange({
-                ...group,
-                choose: Math.min(Number(event.target.value), group.subjects.length),
-              })
-            }
+            onChange={(event) => {
+              const raw = Number(event.target.value);
+              const next = Number.isFinite(raw) ? raw : group.choose;
+              onChange(clampGroup({ ...group, choose: next }));
+            }}
             aria-label={`${group.label || "선택 그룹"} 선택 수`}
             className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
           />

@@ -8,11 +8,12 @@ import {
   createEmptyChoiceGroup,
   createEmptySubject,
 } from "@/lib/curriculum/factory";
-import type {
-  ChoiceGroup,
-  CurriculumSemester,
-  CurriculumSubject,
-  SchoolCurriculum,
+import {
+  schoolCurriculumSchema,
+  type ChoiceGroup,
+  type CurriculumSemester,
+  type CurriculumSubject,
+  type SchoolCurriculum,
 } from "@/lib/curriculum/schema";
 
 type CurriculumReviewFormProps = {
@@ -152,16 +153,56 @@ export function CurriculumReviewForm({
       const semester = semesterOf(draft, c, g, s);
       const group = semester.choiceGroups[groupIndex];
       group.subjects.forEach((subject) => {
-        semester.requiredSubjects.push({
-          ...subject,
-          credits: subject.credits ?? group.creditsEach ?? 1,
-        });
+        // 빈 과목명 옵션은 전이 제외 (name min1 위반 방지)
+        if (subject.name.trim().length === 0) return;
+        // credits=0/NaN을 nullish(??)가 통과시키므로 양수 가드로 보충 (positive 위반 방지)
+        const credits =
+          subject.credits > 0
+            ? subject.credits
+            : group.creditsEach && group.creditsEach > 0
+              ? group.creditsEach
+              : 1;
+        semester.requiredSubjects.push({ ...subject, credits });
       });
       semester.choiceGroups.splice(groupIndex, 1);
     });
   }
 
+  // 저장/게시 전 클라이언트 검증 — raw 400 대신 어디가 문제인지 한글로 안내.
+  function validateBeforeSave(): string | null {
+    const result = schoolCurriculumSchema.safeParse(curriculum);
+    if (result.success) return null;
+
+    const hasEmptyName = result.error.issues.some((issue) =>
+      issue.path.includes("name"),
+    );
+    const hasBadCredits = result.error.issues.some((issue) =>
+      issue.path.includes("credits"),
+    );
+    const hasBadChoose = result.error.issues.some(
+      (issue) => issue.path.includes("choose") || issue.path.includes("subjects"),
+    );
+
+    if (hasEmptyName) {
+      return "비어 있는 과목명 또는 선택 그룹명이 있습니다. 모두 입력한 뒤 다시 시도해 주세요.";
+    }
+    if (hasBadCredits) {
+      return "학점은 0보다 큰 숫자여야 합니다. 학점이 비어 있거나 0인 과목을 확인해 주세요.";
+    }
+    if (hasBadChoose) {
+      return "선택 그룹의 선택 수나 과목 구성을 확인해 주세요. (선택 수는 1 이상, 과목 수 이하)";
+    }
+    return "교육과정 구조에 올바르지 않은 값이 있습니다. 입력 내용을 확인해 주세요.";
+  }
+
   async function saveDraft(successMessage?: string) {
+    const validationError = validateBeforeSave();
+    if (validationError) {
+      setMessageType("error");
+      setMessage(validationError);
+      return false;
+    }
+
     try {
       const response = await fetch(`/api/curricula/${draftId}`, {
         method: "PUT",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CurriculumSubject } from "@/lib/curriculum/schema";
 import {
   hasConcentratedMarker,
@@ -36,6 +36,16 @@ export function SubjectRow({
   const rowId = labelPrefix.replace(/[^a-zA-Z0-9_-]/g, "-");
   const [splitOpen, setSplitOpen] = useState(false);
   const [splitText, setSplitText] = useState("");
+  // 학점 입력 중 빈칸/소수 타이핑을 허용하되 상태에는 양수만 반영하기 위한 표시용 문자열
+  const [creditsText, setCreditsText] = useState(() => String(subject.credits));
+
+  // key가 인덱스 기반이라 분리/삭제 시 같은 위치에 다른 과목이 들어올 수 있다.
+  // 과목이 바뀌면 분리 패널/학점 표시를 그 과목 기준으로 리셋한다.
+  useEffect(() => {
+    setSplitOpen(false);
+    setSplitText("");
+    setCreditsText(String(subject.credits));
+  }, [subject.name, subject.credits]);
 
   const concentrated = hasConcentratedMarker(subject.name);
 
@@ -89,10 +99,23 @@ export function SubjectRow({
             type="number"
             min="0.5"
             step="0.5"
-            value={subject.credits}
-            onChange={(event) =>
-              onChange({ ...subject, credits: Number(event.target.value) })
-            }
+            value={creditsText}
+            onChange={(event) => {
+              const raw = event.target.value;
+              setCreditsText(raw);
+              // 양수일 때만 상태에 반영 (빈칸/0/NaN은 보류해 schema positive 위반 방지)
+              const next = Number(raw);
+              if (raw !== "" && Number.isFinite(next) && next > 0) {
+                onChange({ ...subject, credits: next });
+              }
+            }}
+            onBlur={() => {
+              // 비우거나 잘못 입력한 채 벗어나면 직전 유효 학점으로 되돌린다.
+              const next = Number(creditsText);
+              if (creditsText === "" || !Number.isFinite(next) || next <= 0) {
+                setCreditsText(String(subject.credits));
+              }
+            }}
             aria-label={`${subject.name || "과목"} 학점`}
             className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm"
           />
