@@ -1,0 +1,3964 @@
+{
+  "title": "2028학년도 계열별 대표 모집단위별 반영과목",
+  "note": "* 표시 대학은 학과 특성에 따라 일반 선택 과목 이수 후 진로와 적성에 맞게 과목 이수 권장 대학임",
+  "departments": [
+    {
+      "field": "인문",
+      "department": "영어영문",
+      "universities": [
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "영어": true,
+            "일반사회": true,
+            "윤리": true
+          }
+        },
+        {
+          "name": "단국대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "단국대(천안)⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "덕성여대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "역사": true,
+            "윤리": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "일반사회": true,
+            "기타": "제2외"
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "광운대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "덕성여대",
+          "동국대",
+          "서울시립대",
+          "숭실대",
+          "영남대",
+          "전북대"
+        ],
+        "수학": {
+          "대수": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "확률과 통계": [
+            "광운대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대",
+            "영남대"
+          ],
+          "미적분Ⅰ": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "미적분Ⅱ": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "기하": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "광운대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "덕성여대",
+          "동국대",
+          "숭실대",
+          "영남대",
+          "전남대",
+          "전북대",
+          "조선대",
+          "충북대"
+        ],
+        "사회": {
+          "일반사회": [
+            "광운대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "덕성여대",
+            "동국대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "충북대"
+          ],
+          "역사": [
+            "동국대"
+          ],
+          "지리": [],
+          "윤리": [
+            "광운대",
+            "동국대"
+          ]
+        },
+        "과학": {
+          "물리학": [],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "서울대",
+            "detail": "제2외/한문"
+          },
+          {
+            "university": "충북대",
+            "detail": "제2외"
+          }
+        ]
+      }
+    },
+    {
+      "field": "인문",
+      "department": "철학",
+      "universities": [
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "윤리": true,
+            "기타": "한문/교양"
+          }
+        },
+        {
+          "name": "건국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "단국대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "단국대(천안)⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "윤리": true,
+            "기타": "한문/교양"
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "영어": true,
+            "일반사회": true,
+            "역사": true,
+            "지리": true,
+            "윤리": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "기타": "교양"
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "윤리": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(춘천)",
+          "건국대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "동국대",
+          "동아대",
+          "서울시립대",
+          "숭실대",
+          "영남대",
+          "전남대",
+          "충남대",
+          "충북대"
+        ],
+        "수학": {
+          "대수": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "확률과 통계": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "미적분Ⅰ": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "미적분Ⅱ": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ],
+          "기하": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "서울시립대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "건국대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "서울시립대",
+          "숭실대",
+          "영남대",
+          "충남대"
+        ],
+        "사회": {
+          "일반사회": [
+            "건국대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동아대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "충북대"
+          ],
+          "역사": [
+            "서울시립대"
+          ],
+          "지리": [
+            "서울시립대"
+          ],
+          "윤리": [
+            "강원대(춘천)",
+            "동국대",
+            "서울시립대",
+            "전남대"
+          ]
+        },
+        "과학": {
+          "물리학": [],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "강원대(춘천)",
+            "detail": "한문/교양"
+          },
+          {
+            "university": "동국대",
+            "detail": "한문/교양"
+          },
+          {
+            "university": "서울대",
+            "detail": "제2외/한문"
+          },
+          {
+            "university": "영남대",
+            "detail": "교양"
+          },
+          {
+            "university": "충남대",
+            "detail": "제2외/한문"
+          }
+        ]
+      }
+    },
+    {
+      "field": "사회",
+      "department": "경영",
+      "universities": [
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "영어": true,
+            "일반사회": true,
+            "지리": true,
+            "윤리": true,
+            "기타": "제2외"
+          }
+        },
+        {
+          "name": "국립한밭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "단국대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "단국대(천안)⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true
+          }
+        },
+        {
+          "name": "아주대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "일반사회": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "영어": true,
+            "일반사회": true,
+            "기타": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "서울과기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "한국기술교육대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한국항공대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true
+          }
+        },
+        {
+          "name": "한라대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "한양대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "협성대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "기타": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(춘천)",
+          "광운대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "영남대",
+          "숭실대",
+          "전주대",
+          "한국기술교육대",
+          "한라대"
+        ],
+        "수학": {
+          "대수": [
+            "광운대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동국대",
+            "동아대",
+            "아주대⁎",
+            "영남대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "전남대",
+            "조선대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "확률과 통계": [
+            "강원대(춘천)",
+            "광운대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동국대",
+            "동아대",
+            "부산대",
+            "아주대⁎",
+            "영남대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "전남대",
+            "조선대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "미적분Ⅰ": [
+            "강원대(춘천)",
+            "광운대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동국대",
+            "동아대",
+            "부산대",
+            "아주대⁎",
+            "영남대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "전남대",
+            "조선대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "미적분Ⅱ": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동국대",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "서울시립대",
+            "전남대",
+            "조선대",
+            "한국기술교육대",
+            "한양대"
+          ],
+          "기하": [
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동아대",
+            "서울시립대",
+            "전남대",
+            "조선대",
+            "한국기술교육대",
+            "한양대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "광운대",
+          "국립한밭대",
+          "단국대⁎",
+          "단국대(천안)⁎",
+          "동국대",
+          "동아대",
+          "영남대",
+          "서울시립대",
+          "조선대",
+          "충남대",
+          "충북대",
+          "한국기술교육대"
+        ],
+        "사회": {
+          "일반사회": [
+            "광운대",
+            "국립한밭대",
+            "단국대⁎",
+            "단국대(천안)⁎",
+            "동국대",
+            "아주대⁎",
+            "영남대",
+            "숭실대",
+            "전남대",
+            "충북대",
+            "한국기술교육대"
+          ],
+          "역사": [],
+          "지리": [
+            "광운대"
+          ],
+          "윤리": [
+            "광운대"
+          ]
+        },
+        "과학": {
+          "물리학": [
+            "아주대⁎",
+            "한양대"
+          ],
+          "화학": [
+            "한양대"
+          ],
+          "생명과학": [
+            "한양대"
+          ],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "광운대",
+            "detail": "제2외"
+          },
+          {
+            "university": "영남대",
+            "detail": ""
+          },
+          {
+            "university": "서울대",
+            "detail": "제2외/한문"
+          },
+          {
+            "university": "협성대*",
+            "detail": ""
+          }
+        ]
+      }
+    },
+    {
+      "field": "사회",
+      "department": "심리",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "영어": true,
+            "일반사회": true,
+            "윤리": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "아주대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "영어": true,
+            "일반사회": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "영어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "수학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(춘천)",
+          "광운대",
+          "영남대",
+          "전주대",
+          "조선대",
+          "충남대"
+        ],
+        "수학": {
+          "대수": [
+            "광운대",
+            "아주대⁎",
+            "영남대",
+            "충북대"
+          ],
+          "확률과 통계": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "광운대",
+            "아주대⁎",
+            "영남대",
+            "충남대",
+            "충북대"
+          ],
+          "미적분Ⅰ": [
+            "광운대",
+            "아주대⁎",
+            "영남대",
+            "충북대"
+          ],
+          "미적분Ⅱ": [
+            "충북대"
+          ],
+          "기하": [
+            "충북대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "광운대",
+          "영남대",
+          "전남대",
+          "조선대",
+          "충남대",
+          "충북대"
+        ],
+        "사회": {
+          "일반사회": [
+            "강원대(춘천)",
+            "광운대",
+            "아주대⁎",
+            "영남대",
+            "전남대",
+            "충남대"
+          ],
+          "역사": [],
+          "지리": [],
+          "윤리": [
+            "광운대"
+          ]
+        },
+        "과학": {
+          "물리학": [
+            "영남대"
+          ],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "서울대",
+            "detail": "제2외/한문"
+          }
+        ]
+      }
+    },
+    {
+      "field": "교육",
+      "department": "국어교육",
+      "universities": [
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "역사": true,
+            "기타": "한문"
+          }
+        },
+        {
+          "name": "경북대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "단국대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "일반사회": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "기타": "제2외/한문"
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(춘천)",
+          "경북대*",
+          "단국대*",
+          "동국대",
+          "전남대",
+          "전북대",
+          "전주대",
+          "조선대",
+          "충남대",
+          "충북대"
+        ],
+        "수학": {
+          "대수": [
+            "단국대*"
+          ],
+          "확률과 통계": [
+            "단국대*"
+          ],
+          "미적분Ⅰ": [
+            "단국대*"
+          ],
+          "미적분Ⅱ": [
+            "단국대*"
+          ],
+          "기하": [
+            "단국대*"
+          ]
+        },
+        "영어": [
+          "단국대*",
+          "충남대"
+        ],
+        "사회": {
+          "일반사회": [
+            "단국대*",
+            "동국대",
+            "충북대"
+          ],
+          "역사": [
+            "강원대(춘천)"
+          ],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "강원대(춘천)",
+            "detail": "한문"
+          },
+          {
+            "university": "서울대",
+            "detail": "제2외/한문"
+          },
+          {
+            "university": "충남대",
+            "detail": "제2외/한문"
+          }
+        ]
+      }
+    },
+    {
+      "field": "교육",
+      "department": "수학교육",
+      "universities": [
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "영어": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경북대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true
+          }
+        },
+        {
+          "name": "단국대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅱ": true,
+            "기하": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "충남대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "단국대*",
+          "영남대"
+        ],
+        "수학": {
+          "대수": [
+            "경북대*",
+            "단국대*",
+            "동국대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대*",
+            "충북대"
+          ],
+          "확률과 통계": [
+            "강원대(춘천)",
+            "경북대*",
+            "단국대*",
+            "동국대",
+            "부산대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대*",
+            "충북대"
+          ],
+          "미적분Ⅰ": [
+            "강원대(춘천)",
+            "경북대*",
+            "단국대*",
+            "동국대",
+            "서울대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대*",
+            "충북대"
+          ],
+          "미적분Ⅱ": [
+            "강원대(춘천)",
+            "경북대*",
+            "고려대",
+            "단국대*",
+            "동국대",
+            "부산대",
+            "서울대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대*",
+            "충북대"
+          ],
+          "기하": [
+            "강원대(춘천)",
+            "경북대*",
+            "고려대",
+            "단국대*",
+            "동국대",
+            "부산대",
+            "서울대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대*",
+            "충북대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "단국대*"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "단국대*",
+            "서울대",
+            "영남대",
+            "충남대*",
+            "충북대"
+          ],
+          "화학": [],
+          "생명과학": [
+            "강원대(춘천)"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "자연",
+      "department": "생명과학",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "서울과기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [],
+        "수학": {
+          "대수": [
+            "경희대",
+            "동국대",
+            "서울과기대",
+            "숭실대",
+            "영남대",
+            "전북대",
+            "충남대"
+          ],
+          "확률과 통계": [
+            "경희대",
+            "동국대",
+            "서울과기대",
+            "숭실대",
+            "영남대",
+            "전북대",
+            "충남대"
+          ],
+          "미적분Ⅰ": [
+            "경북대",
+            "경희대",
+            "동국대",
+            "서울과기대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "전북대",
+            "충남대"
+          ],
+          "미적분Ⅱ": [
+            "경희대",
+            "고려대",
+            "동국대",
+            "서울과기대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "전북대",
+            "중앙대",
+            "충남대"
+          ],
+          "기하": [
+            "동국대",
+            "서울과기대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "전북대",
+            "중앙대"
+          ]
+        },
+        "영어": [
+          "동아대",
+          "영남대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "영남대",
+            "전북대"
+          ],
+          "화학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "동국대",
+            "부산대",
+            "서울과기대",
+            "서울시립대",
+            "영남대",
+            "중앙대",
+            "충남대"
+          ],
+          "생명과학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "동국대",
+            "부산대",
+            "서울과기대",
+            "서울대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "중앙대",
+            "충남대"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "자연",
+      "department": "물리",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "국민대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "미적분Ⅰ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "인하대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "충남대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [],
+        "수학": {
+          "대수": [
+            "가톨릭대",
+            "경북대",
+            "경희대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "충남대*",
+            "충북대"
+          ],
+          "확률과 통계": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "동국대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "충남대*",
+            "충북대"
+          ],
+          "미적분Ⅰ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "충남대*",
+            "충북대"
+          ],
+          "미적분Ⅱ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "광운대",
+            "동국대",
+            "부산대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "중앙대",
+            "충남대*",
+            "충북대"
+          ],
+          "기하": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "동국대",
+            "부산대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "중앙대",
+            "충남대*",
+            "충북대"
+          ]
+        },
+        "영어": [
+          "영남대",
+          "전남대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "부산대",
+            "서울대",
+            "숭실대",
+            "영남대",
+            "인하대",
+            "전남대",
+            "전북대",
+            "중앙대",
+            "충남대*",
+            "충북대"
+          ],
+          "화학": [
+            "경희대",
+            "광운대",
+            "동국대",
+            "부산대",
+            "영남대",
+            "중앙대"
+          ],
+          "생명과학": [
+            "광운대"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "자연",
+      "department": "화학",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "국민대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "서울과기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "아주대⁎",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [],
+        "수학": {
+          "대수": [
+            "경희대",
+            "광운대",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "충북대"
+          ],
+          "확률과 통계": [
+            "강원대(춘천)",
+            "경희대",
+            "광운대",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "충북대"
+          ],
+          "미적분Ⅰ": [
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "충북대"
+          ],
+          "미적분Ⅱ": [
+            "강원대(춘천)",
+            "경희대",
+            "고려대",
+            "광운대",
+            "동국대",
+            "동아대",
+            "서울대",
+            "서울시립대",
+            "숭실대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "중앙대",
+            "충북대"
+          ],
+          "기하": [
+            "경희대",
+            "광운대",
+            "동국대",
+            "동아대",
+            "서울대",
+            "서울시립대",
+            "숭실대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "충북대"
+          ]
+        },
+        "영어": [
+          "영남대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "경기대",
+            "경희대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "아주대⁎",
+            "영남대",
+            "전북대",
+            "중앙대",
+            "충북대"
+          ],
+          "화학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "광운대",
+            "국민대",
+            "동국대",
+            "부산대",
+            "서울과기대",
+            "서울대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "중앙대"
+          ],
+          "생명과학": [
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "부산대",
+            "영남대",
+            "중앙대"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "공학",
+      "department": "기계공학",
+      "universities": [
+        {
+          "name": "강원대(삼척)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "영어": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "국민대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "단국대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "서울과기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "아주대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "인하대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true,
+            "화학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한국기술교육대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한국항공대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한라대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "한양대(ERICA)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "물리학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "단국대*",
+          "한국기술교육대",
+          "한라대"
+        ],
+        "수학": {
+          "대수": [
+            "경북대",
+            "경희대",
+            "단국대*",
+            "동아대",
+            "서울과기대",
+            "아주대*",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "확률과 통계": [
+            "경북대",
+            "경희대",
+            "단국대*",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "아주대*",
+            "영남대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "미적분Ⅰ": [
+            "강원대(삼척)",
+            "경북대",
+            "경희대",
+            "국민대",
+            "단국대*",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "아주대*",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대",
+            "한양대(ERICA)"
+          ],
+          "미적분Ⅱ": [
+            "강원대(삼척)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "국민대",
+            "단국대*",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "서울대",
+            "서울시립대",
+            "아주대*",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "중앙대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "기하": [
+            "경북대",
+            "경희대",
+            "국민대",
+            "단국대*",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "서울대",
+            "서울시립대",
+            "아주대*",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "중앙대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대"
+          ]
+        },
+        "영어": [
+          "강원대(삼척)",
+          "단국대*",
+          "영남대",
+          "한국기술교육대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "강원대(삼척)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "국민대",
+            "단국대*",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "서울대",
+            "서울시립대",
+            "아주대*",
+            "영남대",
+            "인하대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "중앙대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대",
+            "한양대(ERICA)"
+          ],
+          "화학": [
+            "강원대(삼척)",
+            "경북대",
+            "경희대",
+            "부산대",
+            "서울과기대",
+            "영남대",
+            "인하대",
+            "중앙대"
+          ],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "공학",
+      "department": "컴퓨터공학",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "건국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "화학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true
+          }
+        },
+        {
+          "name": "광운대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "국민대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "단국대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "수학": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅱ": true,
+            "기하": true
+          }
+        },
+        {
+          "name": "서울과기대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "서울시립대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "숭실대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기타": "기술·가정/정보"
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "아주대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "원광대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "한국기술교육대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한국항공대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한라대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "한양대(ERICA)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true
+          }
+        },
+        {
+          "name": "협성대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "기타": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "단국대*",
+          "영남대",
+          "한국기술교육대",
+          "한라대"
+        ],
+        "수학": {
+          "대수": [
+            "가톨릭대",
+            "건국대",
+            "경북대",
+            "경희대",
+            "광운대",
+            "단국대*",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대",
+            "충북대",
+            "아주대*",
+            "원광대",
+            "전남대",
+            "조선대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "확률과 통계": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "광운대",
+            "단국대*",
+            "동국대",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대",
+            "충북대",
+            "아주대*",
+            "원광대",
+            "전남대",
+            "조선대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대",
+            "한양대(ERICA)"
+          ],
+          "미적분Ⅰ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대",
+            "경북대",
+            "경희대",
+            "광운대",
+            "국민대",
+            "단국대*",
+            "동국대",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대",
+            "충북대",
+            "아주대*",
+            "원광대",
+            "전남대",
+            "조선대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대",
+            "한양대(ERICA)"
+          ],
+          "미적분Ⅱ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대",
+            "경북대",
+            "경희대",
+            "고려대",
+            "광운대",
+            "국민대",
+            "단국대*",
+            "동국대",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "전주대",
+            "조선대",
+            "충남대",
+            "충북대",
+            "아주대*",
+            "원광대",
+            "전남대",
+            "조선대",
+            "중앙대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "기하": [
+            "가톨릭대",
+            "건국대",
+            "경북대",
+            "경희대",
+            "고려대",
+            "광운대",
+            "국민대",
+            "단국대*",
+            "동국대",
+            "동아대",
+            "부산대",
+            "서울과기대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "아주대*",
+            "원광대",
+            "전남대",
+            "조선대",
+            "중앙대",
+            "충남대",
+            "한국기술교육대",
+            "한국항공대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "단국대*",
+          "동아대",
+          "영남대",
+          "충북대",
+          "한국기술교육대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "가톨릭대",
+            "건국대",
+            "경북대",
+            "광운대",
+            "국민대",
+            "단국대*",
+            "동아대",
+            "서울과기대",
+            "서울시립대",
+            "숭실대",
+            "영남대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "충남대",
+            "충북대",
+            "아주대*",
+            "전북대",
+            "조선대",
+            "충북대",
+            "한국기술교육대",
+            "한국항공대"
+          ],
+          "화학": [
+            "경북대",
+            "원광대",
+            "전남대",
+            "중앙대",
+            "충남대"
+          ],
+          "생명과학": [
+            "원광대",
+            "전남대",
+            "중앙대",
+            "충남대"
+          ],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "전주대",
+            "detail": "기술·가정/정보"
+          },
+          {
+            "university": "협성대*",
+            "detail": ""
+          }
+        ]
+      }
+    },
+    {
+      "field": "의약",
+      "department": "약학",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경성대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "덕성여대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "동국대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "한양대(ERICA)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [],
+        "수학": {
+          "대수": [
+            "가톨릭대",
+            "경북대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "영남대"
+          ],
+          "확률과 통계": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "영남대"
+          ],
+          "미적분Ⅰ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "영남대"
+          ],
+          "미적분Ⅱ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경성대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "서울대",
+            "영남대"
+          ],
+          "기하": [
+            "가톨릭대",
+            "경성대",
+            "덕성여대",
+            "동국대",
+            "서울대",
+            "영남대"
+          ]
+        },
+        "영어": [
+          "영남대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "경북대",
+            "영남대"
+          ],
+          "화학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경성대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "서울대",
+            "부산대",
+            "영남대",
+            "한양대(ERICA)"
+          ],
+          "생명과학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경성대",
+            "경희대",
+            "덕성여대",
+            "동국대",
+            "서울대",
+            "부산대",
+            "영남대",
+            "한양대(ERICA)"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "의약",
+      "department": "의예",
+      "universities": [
+        {
+          "name": "가톨릭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "강원대(춘천)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "영어": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "건국대(글로컬)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "경북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "경희대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "대수": true,
+            "확률과 통계": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "고려대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "부산대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "서울대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "아주대*",
+          "isFlexible": true,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "영남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true,
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "원광대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "전북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "물리학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "중앙대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "미적분Ⅱ": true,
+            "기하": true,
+            "화학": true,
+            "생명과학": true
+          }
+        },
+        {
+          "name": "충남대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "화학": true,
+            "생명과학": true,
+            "수학": true
+          }
+        },
+        {
+          "name": "충북대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "영어": true,
+            "물리학": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(춘천)",
+          "동아대"
+        ],
+        "수학": {
+          "대수": [
+            "가톨릭대",
+            "건국대(글로컬)",
+            "경북대",
+            "경희대",
+            "동아대",
+            "아주대*",
+            "영남대",
+            "원광대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "충남대"
+          ],
+          "확률과 통계": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대(글로컬)",
+            "경북대",
+            "경희대",
+            "동아대",
+            "아주대*",
+            "영남대",
+            "원광대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "충남대"
+          ],
+          "미적분Ⅰ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대(글로컬)",
+            "경북대",
+            "경희대",
+            "동아대",
+            "아주대*",
+            "영남대",
+            "원광대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "충남대"
+          ],
+          "미적분Ⅱ": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대(글로컬)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "동아대",
+            "서울대",
+            "아주대*",
+            "영남대",
+            "원광대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "중앙대",
+            "충남대"
+          ],
+          "기하": [
+            "가톨릭대",
+            "건국대(글로컬)",
+            "동아대",
+            "서울대",
+            "아주대*",
+            "영남대",
+            "원광대",
+            "전남대",
+            "전북대",
+            "조선대",
+            "중앙대",
+            "충남대"
+          ]
+        },
+        "영어": [
+          "강원대(춘천)",
+          "동아대",
+          "영남대",
+          "전남대",
+          "전북대",
+          "충북대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "경북대",
+            "경희대",
+            "동아대",
+            "아주대*",
+            "영남대",
+            "조선대",
+            "충북대"
+          ],
+          "화학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "부산대",
+            "영남대",
+            "원광대",
+            "중앙대",
+            "충남대"
+          ],
+          "생명과학": [
+            "가톨릭대",
+            "강원대(춘천)",
+            "건국대(글로컬)",
+            "경북대",
+            "경희대",
+            "고려대",
+            "부산대",
+            "서울대",
+            "영남대",
+            "원광대",
+            "전남대",
+            "중앙대",
+            "충남대"
+          ],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "예체능",
+      "department": "시각디자인",
+      "universities": [
+        {
+          "name": "강원대(삼척)",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true,
+            "기타": "미술,미술창작,미술 감상과 비평"
+          }
+        },
+        {
+          "name": "국립한밭대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "일반사회": true,
+            "기타": "산업디자인"
+          }
+        },
+        {
+          "name": "전주대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "미술,기술가정,교양"
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "강원대(삼척)",
+          "국립한밭대",
+          "동아대",
+          "조선대"
+        ],
+        "수학": {
+          "대수": [],
+          "확률과 통계": [],
+          "미적분Ⅰ": [],
+          "미적분Ⅱ": [],
+          "기하": []
+        },
+        "영어": [
+          "강원대(삼척)",
+          "국립한밭대",
+          "동아대"
+        ],
+        "사회": {
+          "일반사회": [
+            "조선대"
+          ],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "강원대(삼척)",
+            "detail": "미술,미술창작,미술 감상과 비평"
+          },
+          {
+            "university": "조선대",
+            "detail": "산업디자인"
+          },
+          {
+            "university": "전주대",
+            "detail": "미술,기술가정,교양"
+          }
+        ]
+      }
+    },
+    {
+      "field": "예체능",
+      "department": "음악",
+      "universities": [
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "영어": true
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "동아대"
+        ],
+        "수학": {
+          "대수": [],
+          "확률과 통계": [],
+          "미적분Ⅰ": [],
+          "미적분Ⅱ": [],
+          "기하": []
+        },
+        "영어": [
+          "동아대"
+        ],
+        "사회": {
+          "일반사회": [],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": []
+      }
+    },
+    {
+      "field": "예체능",
+      "department": "체육",
+      "universities": [
+        {
+          "name": "동아대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "영어": true,
+            "일반사회": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "동양대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true,
+            "미적분Ⅰ": true,
+            "미적분Ⅱ": true,
+            "기하": true,
+            "영어": true,
+            "일반사회": true,
+            "물리학": true
+          }
+        },
+        {
+          "name": "조선대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "국어": true
+          }
+        },
+        {
+          "name": "한체대",
+          "isFlexible": false,
+          "requiredSubjects": {
+            "기타": "체육스포츠과학,스포츠생활"
+          }
+        }
+      ],
+      "summary": {
+        "국어": [
+          "동아대",
+          "동양대",
+          "조선대"
+        ],
+        "수학": {
+          "대수": [],
+          "확률과 통계": [],
+          "미적분Ⅰ": [
+            "동아대",
+            "동양대"
+          ],
+          "미적분Ⅱ": [
+            "동아대",
+            "동양대"
+          ],
+          "기하": [
+            "동아대",
+            "동양대"
+          ]
+        },
+        "영어": [
+          "동아대",
+          "동양대"
+        ],
+        "사회": {
+          "일반사회": [
+            "동아대",
+            "동양대"
+          ],
+          "역사": [],
+          "지리": [],
+          "윤리": []
+        },
+        "과학": {
+          "물리학": [
+            "동아대",
+            "동양대"
+          ],
+          "화학": [],
+          "생명과학": [],
+          "지구과학": []
+        },
+        "기타": [
+          {
+            "university": "한체대",
+            "detail": "체육스포츠과학,스포츠생활"
+          }
+        ]
+      }
+    }
+  ]
+}

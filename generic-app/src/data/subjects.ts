@@ -33,7 +33,33 @@ interface SubjectsJson {
   subjects: Subject[];
 }
 
-export const subjects: Subject[] = (subjectsData as SubjectsJson).subjects;
+const jsonSubjects: Subject[] = (subjectsData as SubjectsJson).subjects;
+
+// 전국 2022 개정 교육과정 공통 과목 (편제 JSON에는 보통 빠져 있어 카탈로그에 보강)
+const additionalSubjects: Subject[] = [
+  { id: "common_korean_1", name: "공통국어1", category: "공통", area: "국어", credits: "3", description: "국어의 기초 역량을 기르는 공통 과목입니다." },
+  { id: "common_korean_2", name: "공통국어2", category: "공통", area: "국어", credits: "4", description: "국어의 기초 역량을 심화하는 공통 과목입니다." },
+  { id: "common_math_1", name: "공통수학1", category: "공통", area: "수학", credits: "4", description: "수학의 기초 역량을 기르는 공통 과목입니다." },
+  { id: "common_math_2", name: "공통수학2", category: "공통", area: "수학", credits: "4", description: "수학의 기초 역량을 심화하는 공통 과목입니다." },
+  { id: "common_english_1", name: "공통영어1", category: "공통", area: "영어", credits: "4", description: "영어의 기초 역량을 기르는 공통 과목입니다." },
+  { id: "common_english_2", name: "공통영어2", category: "공통", area: "영어", credits: "3", description: "영어의 기초 역량을 심화하는 공통 과목입니다." },
+  { id: "common_social_1", name: "통합사회1", category: "공통", area: "사회", credits: "3~4", description: "사회 영역의 기초 역량을 기르는 공통 과목입니다." },
+  { id: "common_social_2", name: "통합사회2", category: "공통", area: "사회", credits: "3~4", description: "사회 영역의 기초 역량을 심화하는 공통 과목입니다." },
+  { id: "common_korean_history_1", name: "한국사1", category: "공통", area: "사회", credits: "3", description: "한국의 역사를 학습하는 공통 필수 과목입니다." },
+  { id: "common_korean_history_2", name: "한국사2", category: "공통", area: "사회", credits: "3", description: "한국의 근현대사를 학습하는 공통 필수 과목입니다." },
+  { id: "common_science_1", name: "통합과학1", category: "공통", area: "과학", credits: "3~4", description: "과학의 기초 역량을 기르는 공통 과목입니다." },
+  { id: "common_science_2", name: "통합과학2", category: "공통", area: "과학", credits: "3~4", description: "과학의 기초 역량을 심화하는 공통 과목입니다." },
+  { id: "common_science_lab_1", name: "과학탐구실험1", category: "공통", area: "과학", credits: "1", description: "과학 탐구 실험의 기초를 학습하는 공통 과목입니다." },
+  { id: "common_science_lab_2", name: "과학탐구실험2", category: "공통", area: "과학", credits: "1", description: "과학 탐구 실험을 심화하는 공통 과목입니다." },
+];
+
+export const subjects: Subject[] = [...jsonSubjects, ...additionalSubjects];
+
+const subjectByName = new Map<string, Subject>();
+subjects.forEach((s) => subjectByName.set(s.name, s));
+
+const subjectById = new Map<string, Subject>();
+subjects.forEach((s) => subjectById.set(s.id, s));
 
 export const subjectAreas = [
   "국어",
@@ -77,9 +103,17 @@ export function subjectAreaMatches(
 }
 
 export function getSubjectById(id: string): Subject | undefined {
-  return subjects.find((subject) => subject.id === id);
+  return subjectById.get(id);
 }
 
 export function getSubjectByName(name: string): Subject | undefined {
-  return subjects.find((subject) => subject.name === name);
+  return subjectByName.get(name);
+}
+
+export function getSubjectsByArea(area: string): Subject[] {
+  return subjects.filter((s) => subjectAreaMatches(s.area, area));
+}
+
+export function getSubjectsByCategory(category: Subject["category"]): Subject[] {
+  return subjects.filter((s) => s.category === category);
 }
