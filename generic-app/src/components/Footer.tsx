@@ -5,7 +5,7 @@ export default function Footer() {
         <p>
           <span className="font-medium text-foreground/80">선택과목 도우미</span>
         </p>
-        <p>학교 편제표 기반으로 2·3학년 선택과목 안내 화면을 제공합니다.</p>
+        <p>학교 편제표 기반으로 선택과목 안내 화면을 제공합니다.</p>
       </div>
     </footer>
   );
