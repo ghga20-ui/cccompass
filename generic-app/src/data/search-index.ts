@@ -95,7 +95,11 @@ export function searchDeptAndCareers(query: string): SearchResult[] {
 }
 
 // ========== Department recommendation ==========
-export function getDepartmentRecommendation(deptName: string): {
+export function getDepartmentRecommendation(
+  deptName: string,
+  // 업로드 편제 과목까지 매칭하려면 subjectCatalog.getSubjectByName 주입.
+  resolveSubject: (name: string) => ReturnType<typeof getSubjectByName> = getSubjectByName,
+): {
   department: {
     name: string;
     description: string;
@@ -136,7 +140,7 @@ export function getDepartmentRecommendation(deptName: string): {
 
           uniScores.forEach((score, subjectName) => {
             if (score >= 3 && !allCmNames.has(subjectName)) {
-              const subject = getSubjectByName(subjectName);
+              const subject = resolveSubject(subjectName);
               if (subject && subject.category !== "공통") {
                 const cat = subject.category as "일반선택" | "진로선택" | "융합선택";
                 if (cat in cmSubjects) {

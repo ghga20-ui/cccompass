@@ -240,7 +240,12 @@ export function getDepartmentsByTagId(tagId: string): { name: string; descriptio
   return depts;
 }
 
-export function getRecommendedSubjectsByInterest(interestId: string): {
+export function getRecommendedSubjectsByInterest(
+  interestId: string,
+  // 업로드 편제 과목까지 매칭하려면 subjectCatalog.getSubjectByName 주입.
+  // 미전달 시 전국공통 정적 카탈로그로 폴백.
+  resolveSubject: (name: string) => Subject | undefined = getSubjectByName,
+): {
   일반선택: Subject[];
   진로선택: Subject[];
   융합선택: Subject[];
@@ -265,7 +270,7 @@ export function getRecommendedSubjectsByInterest(interestId: string): {
           if (seen.has(key)) return;
           seen.add(key);
 
-          const subject = getSubjectByName(name);
+          const subject = resolveSubject(name);
           if (subject) {
             result[cat].push(subject);
           }
@@ -280,7 +285,7 @@ export function getRecommendedSubjectsByInterest(interestId: string): {
 
   uniScores.forEach((score, subjectName) => {
     if (score < 3) return; // 3개교 미만 요구는 무시
-    const subject = getSubjectByName(subjectName);
+    const subject = resolveSubject(subjectName);
     if (!subject || subject.category === "공통") return;
     const cat = subject.category as "일반선택" | "진로선택" | "융합선택";
     if (!(cat in result)) return;
