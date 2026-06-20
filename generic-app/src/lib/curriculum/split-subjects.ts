@@ -36,3 +36,41 @@ export function expandSubjectBySplit(subject: CurriculumSubject): CurriculumSubj
   }
   return names.map((name) => ({ ...subject, name }));
 }
+
+// 집중이수(순차수업) 표시 구분자. 예) "정보↔한문" = 1학기 정보 / 2학기 한문.
+const CONCENTRATED_MARKER = "↔";
+
+export function hasConcentratedMarker(name: string): boolean {
+  return name.includes(CONCENTRATED_MARKER);
+}
+
+/**
+ * 집중이수 과목명("A↔B")을 학기에 맞는 단일 과목명으로 해석한다.
+ * 1학기 → 앞(A), 2학기 → 뒤(B). 마커가 없으면 정규화된 원본 반환.
+ */
+export function resolveConcentratedName(name: string, semester: number): string {
+  if (!name.includes(CONCENTRATED_MARKER)) {
+    return normalizeSubjectName(name);
+  }
+  const parts = name
+    .split(CONCENTRATED_MARKER)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+  if (parts.length === 0) {
+    return normalizeSubjectName(name);
+  }
+  const index = Math.min(Math.max(semester - 1, 0), parts.length - 1);
+  return parts[index];
+}
+
+/**
+ * 사용자가 직접 입력한 여러 줄/쉼표 텍스트를 과목명 목록으로 만든다.
+ * 자동 구분자가 없는 뭉친 과목명을 수동으로 분리할 때 사용.
+ */
+export function parseManualSplit(text: string): string[] {
+  const parts = text
+    .split(/[\n,]+/)
+    .map((part) => normalizeSubjectName(part))
+    .filter((part) => part.length > 0);
+  return Array.from(new Set(parts));
+}

@@ -1,10 +1,11 @@
 import type { ChoiceGroup, CurriculumSubject } from "@/lib/curriculum/schema";
-import { SubjectEditor } from "@/components/curriculum/SubjectEditor";
+import { SubjectRow } from "@/components/curriculum/SubjectRow";
 import { createEmptySubject } from "@/lib/curriculum/factory";
-import { expandSubjectBySplit } from "@/lib/curriculum/split-subjects";
 
 type ChoiceGroupEditorProps = {
   group: ChoiceGroup;
+  /** 이 선택군이 속한 학기(1 또는 2) */
+  semester: number;
   labelPrefix: string;
   onChange: (group: ChoiceGroup) => void;
 };
@@ -12,7 +13,23 @@ type ChoiceGroupEditorProps = {
 const secondaryButtonClass =
   "inline-flex items-center justify-center rounded-md border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
 
-export function ChoiceGroupEditor({ group, labelPrefix, onChange }: ChoiceGroupEditorProps) {
+// 옵션 수가 바뀔 때 choose/min/maxChoose 불변식을 보정한다.
+function clampGroup(group: ChoiceGroup): ChoiceGroup {
+  const length = group.subjects.length;
+  const choose = Math.min(Math.max(group.choose, 1), Math.max(length, 1));
+  const maxChoose =
+    group.maxChoose !== undefined ? Math.min(group.maxChoose, length) : undefined;
+  const minChoose =
+    group.minChoose !== undefined ? Math.min(group.minChoose, choose) : undefined;
+  return { ...group, choose, maxChoose, minChoose };
+}
+
+export function ChoiceGroupEditor({
+  group,
+  semester,
+  labelPrefix,
+  onChange,
+}: ChoiceGroupEditorProps) {
   const groupId = labelPrefix.replace(/[^a-zA-Z0-9_-]/g, "-");
 
   function updateSubject(subjectIndex: number, subject: CurriculumSubject) {
@@ -30,25 +47,17 @@ export function ChoiceGroupEditor({ group, labelPrefix, onChange }: ChoiceGroupE
 
   function removeOption(subjectIndex: number) {
     const subjects = group.subjects.filter((_, index) => index !== subjectIndex);
-    const length = subjects.length;
-    // subjects.length가 줄면 choose/min/maxChoose 불변식을 함께 보정한다.
-    const choose = Math.min(group.choose, length);
-    const maxChoose =
-      group.maxChoose !== undefined ? Math.min(group.maxChoose, length) : undefined;
-    const minChoose =
-      group.minChoose !== undefined ? Math.min(group.minChoose, choose) : undefined;
-    onChange({ ...group, subjects, choose, maxChoose, minChoose });
+    onChange(clampGroup({ ...group, subjects }));
   }
 
-  function splitOption(subjectIndex: number) {
-    const expanded = expandSubjectBySplit(group.subjects[subjectIndex]);
+  function replaceOption(subjectIndex: number, replacements: CurriculumSubject[]) {
     const subjects = [...group.subjects];
-    subjects.splice(subjectIndex, 1, ...expanded);
-    onChange({ ...group, subjects });
+    subjects.splice(subjectIndex, 1, ...replacements);
+    onChange(clampGroup({ ...group, subjects }));
   }
 
   return (
-    <section className="space-y-4 rounded-md border border-slate-300 bg-slate-50 p-4">
+    <section className="space-y-3 rounded-md border border-slate-300 bg-slate-50 p-4">
       <div className="grid gap-3 sm:grid-cols-[1fr_8rem]">
         <div className="space-y-1">
           <label
@@ -83,7 +92,6 @@ export function ChoiceGroupEditor({ group, labelPrefix, onChange }: ChoiceGroupE
             onChange={(event) =>
               onChange({
                 ...group,
-                // 옵션 수를 넘는 choose는 superRefine 위반이므로 clamp.
                 choose: Math.min(Number(event.target.value), group.subjects.length),
               })
             }
@@ -93,35 +101,18 @@ export function ChoiceGroupEditor({ group, labelPrefix, onChange }: ChoiceGroupE
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {group.subjects.map((subject, subjectIndex) => (
-          <div
-            key={`${group.id}-${subjectIndex}`}
-            className="space-y-2 rounded-md border border-slate-200 bg-white p-3"
-          >
-            <SubjectEditor
+          <div key={`${group.id}-${subjectIndex}`} className="relative">
+            <SubjectRow
               subject={subject}
+              semester={semester}
               labelPrefix={`${labelPrefix}-subject-${subjectIndex}`}
               onChange={(updatedSubject) => updateSubject(subjectIndex, updatedSubject)}
+              onDelete={() => removeOption(subjectIndex)}
+              canDelete={group.subjects.length > 1}
+              onReplace={(replacements) => replaceOption(subjectIndex, replacements)}
             />
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => splitOption(subjectIndex)}
-                className={secondaryButtonClass}
-              >
-                과목명 분리
-              </button>
-              <button
-                type="button"
-                onClick={() => removeOption(subjectIndex)}
-                disabled={group.subjects.length <= 1}
-                className={secondaryButtonClass}
-                aria-label={`${subject.name || "과목"} 옵션 삭제`}
-              >
-                옵션 삭제
-              </button>
-            </div>
           </div>
         ))}
         <button type="button" onClick={addOption} className={secondaryButtonClass}>
