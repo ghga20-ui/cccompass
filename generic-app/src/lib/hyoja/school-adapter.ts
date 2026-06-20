@@ -49,8 +49,24 @@ export interface SemesterConfig {
   label: string;
 }
 
-function isPublicStudentGrade(grade: number) {
-  return grade >= 2;
+/**
+ * 편제 묶음 과목명("논술↔생태와 환경" 처럼 한 칸에 묶인 과목)을
+ * 화면 검색/개설 판정용 개별 과목명으로 분해한다.
+ * effja school.ts getExpandedSubjectNames 포팅 + 슬래시(/) 표기도 흡수.
+ */
+export function expandSubjectNames(subjectName: string): string[] {
+  const delimiter = subjectName.includes("↔")
+    ? "↔"
+    : subjectName.includes("/")
+      ? "/"
+      : null;
+
+  if (!delimiter) return [subjectName];
+
+  return subjectName
+    .split(delimiter)
+    .map((name) => name.trim())
+    .filter(Boolean);
 }
 
 function hasPublicSemesterData(semester: CurriculumSemester) {
@@ -58,10 +74,8 @@ function hasPublicSemesterData(semester: CurriculumSemester) {
 }
 
 function hasPublicCohortData(cohort: CurriculumCohort) {
-  return cohort.grades.some(
-    (grade) =>
-      isPublicStudentGrade(grade.grade) &&
-      grade.semesters.some(hasPublicSemesterData),
+  return cohort.grades.some((grade) =>
+    grade.semesters.some(hasPublicSemesterData),
   );
 }
 
@@ -104,7 +118,7 @@ export function adaptCurriculumForStudentAssistant(
       const selections: SelectionGroup[] = [];
 
       cohort.grades
-        .filter((grade) => isPublicStudentGrade(grade.grade))
+        .slice()
         .sort((a, b) => a.grade - b.grade)
         .forEach((grade) => {
           grade.semesters
@@ -195,7 +209,7 @@ export function getDesignatedSubjects(
   semester: number,
 ): DesignatedSubject[] {
   const cohort = getCohortData(data, cohortYear);
-  if (!cohort || !isPublicStudentGrade(grade)) return [];
+  if (!cohort) return [];
 
   return cohort.designated.filter(
     (subject) => subject.grade === grade && subject.semester === semester,
@@ -209,7 +223,7 @@ export function getSelectionGroups(
   semester: number,
 ): SelectionGroup[] {
   const cohort = getCohortData(data, cohortYear);
-  if (!cohort || !isPublicStudentGrade(grade)) return [];
+  if (!cohort) return [];
 
   return cohort.selections.filter(
     (group) => group.grade === grade && group.semester === semester,
@@ -232,11 +246,36 @@ export function getAllAvailableSubjectNames(
   }
 
   getDesignatedSubjects(data, cohortYear, grade, semester).forEach((subject) => {
-    addName(subject.subject);
+    expandSubjectNames(subject.subject).forEach(addName);
   });
   getSelectionGroups(data, cohortYear, grade, semester).forEach((group) => {
-    group.options.forEach(addName);
+    group.options.forEach((option) =>
+      expandSubjectNames(option).forEach(addName),
+    );
   });
 
   return names;
+}
+
+/** 특정 학년/학기에 해당 과목이 개설(지정 또는 선택)되는지 — 묶음 과목명 확장 반영 */
+export function isSubjectAvailable(
+  data: StudentSchoolData,
+  subjectName: string,
+  cohortYear: string,
+  grade: number,
+  semester: number,
+): boolean {
+  return getAllAvailableSubjectNames(data, cohortYear, grade, semester).includes(
+    subjectName,
+  );
+}
+
+/** getAllAvailableSubjectNames 동치 별칭 (effja 하위 호환 면) */
+export function getAvailableSubjects(
+  data: StudentSchoolData,
+  cohortYear: string,
+  grade: number,
+  semester: number,
+): string[] {
+  return getAllAvailableSubjectNames(data, cohortYear, grade, semester);
 }

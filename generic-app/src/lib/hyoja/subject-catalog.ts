@@ -6,7 +6,7 @@ import {
   subjects as staticSubjects,
   type Subject,
 } from "@/data/subjects";
-import type { StudentSchoolData } from "@/lib/hyoja/school-adapter";
+import { expandSubjectNames, type StudentSchoolData } from "@/lib/hyoja/school-adapter";
 
 export interface SubjectCatalog {
   subjects: Subject[];
@@ -87,25 +87,30 @@ function collectUploadedSubjectSeeds(data: StudentSchoolData) {
 
   Object.values(data.cohorts).forEach((cohort) => {
     cohort.designated.forEach((subject) => {
-      const key = normalizeSubjectName(subject.subject);
-      if (seeds.has(key)) return;
-      seeds.set(key, {
-        name: subject.subject,
-        area: subject.area,
-        category: subject.category,
-        credits: subject.credits,
+      // 묶음 과목명("A↔B")은 개별 과목으로 분해해 각각 카탈로그에 등록
+      expandSubjectNames(subject.subject).forEach((name) => {
+        const key = normalizeSubjectName(name);
+        if (seeds.has(key)) return;
+        seeds.set(key, {
+          name,
+          area: subject.area,
+          category: subject.category,
+          credits: subject.credits,
+        });
       });
     });
 
     cohort.selections.forEach((group) => {
       group.options.forEach((option) => {
-        const key = normalizeSubjectName(option);
-        if (seeds.has(key)) return;
-        seeds.set(key, {
-          name: option,
-          area: "",
-          category: "",
-          credits: group.creditsEach,
+        expandSubjectNames(option).forEach((name) => {
+          const key = normalizeSubjectName(name);
+          if (seeds.has(key)) return;
+          seeds.set(key, {
+            name,
+            area: "",
+            category: "",
+            credits: group.creditsEach,
+          });
         });
       });
     });
