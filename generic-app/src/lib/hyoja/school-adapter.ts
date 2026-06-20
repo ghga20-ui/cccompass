@@ -195,6 +195,20 @@ export function getStudentSemesterConfigs(cohort: CohortData): SemesterConfig[] 
   return configs;
 }
 
+/**
+ * 선택과목군이 있는 학기만 반환한다.
+ * 로드맵처럼 "직접 고를 과목이 있는 학기"만 보여줘야 하는 곳에서 사용.
+ * 공통/지정 과목만 있고 선택군이 없는 학기는 제외된다.
+ */
+export function getSelectionSemesterConfigs(cohort: CohortData): SemesterConfig[] {
+  return getStudentSemesterConfigs(cohort).filter((config) =>
+    cohort.selections.some(
+      (group) =>
+        group.grade === config.grade && group.semester === config.semester,
+    ),
+  );
+}
+
 export function getCohortData(
   data: StudentSchoolData,
   cohortYear: string,

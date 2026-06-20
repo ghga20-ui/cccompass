@@ -14,7 +14,7 @@ import {
   getCohortData,
   getDesignatedSubjects,
   getSelectionGroups,
-  getStudentSemesterConfigs,
+  getSelectionSemesterConfigs,
   type CohortData,
 } from "@/lib/hyoja/school-adapter";
 import type { SubjectCatalog } from "@/lib/hyoja/subject-catalog";
@@ -81,9 +81,9 @@ function RoadmapContent() {
     setTimeout(() => setToastMsg(null), 2500);
   }, []);
 
-  // 편제에 실재하는 학기 (단일/다중 cohort 모두 동적)
+  // 선택과목군이 있는 학기만 (공통/지정만 있는 학기는 로드맵에서 제외)
   const semesterConfigs = useMemo(
-    () => (cohortData ? getStudentSemesterConfigs(cohortData) : []),
+    () => (cohortData ? getSelectionSemesterConfigs(cohortData) : []),
     [cohortData],
   );
 
