@@ -6,9 +6,9 @@ import { getParserProvider } from "@/lib/parser";
 import { createShareToken } from "@/lib/tokens";
 import type { CohortMode, StructuringHints } from "@/lib/llm";
 
-// 파서(Render cold start 가능) + LLM 구조화를 한 요청에서 처리하므로
-// Vercel 기본 10초로는 부족하다. 상한까지 늘려 둔다.
-export const maxDuration = 60;
+// 파서(Render cold start 가능) + LLM 구조화(gpt-5.5 reasoning)를 한 요청에서
+// 처리하므로 60초로는 부족하다. Pro 플랜 상한(300초)까지 늘린다.
+export const maxDuration = 300;
 
 const maxUploadBytes = 5 * 1024 * 1024;
 
@@ -176,16 +176,27 @@ export async function POST(request: Request) {
     );
   }
 
-  const draft = await prisma.curriculumDraft.create({
-    data: {
-      schoolName: validation.data.schoolName,
-      curriculumJson: validation.data,
-      parsedText: parsed.text,
-      warnings: structured.warnings,
-      sourceSnippets: structured.sourceSnippets,
-      editToken: createShareToken(),
-    },
-  });
+  let draft;
+
+  try {
+    draft = await prisma.curriculumDraft.create({
+      data: {
+        schoolName: validation.data.schoolName,
+        curriculumJson: validation.data,
+        parsedText: parsed.text,
+        warnings: structured.warnings,
+        sourceSnippets: structured.sourceSnippets,
+        editToken: createShareToken(),
+      },
+    });
+  } catch (error) {
+    console.error("Curriculum draft DB save failed", error);
+
+    return NextResponse.json(
+      { error: "편제표 저장 중 오류가 발생했습니다. (DB 연결을 확인해주세요)" },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({
     draftId: draft.id,
