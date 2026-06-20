@@ -18,6 +18,11 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/s/student-share-token/roadmap",
 }));
 
+// 새 정책: 편제에 존재하는 모든 학년을 노출하되, 로드맵 화면은
+// "선택과목군(choiceGroups)이 있는 학기만" 보여준다.
+// - 1학년 1학기: 선택군 있음 → 로드맵에 노출 (1학년도 더 이상 숨기지 않음)
+// - 2학년 1학기: 선택군 있음 → 로드맵에 노출
+// - 3학년 2학기: 지정과목만 있고 선택군 없음 → 로드맵에서 제외
 const schoolData: StudentSchoolData = {
   schoolName: "Sample High School",
   cohorts: {
@@ -44,10 +49,21 @@ const schoolData: StudentSchoolData = {
       label: "2028 entrance",
       description: "Sample High School 2028 entrance",
       designated: [
+        { subject: "Math", area: "Math", category: "공통", credits: 4, grade: 1, semester: 1 },
         { subject: "Literature", area: "Korean", category: "일반선택", credits: 4, grade: 2, semester: 1 },
         { subject: "Research", area: "Science", category: "진로선택", credits: 2, grade: 3, semester: 2 },
       ],
       selections: [
+        {
+          id: "2028-1-1-choice-a",
+          label: "Grade 1 Choice",
+          grade: 1,
+          semester: 1,
+          choose: 1,
+          creditsEach: 2,
+          totalCredits: 2,
+          options: ["Intro Coding", "Intro Art"],
+        },
         {
           id: "2028-2-1-choice-a",
           label: "Grade 2 Choice",
@@ -101,21 +117,25 @@ afterEach(() => {
 });
 
 describe("Hyoja roadmap page", () => {
-  it("renders grade two and three roadmap groups only", () => {
+  it("renders only semesters that have selection groups (grade 1 included, designated-only semester excluded)", () => {
     renderRoadmap();
 
+    // 선택군이 있는 학기는 학년과 무관하게 노출 (1학년도 포함)
+    expect(screen.getByText("1학년 1학기")).toBeInTheDocument();
     expect(screen.getByText("2학년 1학기")).toBeInTheDocument();
-    expect(screen.getByText("3학년 2학기")).toBeInTheDocument();
-    expect(screen.queryByText("1학년 1학기")).not.toBeInTheDocument();
+    // 지정과목만 있고 선택군이 없는 학기는 로드맵에서 제외
+    expect(screen.queryByText("3학년 2학기")).not.toBeInTheDocument();
+
     fireEvent.click(screen.getByRole("button", { name: "Economics 선택" }));
 
-    expect(screen.getByText("선택 학점 9")).toBeInTheDocument();
+    // 2학년 1학기: 지정 Literature(4) + 선택 Economics(3) = 7 / 기대 11학점
+    expect(screen.getByText("7 / 11학점")).toBeInTheDocument();
     expect(screen.queryByText("Grade 1 Hidden")).not.toBeInTheDocument();
   });
 
-  it("drops stale grade one shared selections", () => {
+  it("drops stale selections whose group id no longer exists in the cohort", () => {
     mocks.searchParams = new URLSearchParams({
-      state: encodeRoadmapSelectionState({
+      s: encodeRoadmapSelectionState({
         cohort: "2028",
         selections: {
           "grade-1-stale": ["Grade 1 Hidden"],
@@ -126,29 +146,35 @@ describe("Hyoja roadmap page", () => {
 
     renderRoadmap();
 
+    // 유효한 선택은 복원됨 (1/1 선택 ✓), 존재하지 않는 군의 항목은 무시됨
     expect(screen.getByText("Economics")).toBeInTheDocument();
+    expect(screen.getByText("1/1 선택 ✓")).toBeInTheDocument();
     expect(screen.queryByText("Grade 1 Hidden")).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "공유 링크 복사" }));
+    fireEvent.click(screen.getByRole("button", { name: "공유하기" }));
     expect(mocks.writeText).toHaveBeenCalledWith(
-      expect.stringContaining("/s/student-share-token/roadmap?state="),
+      expect.stringContaining("/s/student-share-token/roadmap?c=2028&s="),
     );
   });
 
-  it("restores shared selections for a non-default cohort", () => {
+  it("restores shared selections for the active cohort", () => {
     mocks.searchParams = new URLSearchParams({
-      state: encodeRoadmapSelectionState({
-        cohort: "2028",
+      s: encodeRoadmapSelectionState({
+        cohort: "2027",
         selections: {
-          "2028-2-1-choice-a": ["Physics I"],
+          "2027-2-1-choice-a": ["Default Economics"],
         },
       }),
     });
 
     renderRoadmap("2027");
 
-    expect(screen.getByText("Physics I")).toBeInTheDocument();
-    expect(screen.queryByText("Default Literature")).not.toBeInTheDocument();
+    // 활성 cohort(2027)의 데이터가 노출되고, 공유된 선택이 복원된다
+    expect(screen.getByText("Default Economics")).toBeInTheDocument();
+    expect(screen.getByText("Default Literature")).toBeInTheDocument();
+    expect(screen.getByText("1/1 선택 ✓")).toBeInTheDocument();
+    // 다른 cohort(2028)의 과목은 노출되지 않는다
+    expect(screen.queryByText("Physics I")).not.toBeInTheDocument();
   });
 
   it("supports choosing multiple subjects from a multi-select group", () => {
@@ -157,14 +183,15 @@ describe("Hyoja roadmap page", () => {
     fireEvent.click(screen.getByRole("button", { name: "Chemistry I 선택" }));
     fireEvent.click(screen.getByRole("button", { name: "Life Science I 선택" }));
 
-    expect(screen.getByText("선택 학점 10")).toBeInTheDocument();
-    expect(screen.getByText("Chemistry I, Life Science I")).toBeInTheDocument();
+    // 2학년 1학기: 지정 Literature(4) + 다중선택 2과목(2학점x2=4) = 8 / 기대 11학점
+    expect(screen.getByText("8 / 11학점")).toBeInTheDocument();
+    expect(screen.getByText("2/2 선택 ✓")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "공유 링크 복사" }));
+    fireEvent.click(screen.getByRole("button", { name: "공유하기" }));
     const copied = String(mocks.writeText.mock.calls.at(-1)?.[0] ?? "");
-    const encoded = new URL(copied).searchParams.get("state");
+    const encoded = new URL(copied).searchParams.get("s");
 
     expect(encoded).not.toBeNull();
-    expect(decodeURIComponent(copied)).toContain("/s/student-share-token/roadmap?state=");
+    expect(copied).toContain("/s/student-share-token/roadmap?c=2028&s=");
   });
 });

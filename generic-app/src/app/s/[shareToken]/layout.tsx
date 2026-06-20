@@ -10,6 +10,9 @@ import {
 } from "@/lib/hyoja/school-adapter";
 import { prisma } from "@/lib/db";
 
+// 재게시 시 학생 공개 화면이 항상 최신 publication을 반영하도록 매 요청 동적 렌더.
+export const dynamic = "force-dynamic";
+
 type ShareLayoutProps = {
   children: React.ReactNode;
   params: Promise<{

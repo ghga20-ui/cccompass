@@ -4,6 +4,10 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ShareLayout from "@/app/s/[shareToken]/layout";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
+import {
+  getStudentCohortOptions,
+  getAllAvailableSubjectNames,
+} from "@/lib/hyoja/school-adapter";
 
 const mocks = vi.hoisted(() => ({
   findPublication: vi.fn(),
@@ -110,10 +114,23 @@ afterEach(() => {
 
 function RuntimeProbe() {
   const runtime = useHyojaRuntime();
+  const firstCohortYear =
+    getStudentCohortOptions(runtime.schoolData)[0]?.entranceYear ?? "";
+  // 새 정책: 1학년도 편제에 있으면 노출된다. 1학년 1학기 개설 과목을 그대로 노출해 검증.
+  const gradeOneSubjects = firstCohortYear
+    ? getAllAvailableSubjectNames(runtime.schoolData, firstCohortYear, 1, 1)
+    : [];
   return (
-    <output>
-      {runtime.shareToken}:{runtime.basePath}:{runtime.schoolData.schoolName}
-    </output>
+    <>
+      <output>
+        {runtime.shareToken}:{runtime.basePath}:{runtime.schoolData.schoolName}
+      </output>
+      <ul data-testid="grade-one-subjects">
+        {gradeOneSubjects.map((name) => (
+          <li key={name}>{name}</li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -148,7 +165,7 @@ describe("public Hyoja share layout", () => {
     expect(screen.queryByText(/ChatBot/i)).not.toBeInTheDocument();
   });
 
-  it("handles missing and grade-one-only publications", async () => {
+  it("notFound for missing publications and exposes grade-one-only data", async () => {
     mocks.findPublication.mockResolvedValueOnce(null);
 
     await expect(
@@ -171,8 +188,22 @@ describe("public Hyoja share layout", () => {
       }),
     );
 
-    expect(screen.getByText("공개할 2·3학년 선택과목 데이터가 없어요")).toBeInTheDocument();
-    expect(screen.queryByText("Grade 1 Required")).not.toBeInTheDocument();
-    expect(screen.queryByText("Grade 1 Hidden")).not.toBeInTheDocument();
+    // 새 정책: 1학년만 있어도 편제에 데이터가 있으면 공개 화면을 그대로 노출한다.
+    // (옛 정책처럼 EmptyState로 떨어지지 않는다.)
+    expect(
+      screen.queryByText("공개할 선택과목 데이터가 없어요"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("navigation", { name: "학생 공개 하단 메뉴" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "student-share-token:/s/student-share-token:Grade One School",
+      ),
+    ).toBeInTheDocument();
+
+    // 1학년 지정/선택 과목이 모두 학생 공개 데이터로 노출된다.
+    expect(screen.getByText("Grade 1 Required")).toBeInTheDocument();
+    expect(screen.getByText("Grade 1 Hidden")).toBeInTheDocument();
   });
 });

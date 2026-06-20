@@ -64,7 +64,9 @@ export default async function PublishedPage({ params, searchParams }: PublishedP
             href={editUrl}
             className="rounded-md border border-[var(--border)] bg-white p-5 transition hover:border-[var(--primary)]"
           >
-            <span className="text-sm font-semibold text-slate-600">교사용 수정 링크</span>
+            <span className="text-sm font-semibold text-slate-600">
+              교사용 수정 링크 (게시 후에도 수정·재게시 가능)
+            </span>
             <span className="mt-3 block break-all text-lg font-bold text-slate-950">
               {editUrl}
             </span>

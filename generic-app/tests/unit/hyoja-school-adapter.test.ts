@@ -133,12 +133,18 @@ describe("SchoolCurriculum to Hyoja student data adapter", () => {
     const data = adaptCurriculumForStudentAssistant(curriculum);
 
     expect(data.schoolName).toBe("Sample High School");
-    expect(Object.keys(data.cohorts)).toEqual(["2024", "2028-fall"]);
+    // 새 정책: 편제에 데이터가 있는 모든 코호트를 노출(1학년만 있는 2027 코호트 포함).
+    expect(Object.keys(data.cohorts)).toEqual(["2024", "2027", "2028-fall"]);
     expect(getStudentCohortOptions(data)).toEqual([
       {
         entranceYear: "2024",
         label: "2024 entrance",
         description: "Sample High School 2024 entrance",
+      },
+      {
+        entranceYear: "2027",
+        label: "2027 entrance",
+        description: "Sample High School 2027 entrance",
       },
       {
         entranceYear: "2028-fall",
@@ -179,25 +185,53 @@ describe("SchoolCurriculum to Hyoja student data adapter", () => {
       totalCredits: 4,
       options: ["Advanced Math"],
     });
+    // 새 정책: 편제에 존재하는 모든 학년·학기를 노출(1학년 포함).
     expect(getStudentSemesterConfigs(getCohortData(data, "2024")!)).toEqual([
+      { grade: 1, semester: 1, label: "1학년 1학기" },
       { grade: 2, semester: 1, label: "2학년 1학기" },
       { grade: 3, semester: 2, label: "3학년 2학기" },
     ]);
   });
 
-  it("excludes grade 1 from student availability helpers", () => {
+  it("exposes grade 1 data through student availability helpers", () => {
     const data = adaptCurriculumForStudentAssistant(curriculum);
 
-    expect(getDesignatedSubjects(data, "2024", 1, 1)).toEqual([]);
-    expect(getSelectionGroups(data, "2024", 1, 1)).toEqual([]);
-    expect(getAllAvailableSubjectNames(data, "2024", 1, 1)).toEqual([]);
+    // 새 정책: 1학년 데이터도 그대로 노출된다.
+    expect(getDesignatedSubjects(data, "2024", 1, 1)).toEqual([
+      {
+        subject: "Hidden Grade 1 Required",
+        area: "Common",
+        category: "공통",
+        credits: 4,
+        grade: 1,
+        semester: 1,
+      },
+    ]);
+    expect(getSelectionGroups(data, "2024", 1, 1)).toEqual([
+      {
+        id: "2024-1-1-hidden-choice",
+        label: "Hidden Choice",
+        grade: 1,
+        semester: 1,
+        choose: 1,
+        creditsEach: 2,
+        totalCredits: 2,
+        options: ["Hidden Grade 1 Choice"],
+      },
+    ]);
+    expect(getAllAvailableSubjectNames(data, "2024", 1, 1)).toEqual([
+      "Hidden Grade 1 Required",
+      "Hidden Grade 1 Choice",
+    ]);
+    // 1학년 과목은 1학년 학기에서만 노출되고, 2학년 학기 결과에는 섞이지 않는다.
     expect(
       getAllAvailableSubjectNames(data, "2024", 2, 1),
     ).not.toContain("Hidden Grade 1 Required");
     expect(
       getAllAvailableSubjectNames(data, "2024", 2, 1),
     ).not.toContain("Hidden Grade 1 Choice");
-    expect(getStudentCohortOptions(data).map((option) => option.entranceYear)).not.toContain(
+    // 새 정책: 1학년만 있는 코호트(2027)도 노출 대상에 포함된다.
+    expect(getStudentCohortOptions(data).map((option) => option.entranceYear)).toContain(
       "2027",
     );
   });

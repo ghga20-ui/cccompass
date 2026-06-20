@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
 import { prisma } from "@/lib/db";
 import { createShareToken } from "@/lib/tokens";
@@ -76,6 +77,14 @@ export async function POST(request: Request, context: RouteContext) {
         },
       }),
     ]);
+
+    // 재게시 시 라이브 공유 페이지(레이아웃 포함 하위 전부)의 캐시를 무효화한다.
+    // 라우트 핸들러 밖(테스트 등)에서 호출되면 store가 없어 throw하므로 방어한다.
+    try {
+      revalidatePath(`/s/${publication.shareToken}`, "layout");
+    } catch (revalidateError) {
+      console.warn("revalidatePath skipped", revalidateError);
+    }
 
     return NextResponse.json({
       shareUrl: `/s/${publication.shareToken}`,
