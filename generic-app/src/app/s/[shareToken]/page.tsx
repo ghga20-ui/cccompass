@@ -8,58 +8,28 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCohort } from "@/contexts/CohortContext";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import { buildShareHref } from "@/lib/hyoja/share-routes";
+import { interestTags } from "@/data/career-mapping";
+import { searchDeptAndCareers, type SearchResult } from "@/data/search-index";
 import { cn } from "@/lib/utils";
-
-const departmentOptions = [
-  {
-    departmentName: "간호학과",
-    label: "간호학과",
-    fieldName: "보건·의료",
-    trackName: "자연·보건",
-  },
-  {
-    departmentName: "컴퓨터공학과",
-    label: "컴퓨터공학과",
-    fieldName: "공학",
-    trackName: "정보·공학",
-  },
-  {
-    departmentName: "경영학과",
-    label: "경영학과",
-    fieldName: "사회·상경",
-    trackName: "인문·사회",
-  },
-];
-
-const interestTags = [
-  { id: "health-medical", label: "보건·의료" },
-  { id: "engineering-it", label: "공학·IT" },
-  { id: "business-social", label: "경영·사회" },
-  { id: "education-humanities", label: "교육·인문" },
-];
 
 export default function ShareHomePage() {
   const router = useRouter();
   const { basePath, schoolData } = useHyojaRuntime();
   const { cohort, setCohort, cohortOptions } = useCohort();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState<
-    (typeof departmentOptions)[number] | null
-  >(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<SearchResult | null>(null);
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
 
-  const searchResults = useMemo(() => {
-    const query = searchQuery.trim().toLocaleLowerCase("ko-KR");
-    if (!query || selectedDepartment) return [];
+  const showCohortToggle = cohortOptions.length > 1;
 
-    return departmentOptions.filter((department) =>
-      department.departmentName.toLocaleLowerCase("ko-KR").includes(query),
-    );
+  const searchResults = useMemo(() => {
+    if (selectedDepartment) return [];
+    return searchDeptAndCareers(searchQuery);
   }, [searchQuery, selectedDepartment]);
 
   const canProceed = selectedDepartment !== null || selectedInterest !== null;
 
-  function handleSelectDepartment(department: (typeof departmentOptions)[number]) {
+  function handleSelectDepartment(department: SearchResult) {
     setSelectedDepartment(department);
     setSelectedInterest(null);
     setSearchQuery("");
@@ -111,6 +81,7 @@ export default function ShareHomePage() {
         </div>
       </section>
 
+      {showCohortToggle && (
       <section className="px-5 pb-4">
         <div className="mx-auto max-w-lg">
           <div className="mb-2.5 flex items-center gap-1.5">
@@ -163,6 +134,7 @@ export default function ShareHomePage() {
           </div>
         </div>
       </section>
+      )}
 
       <section className="px-5 pb-4">
         <div className="mx-auto max-w-lg">

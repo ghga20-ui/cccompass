@@ -35,10 +35,10 @@ function NoStudentDataEmptyState({ schoolName }: { schoolName: string }) {
       <div className="rounded-2xl bg-card p-6 text-center shadow-sm ring-1 ring-foreground/10">
         <p className="text-sm font-medium text-primary">{schoolName}</p>
         <h1 className="mt-3 text-2xl font-bold tracking-normal text-foreground">
-          공개할 2·3학년 선택과목 데이터가 없어요
+          공개할 선택과목 데이터가 없어요
         </h1>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          업로드된 편제표에서 학생 공개 화면에 사용할 2·3학년 과목 정보를 찾지
+          업로드된 편제표에서 학생 공개 화면에 사용할 과목 정보를 찾지
           못했습니다.
         </p>
       </div>
