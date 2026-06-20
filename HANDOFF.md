@@ -4,17 +4,20 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
-_최종 갱신: 2026-06-20 (Claude Code) — 포팅 Step 1~5 완료, Step 6 진행 예정_
+_최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅 12단계 전부 완료 + 배포·검증 끝**_
 
-**포팅 진행상황 (TaskList #1~12)**: Step1~5 완료 커밋·push됨.
-- ✅ Step1 데이터 4종 이식 + 공통과목 보강 (ed5b9ff)
-- ✅ Step2 school-adapter 보강: expandSubjectNames, grade>=2 제거, 동치헬퍼 (cbbc59a)
-- ✅ Step3 ui 부품 5종 (945857a)
-- ✅ Step4 SubjectCard·SelectionGroup 포팅 (f9e6b5f)
-- ✅ Step5 추천함수 subjectCatalog 주입 옵션 (5eb1620)
-- ⏭ Step6 subjects 목록/상세 페이지 포팅 (다음)
-- 남음: Step7 recommend, Step8 roadmap, Step9 포스터, Step10 전시관, Step11 cohort토글, Step12 검증/배포
-각 step 타입체크(npx tsc --noEmit) 통과 확인 후 커밋하는 방식. 효자고 원본은 `git show "origin/main:app/src/..."`로 읽음.
+**포팅 완료 (TaskList #1~12 전부 ✅)**: 게시 페이지(/s/[shareToken]/*)가 효자고 main과 동등.
+- 게시 검증 완료: 의정부여고 게시본 `/s/cYrKU6tM1r2EYzxia3ubO_9T7YQkXF13`
+- 메인(학교명·관심태그·학과검색, 단일cohort 토글숨김), 전시관(포스터 갤러리 76과목), 추천(3모드), 로드맵(택N·학점·추천배지·묶음과목) 전부 정상 동작 확인.
+- 배포됨: https://generic-curriculum-assistant.vercel.app
+- next build + tsc 통과, 콘솔 에러 0.
+
+**남은 잔여 작업(선택)**:
+- 메인에 PortalActionCards(전시관/추천/로드맵 카드)는 미추가 — BottomNav 5탭으로 진입 가능해 기능상 무방. 원하면 추가.
+- 전시관 hero가 effja 박람회 이미지 — 중립 이미지로 교체 고려 가능.
+- university-requirements 16모집단위는 2025대입 스냅샷(전국공통이나 연도 갱신 시 별도 관리).
+
+각 step 타입체크 통과 후 커밋. 효자고 원본은 `git show "origin/main:app/src/..."`로 읽음.
 
 ## 지금 작업 중인 것
 
