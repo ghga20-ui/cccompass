@@ -7,6 +7,7 @@ import {
   parseManualSplit,
   resolveConcentratedName,
 } from "@/lib/curriculum/split-subjects";
+import { getReviewFlag } from "@/lib/curriculum/review-flags";
 
 type SubjectRowProps = {
   subject: CurriculumSubject;
@@ -48,6 +49,7 @@ export function SubjectRow({
   }, [subject.name, subject.credits]);
 
   const concentrated = hasConcentratedMarker(subject.name);
+  const reviewFlag = getReviewFlag(subject);
 
   function openSplit() {
     setSplitText(subject.name);
@@ -69,7 +71,19 @@ export function SubjectRow({
   }
 
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-3">
+    <div
+      className={`rounded-md border p-3 ${
+        reviewFlag ? "border-amber-300 bg-amber-50/40" : "border-slate-200 bg-white"
+      }`}
+    >
+      {reviewFlag ? (
+        <div className="mb-2 flex items-start gap-1.5 rounded-md bg-amber-100/70 px-2 py-1.5 text-[11px] leading-relaxed text-amber-900">
+          <span aria-hidden="true">⚠️</span>
+          <span>
+            <span className="font-semibold">{reviewFlag.label}</span> · {reviewFlag.reason}
+          </span>
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-end gap-2">
         <div className="min-w-0 flex-1 space-y-1">
           <label

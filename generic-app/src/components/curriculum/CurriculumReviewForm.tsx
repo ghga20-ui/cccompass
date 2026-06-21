@@ -8,6 +8,7 @@ import {
   createEmptyChoiceGroup,
   createEmptySubject,
 } from "@/lib/curriculum/factory";
+import { getReviewFlag } from "@/lib/curriculum/review-flags";
 import {
   schoolCurriculumSchema,
   type ChoiceGroup,
@@ -84,6 +85,34 @@ export function CurriculumReviewForm({
     s: number,
   ): CurriculumSemester {
     return draft.cohorts[c].grades[g].semesters[s];
+  }
+
+  // 전체에서 '확인 필요' 항목 개수
+  function countReviewFlags(): number {
+    let n = 0;
+    for (const cohort of curriculum.cohorts)
+      for (const grade of cohort.grades)
+        for (const semester of grade.semesters) {
+          semester.requiredSubjects.forEach((s) => {
+            if (getReviewFlag(s)) n += 1;
+          });
+          semester.choiceGroups.forEach((gr) =>
+            gr.subjects.forEach((s) => {
+              if (getReviewFlag(s)) n += 1;
+            }),
+          );
+        }
+    return n;
+  }
+
+  // 학기 예상 학점 합계 (지정 + 선택군 택N×과목당학점)
+  function semesterCreditSum(semester: CurriculumSemester): number {
+    const designated = semester.requiredSubjects.reduce((sum, s) => sum + (s.credits || 0), 0);
+    const choice = semester.choiceGroups.reduce((sum, g) => {
+      const each = g.creditsEach ?? g.subjects[0]?.credits ?? 0;
+      return sum + g.choose * each;
+    }, 0);
+    return designated + choice;
   }
 
   function updateRequiredSubject(
@@ -298,7 +327,12 @@ export function CurriculumReviewForm({
         key={`${semester.semester}-${semesterIndex}`}
         className="space-y-4 rounded-lg border border-slate-300 bg-white p-4"
       >
-        <h4 className="text-base font-bold text-slate-900">{semester.semester}학기</h4>
+        <div className="flex items-baseline justify-between gap-2">
+          <h4 className="text-base font-bold text-slate-900">{semester.semester}학기</h4>
+          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+            학점 합계 약 {semesterCreditSum(semester)}학점
+          </span>
+        </div>
 
         <div className="space-y-2">
           <h5 className="text-sm font-semibold text-slate-700">지정 과목</h5>
@@ -393,8 +427,25 @@ export function CurriculumReviewForm({
     );
   }
 
+  const reviewCount = countReviewFlags();
+
   return (
     <form className="mt-10 space-y-8" onSubmit={(event) => event.preventDefault()}>
+      {reviewCount > 0 ? (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <p className="text-sm font-semibold text-amber-900">
+            ⚠️ 확인이 필요한 항목이 {reviewCount}개 있어요
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-amber-800">
+            AI가 편제표를 자동으로 읽었지만 완벽하지 않을 수 있어요. 아래에서
+            <span className="mx-1 rounded bg-amber-100 px-1.5 py-0.5 text-[12px] font-medium">⚠️ 노란색 표시</span>
+            가 붙은 과목을 원본 편제표와 비교해 확인해 주세요. 틀렸으면 과목명을 직접
+            고치거나, <b>과목 나누기</b>(여러 과목이 붙었을 때)·<b>집중이수 배정</b>(↔ 표시)·
+            <b>삭제</b> 버튼으로 바로잡을 수 있어요.
+          </p>
+        </div>
+      ) : null}
+
       <div className="space-y-2">
         <label htmlFor="school-name" className="block text-sm font-semibold text-slate-800">
           학교명
