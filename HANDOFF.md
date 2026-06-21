@@ -38,10 +38,21 @@ _최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅(12단계) + 
 - choose 입력 정수화+clampGroup(floor), credits 입력 로컬문자열(빈칸 허용·양수만 반영·blur 복원), convertGroupToRequired 양수 가드+빈name 제외, SubjectRow stale split useEffect 리셋.
 - 테스트 84개 통과, 배포 완료.
 
+**파싱 견고성 테스트+개선 완료 (2026-06-21, T-A~T-E)**
+실제 편제표 5종(한민고·현대청운고·의정부여고·효자고2종, data/parse-test/)으로 테스트.
+- 하네스: data/parse-test/harness.mjs (worker kordoc + OpenAI structurer, results/에 v1/v2 저장). 측정: compare-v1-v2.mjs.
+- 오류 분석(워크플로): 지배적 오류 = merged(과목명 뭉침)·wrong_choice(지정↔선택 혼동). 원인 다수가 kordoc 표추출에서 구분자 없이 글자 붙음.
+- **파서 개선(배포됨)**: ① structurer 프롬프트 강화(분리/↔집중이수/지정vs선택/누락방지/category) ② post-process.ts 결정론적 후처리(마스터리스트 안전분리+공백정규화+중복선택군 제거).
+- **효과(v1→v2)**: ↔집중이수 오류 16건→0건(완전 제거), 뭉침 한민고13→6(구형표 kordoc손상 잔여), 누락 회복(한민고 과목 287→379).
+- **편집 검수 UI(배포됨, T-E)**: review-flags.ts(↔/뭉침의심/AI불확실 판정) → 상단 "확인 필요 N건" 배너 + 과목별 노란 ⚠️ 배지(평이한 한글 안내) + 학기별 학점합계 배너. 비개발자 친화. E2E 검증 완료.
+
+**파싱 견고성 결론**: LLM 파싱은 임의 레이아웃에서 100% 무오류 불가. 3계층 방어(프롬프트→후처리→편집검수UI)로 대응. 잔여 오류는 검수 배지가 surface → 교사가 편집 도구로 교정.
+
 **남은 잔여 작업(선택, 우선순위 낮음)**:
-- 수동분리는 area/credits를 각 분리결과에 복제 → 사용자가 학점 재조정 필요(설계상 의도, 뭉침 과목 credits 자체가 부정확).
-- 미게시 변경 배지(draft vs publication updatedAt), 입력 인라인 에러 표시(aria-invalid)는 미적용.
-- 파서 개선: ↔/뭉침을 parser 단에서 덜 틀리게 — 현재는 편집으로 커버.
+- 마스터리스트(subjects.json) 확충 시 후처리 분리 yield↑ (현재 미등록 과목명 많아 분리율 낮음).
+- 수동분리는 area/credits를 각 분리결과에 복제 → 사용자가 학점 재조정 필요(설계 의도).
+- 원문(kordoc) 대조 패널, 미게시 변경 배지는 미적용.
+- 파서: kordoc 표추출 자체 개선(구형표 글자붙음)은 별도 과제.
 - 메인에 PortalActionCards 미추가(BottomNav 5탭으로 진입 가능).
 - 전시관 hero가 effja 박람회 이미지 — 중립 이미지 교체 고려.
 - university-requirements 16모집단위는 2025대입 스냅샷.
