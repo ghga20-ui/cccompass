@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
+import { postProcessCurriculum } from "@/lib/curriculum/post-process";
 import { prisma } from "@/lib/db";
 import { getStructurerProvider } from "@/lib/llm";
 import { getParserProvider } from "@/lib/parser";
@@ -164,7 +165,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "편제표 구조화 중 오류가 발생했습니다." }, { status: 502 });
   }
 
-  const validation = schoolCurriculumSchema.safeParse(structured.curriculum);
+  // 결정론적 후처리: 뭉친 과목명 분해 + 공백 정규화 + 중복 선택군 제거
+  const processedCurriculum = postProcessCurriculum(structured.curriculum);
+  const validation = schoolCurriculumSchema.safeParse(processedCurriculum);
 
   if (!validation.success) {
     return NextResponse.json(

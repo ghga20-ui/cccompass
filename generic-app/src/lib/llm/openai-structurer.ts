@@ -327,10 +327,24 @@ function createSystemPrompt() {
     "If userHints.cohortMode is single, return one cohort unless the document clearly contradicts it.",
     "If userHints.cohortMode is multiple, actively look for multiple entrance-year cohorts.",
     "If cohort boundaries are ambiguous, create the most likely cohorts and add explicit warnings.",
-    "Preserve Korean subject names exactly.",
+    // --- 분리/뭉침 방지 ---
+    "SPLIT, NEVER MERGE SUBJECT NAMES. Each output subject MUST be a single official 2022-revised-curriculum subject name. If a source cell contains multiple subject names run together (with or without spaces or line breaks, e.g. '인공지능 기초세계지리세계사경제', '운동과 건강음악철학', '미적분경제수학'), split it into one subject object per real subject. Never emit a name that is two or more subjects glued together. When the boundary is unclear, still split using known subject names and set confidence <= 0.5.",
+    "TREAT EVERY TABLE CELL AND EVERY LINE-BREAK AS A SUBJECT BOUNDARY. One cell normally holds one subject per text line; multiple lines mean multiple subjects, never one concatenated name.",
+    // --- 집중이수 ↔ ---
+    "RESOLVE '↔' AS TWO SEPARATE SUBJECTS, NOT ONE NAME. A name containing '↔' (e.g. '정보↔한문', '음악↔미술', '논술↔생태와 환경') denotes 집중이수/교차운영 (two subjects taught in alternating semesters/sections). Output the real subject name for that slot; do NOT keep 'A↔B' as a single name and do NOT model it as a 택1 choiceGroup.",
+    // --- 지정 vs 선택군 ---
+    "DISTINGUISH DESIGNATED SUBJECTS FROM CHOICE GROUPS BY EXPLICIT CREDIT. Within a selection column, a row with its OWN explicit credit value is a DESIGNATED subject and goes in requiredSubjects, NOT inside a following [택N] choiceGroup. A [택N] tag applies only to the rows below it whose individual credit cells are blank. Never absorb a credited designated subject as the first member of a choiceGroup.",
+    "PRESERVE CHOICE-GROUP BOUNDARIES; DO NOT FLATTEN. When one semester has several independent selection blocks (e.g. a 제2외국어 [택1] block and a 과학 [택4] block), emit a SEPARATE choiceGroup per block with its own choose value copied from its [택N] tag. Never merge all selectable subjects of a semester into one catch-all group, and never omit choose when a [택N] tag is present.",
+    "NEVER DUPLICATE A CHOICE GROUP ACROSS SEMESTERS. Assign each selection block only to the semester(s) whose credit cells are non-empty; do not copy a group into an empty-credit semester.",
+    // --- 누락/허위 방지 ---
+    "DO NOT DROP SCHOOL-DESIGNATED COMMON SUBJECTS. Glued cells like '국어수학영어한국사통합사회통합과학과학탐구실험' MUST be split into every common subject and emitted as requiredSubjects. Emit hard-to-parse subjects with low confidence instead of omitting them; never rely on warnings as a substitute for the data.",
+    "DO NOT INVENT SUBJECTS OR CREDITS. Skip column-bleed fragments that are not real subject names. Do not assign a guessed uniform credit to subjects whose credit cell is blank; omit credits and lower confidence instead.",
+    // --- 분류/코호트 ---
+    "Preserve Korean subject names exactly (aside from the splits above).",
+    "Use category only when it is one of: 공통, 일반선택, 진로선택, 융합선택, 전문교과, 기타. If a 과목구분 column marks 공통/일반/진로/융합 with a value spanning several rows (rowspan), propagate it to every covered subject. At minimum set category='공통' for 공통과목 (국어/수학/영어/한국사/통합사회/통합과학/과학탐구실험 and numbered variants).",
+    "When a file has multiple cohorts, read each cohort's own credit and 택수 cells independently; never copy a value across cohorts.",
     "Use warnings for ambiguous grade, semester, credit, category, or choice-group evidence.",
     "Do not use empty strings for optional fields. Omit unknown optional values.",
-    "Use category only when it is one of: 공통, 일반선택, 진로선택, 융합선택, 전문교과, 기타.",
     "Return only data that is supported by the supplied text, tables, or user hints.",
   ].join(" ");
 }
