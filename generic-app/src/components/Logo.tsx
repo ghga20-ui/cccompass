@@ -27,18 +27,22 @@ export function CompassMark({ className }: { className?: string }) {
 
 /** 심볼 + 워드마크("과목나침반") */
 export function BrandLogo({
+  size = "md",
   className,
   markClassName,
   wordClassName,
 }: {
+  size?: "md" | "lg";
   className?: string;
   markClassName?: string;
   wordClassName?: string;
 }) {
+  const markSize = size === "lg" ? "h-10 w-10" : "h-8 w-8";
+  const wordSize = size === "lg" ? "text-2xl" : "text-xl";
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
-      <CompassMark className={cn("h-7 w-7 text-[var(--primary)]", markClassName)} />
-      <span className={cn("text-lg font-bold tracking-tight text-foreground", wordClassName)}>
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      <CompassMark className={cn(markSize, "text-[var(--primary)]", markClassName)} />
+      <span className={cn(wordSize, "font-bold tracking-tight text-foreground", wordClassName)}>
         과목나침반
       </span>
     </span>

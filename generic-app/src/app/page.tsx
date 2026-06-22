@@ -19,10 +19,10 @@ const featureCards = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <header className="mx-auto w-full max-w-5xl px-6 pt-8 sm:px-10">
-        <BrandLogo />
+      <header className="mx-auto w-full max-w-6xl px-6 pt-8 sm:px-10">
+        <BrandLogo size="lg" />
       </header>
-      <section className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl flex-col justify-center px-6 py-12 sm:px-10">
+      <section className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl flex-col justify-center px-6 py-12 sm:px-10">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-[var(--primary)]">학교 편제표 업로드 기반</p>

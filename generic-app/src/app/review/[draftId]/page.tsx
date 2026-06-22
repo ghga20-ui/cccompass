@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CurriculumReviewForm } from "@/components/curriculum/CurriculumReviewForm";
+import { BrandLogo } from "@/components/Logo";
 import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
 import { prisma } from "@/lib/db";
 
@@ -38,8 +40,11 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <section className="mx-auto w-full max-w-6xl px-6 py-12 sm:px-10">
-        <div className="max-w-3xl">
+      <section className="mx-auto w-full max-w-7xl px-6 py-10 sm:px-10 sm:py-12">
+        <Link href="/" className="inline-flex">
+          <BrandLogo size="lg" />
+        </Link>
+        <div className="mt-7 max-w-3xl">
           <p className="text-sm font-semibold text-[var(--primary)]">교육과정 검토</p>
           <h1 className="mt-4 text-4xl font-bold tracking-normal sm:text-5xl">
             업로드한 교육과정을 확인해 주세요

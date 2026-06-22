@@ -164,10 +164,10 @@ export default function CreatePage() {
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <section className="mx-auto w-full max-w-2xl px-6 py-10 sm:px-8 sm:py-12">
+      <section className="mx-auto w-full max-w-3xl px-6 py-10 sm:px-8 sm:py-12">
         {/* Header */}
         <Link href="/" className="inline-flex">
-          <BrandLogo />
+          <BrandLogo size="lg" />
         </Link>
         <h1 className="mt-7 text-3xl font-bold tracking-normal sm:text-4xl">
           학교 편제표 업로드
