@@ -257,16 +257,30 @@ describe("POST /api/curricula/upload", () => {
     expect(await readJson(response)).toEqual({ error: "문서 분석 중 오류가 발생했습니다." });
   });
 
-  it("returns a handled error when the structurer provider throws", async () => {
+  it("returns a handled error when the structurer keeps failing (retries exhausted)", async () => {
     const { POST } = await import("@/app/api/curricula/upload/route");
-    mocks.structure.mockRejectedValueOnce(new Error("structurer failed"));
+    // 재시도(3회) 전부 실패해야 502
+    mocks.structure.mockReset();
+    mocks.structure.mockRejectedValue(new Error("structurer failed"));
 
     const response = await POST(createRequest(createUploadFile()));
 
+    expect(mocks.structure).toHaveBeenCalledTimes(3);
     expect(response.status).toBe(502);
     expect(await readJson(response)).toEqual({
-      error: "편제표 구조화 중 오류가 발생했습니다.",
+      error: "편제표 구조화 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
     });
+  });
+
+  it("retries and succeeds when the structurer fails once then recovers", async () => {
+    const { POST } = await import("@/app/api/curricula/upload/route");
+    // 첫 호출만 실패하고 두 번째에 성공 → 재시도로 정상 처리
+    mocks.structure.mockRejectedValueOnce(new Error("transient"));
+
+    const response = await POST(createRequest(createUploadFile()));
+
+    expect(mocks.structure).toHaveBeenCalledTimes(2);
+    expect(response.status).toBe(200);
   });
 
   it("returns 422 when the structured curriculum is invalid", async () => {

@@ -17,8 +17,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "범용 선택과목 도우미",
-  description: "학교 편제표 업로드 기반 선택과목 도우미",
+  title: "과목나침반",
+  description: "학교 편제표를 올리면 학생 맞춤 선택과목 안내·진로 추천·수강 로드맵을 만들어 주는 서비스",
 };
 
 export const viewport: Viewport = {

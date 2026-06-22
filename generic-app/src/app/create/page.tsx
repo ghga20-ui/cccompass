@@ -9,6 +9,8 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import Link from "next/link";
+import { BrandLogo } from "@/components/Logo";
 
 type UploadResponse = {
   reviewUrl?: string;
@@ -162,9 +164,12 @@ export default function CreatePage() {
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <section className="mx-auto w-full max-w-2xl px-6 py-12 sm:px-8 sm:py-16">
+      <section className="mx-auto w-full max-w-2xl px-6 py-10 sm:px-8 sm:py-12">
         {/* Header */}
-        <h1 className="text-3xl font-bold tracking-normal sm:text-4xl">
+        <Link href="/" className="inline-flex">
+          <BrandLogo />
+        </Link>
+        <h1 className="mt-7 text-3xl font-bold tracking-normal sm:text-4xl">
           학교 편제표 업로드
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">

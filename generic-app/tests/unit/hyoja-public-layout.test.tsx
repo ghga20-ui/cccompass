@@ -161,7 +161,7 @@ describe("public Hyoja share layout", () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "학생 공개 하단 메뉴" })).toBeInTheDocument();
-    expect(screen.getByText("선택과목 도우미")).toBeInTheDocument();
+    expect(screen.getByText("과목나침반")).toBeInTheDocument();
     expect(screen.queryByText(/ChatBot/i)).not.toBeInTheDocument();
   });
 
