@@ -43,6 +43,8 @@ export function SubjectRow({
   // key가 인덱스 기반이라 분리/삭제 시 같은 위치에 다른 과목이 들어올 수 있다.
   // 과목이 바뀌면 분리 패널/학점 표시를 그 과목 기준으로 리셋한다.
   useEffect(() => {
+    // 과목 prop이 바뀌면 로컬 표시 상태를 리셋하는 의도된 사용.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSplitOpen(false);
     setSplitText("");
     setCreditsText(String(subject.credits));
