@@ -153,16 +153,33 @@ export async function POST(request: Request) {
 
   let structured;
 
-  try {
-    structured = await getStructurerProvider().structure({
-      text: parsed.text,
-      tables: parsed.tables,
-      hints,
-    });
-  } catch (error) {
-    console.error("Curriculum structurer provider failed", error);
+  // structurer(OpenAI) 호출은 일시적으로 실패할 수 있어 지수 백오프로 재시도한다.
+  const maxAttempts = 3;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      structured = await getStructurerProvider().structure({
+        text: parsed.text,
+        tables: parsed.tables,
+        hints,
+      });
+      lastError = undefined;
+      break;
+    } catch (error) {
+      lastError = error;
+      console.error(`Curriculum structurer attempt ${attempt}/${maxAttempts} failed`, error);
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1500));
+      }
+    }
+  }
 
-    return NextResponse.json({ error: "편제표 구조화 중 오류가 발생했습니다." }, { status: 502 });
+  if (!structured) {
+    console.error("Curriculum structurer provider failed after retries", lastError);
+    return NextResponse.json(
+      { error: "편제표 구조화 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." },
+      { status: 502 },
+    );
   }
 
   // 결정론적 후처리: 뭉친 과목명 분해 + 공백 정규화 + 중복 선택군 제거

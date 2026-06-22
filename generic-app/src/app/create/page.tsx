@@ -315,6 +315,15 @@ export default function CreatePage() {
                 {fileError}
               </p>
             ) : null}
+
+            <p className="flex items-start gap-1.5 rounded-md bg-[var(--primary)]/5 px-3 py-2 text-xs leading-relaxed text-slate-600">
+              <span aria-hidden="true">💡</span>
+              <span>
+                되도록 <b>한 학년도 입학생 편제표</b>만 올려 주세요. (예: &lsquo;2026학년도
+                입학생 교육과정 편제표&rsquo;) 여러 학년도가 한 파일에 섞여 있으면 정확도가
+                떨어질 수 있어요.
+              </span>
+            </p>
           </div>
 
           {/* 고급 설정 (접힘) */}
