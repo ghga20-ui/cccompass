@@ -191,12 +191,12 @@ export function TutorialPlayer({ def }: { def: TutorialDef }) {
             <p className="mt-1 text-sm leading-6 text-slate-600">
               {step.coachTip}
             </p>
-            {step.interactive ? (
+            {step.interactive && !t.isLast ? (
               <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[var(--cta)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--cta)]">
                 <MousePointerClick className="h-3.5 w-3.5" />
                 {casual
-                  ? "위에서 강조된 곳을 직접 눌러봐"
-                  : "위에서 강조된 곳을 직접 눌러 보세요"}
+                  ? "강조된 곳을 직접 눌러도 넘어가"
+                  : "강조된 곳을 직접 눌러도 다음으로 넘어가요"}
               </p>
             ) : null}
           </div>
@@ -214,31 +214,17 @@ export function TutorialPlayer({ def }: { def: TutorialDef }) {
             이전
           </Button>
 
-          <div className="flex items-center gap-2">
-            {step.interactive && !t.isLast ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={t.goNext}
-                className="text-muted-foreground"
-              >
-                건너뛰기
-              </Button>
-            ) : null}
-
-            {t.isLast ? (
-              <Button type="button" variant="cta" size="sm" onClick={t.restart}>
-                <RotateCcw className="h-4 w-4" />
-                처음부터
-              </Button>
-            ) : !step.interactive ? (
-              <Button type="button" variant="cta" size="sm" onClick={t.goNext}>
-                다음
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            ) : null}
-          </div>
+          {t.isLast ? (
+            <Button type="button" variant="cta" size="sm" onClick={t.restart}>
+              <RotateCcw className="h-4 w-4" />
+              처음부터
+            </Button>
+          ) : (
+            <Button type="button" variant="cta" size="sm" onClick={t.goNext}>
+              다음
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>
