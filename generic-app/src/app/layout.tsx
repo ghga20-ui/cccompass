@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_KR, Plus_Jakarta_Sans } from "next/font/google";
+import { Black_Han_Sans, Noto_Sans_KR, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
@@ -13,6 +13,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// 워드마크('과목나침반') 전용 — 굵고 임팩트 있는 디스플레이체.
+const blackHanSans = Black_Han_Sans({
+  variable: "--font-brand",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -36,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${notoSansKR.variable} ${plusJakartaSans.variable} antialiased`}
+        className={`${notoSansKR.variable} ${plusJakartaSans.variable} ${blackHanSans.variable} antialiased`}
       >
         {children}
       </body>

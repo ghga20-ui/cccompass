@@ -5,8 +5,13 @@ export default function Footer() {
     <footer className="mt-8 border-t border-border px-5 pb-28 pt-6">
       <div className="mx-auto flex max-w-lg flex-col items-center gap-1.5 text-center text-xs leading-relaxed text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <CompassMark className="h-4 w-4 text-[var(--primary)]" />
-          <span className="font-medium text-foreground/80">과목나침반</span>
+          <CompassMark className="h-5 w-5 text-[var(--primary)]" />
+          <span
+            className="text-base text-foreground/80"
+            style={{ fontFamily: "var(--font-brand)" }}
+          >
+            과목나침반
+          </span>
         </span>
         <p>학교 편제표 기반으로 선택과목 안내 화면을 제공합니다.</p>
       </div>
