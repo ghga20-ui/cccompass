@@ -78,8 +78,9 @@ export const choiceGroupSchema = z
 
 export const curriculumSemesterSchema = z.object({
   semester: z.union([z.literal(1), z.literal(2)]),
-  requiredSubjects: z.array(curriculumSubjectSchema),
-  choiceGroups: z.array(choiceGroupSchema),
+  // LLM이 빈 배열을 생략해도 파싱이 깨지지 않도록 기본값 부여(출력 타입은 그대로 배열).
+  requiredSubjects: z.array(curriculumSubjectSchema).default([]),
+  choiceGroups: z.array(choiceGroupSchema).default([]),
 });
 
 export const curriculumGradeSchema = z.object({

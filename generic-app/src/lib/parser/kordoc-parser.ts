@@ -50,6 +50,7 @@ export class KordocParserProvider implements ParserProvider {
     const { token, url } = getParserServiceConfig();
     const endpoint = getParserEndpoint(url);
 
+    const startedAt = Date.now();
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -61,7 +62,10 @@ export class KordocParserProvider implements ParserProvider {
         mimeType: input.mimeType,
         contentBase64: input.buffer.toString("base64"),
       }),
+      // 콜드 Render에 무한 대기하지 않도록 타임아웃(진단+하드닝).
+      signal: AbortSignal.timeout(45000),
     });
+    console.log(`[parser] kordoc responded in ${Date.now() - startedAt}ms status=${response.status}`);
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");

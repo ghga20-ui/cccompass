@@ -151,6 +151,10 @@ export async function POST(request: Request) {
     );
   }
 
+  console.log(
+    `[upload] parse ok: text=${parsed.text.length} tables=${parsed.tables.length} → structuring 시작`,
+  );
+
   let structured;
 
   // structurer(OpenAI) 호출은 일시적으로 실패할 수 있어 지수 백오프로 재시도한다.
@@ -187,6 +191,8 @@ export async function POST(request: Request) {
       { status: 502 },
     );
   }
+
+  console.log("[upload] structuring ok → 후처리/저장");
 
   // 결정론적 후처리: 뭉친 과목명 분해 + 공백 정규화 + 중복 선택군 제거
   const processedCurriculum = postProcessCurriculum(structured.curriculum);

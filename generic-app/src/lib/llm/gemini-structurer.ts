@@ -140,6 +140,8 @@ export class GeminiStructurerProvider implements StructurerProvider {
       }
     }
 
+    const startedAt = Date.now();
+    console.log(`[gemini] request start model=${model} pdf=${usePdf}`);
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
@@ -153,8 +155,11 @@ export class GeminiStructurerProvider implements StructurerProvider {
           contents: [{ role: "user", parts: userParts }],
           generationConfig,
         }),
+        // 서버리스에서 Gemini 호출이 매달리지 않도록 타임아웃(진단+하드닝).
+        signal: AbortSignal.timeout(90000),
       },
     );
+    console.log(`[gemini] responded in ${Date.now() - startedAt}ms status=${response.status}`);
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
