@@ -14,6 +14,7 @@ export default function Footer() {
           </span>
         </span>
         <p>학교 편제표 기반으로 선택과목 안내 화면을 제공합니다.</p>
+        <p className="mt-1 text-foreground/60">만든 이 · 효자고등학교 박세준</p>
       </div>
     </footer>
   );
