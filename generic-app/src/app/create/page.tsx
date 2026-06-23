@@ -81,6 +81,11 @@ export default function CreatePage() {
   const startedAtRef = useRef<number | null>(null);
   const errorId = "curriculum-upload-error";
 
+  // 페이지 진입 시 Render 파서를 미리 깨운다(콜드스타트 완화, fire-and-forget).
+  useEffect(() => {
+    fetch("/api/warm").catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (!isUploading) return;
     const timer = window.setInterval(() => {
