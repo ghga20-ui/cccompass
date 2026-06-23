@@ -34,7 +34,6 @@ export function Reveal({
     const belowFold = rect.top > window.innerHeight * 0.85;
     if (!belowFold) return; // 이미 화면 안 → 애니메이션 없이 즉시 표시
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState("hidden");
     const io = new IntersectionObserver(
       (entries) => {

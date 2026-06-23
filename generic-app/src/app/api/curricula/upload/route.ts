@@ -162,6 +162,12 @@ export async function POST(request: Request) {
         text: parsed.text,
         tables: parsed.tables,
         hints,
+        // 원본 파일 동봉: PDF는 비전(네이티브) 입력으로 직접 읽게 한다.
+        file: {
+          fileName: file.name,
+          mimeType: file.type || "application/octet-stream",
+          base64: buffer.toString("base64"),
+        },
       });
       lastError = undefined;
       break;

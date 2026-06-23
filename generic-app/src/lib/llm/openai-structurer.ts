@@ -288,7 +288,7 @@ function normalizeCurriculumCandidate(curriculum: unknown, hints?: StructuringHi
   };
 }
 
-function parseJsonResponse(text: string, hints?: StructuringHints): StructuringResult {
+export function parseJsonResponse(text: string, hints?: StructuringHints): StructuringResult {
   const parsed: unknown = JSON.parse(text);
 
   if (!parsed || typeof parsed !== "object") {
@@ -318,7 +318,7 @@ function parseJsonResponse(text: string, hints?: StructuringHints): StructuringR
   };
 }
 
-function createSystemPrompt() {
+export function createSystemPrompt() {
   return [
     "You convert Korean high-school curriculum tables into strict JSON.",
     "A school may upload one entrance-year cohort, multiple entrance-year cohorts in separate sections, or multiple cohorts in one table.",
