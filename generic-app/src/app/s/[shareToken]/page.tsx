@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, GraduationCap, Search, X } from "lucide-react";
+import { ArrowRight, ChevronDown, GraduationCap, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCohort } from "@/contexts/CohortContext";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import { buildShareHref } from "@/lib/hyoja/share-routes";
-import { interestTags } from "@/data/career-mapping";
+import { getDepartmentsByTagId, interestTags } from "@/data/career-mapping";
 import { searchDeptAndCareers, type SearchResult } from "@/data/search-index";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,7 @@ export default function ShareHomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<SearchResult | null>(null);
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
+  const [selectedTagDept, setSelectedTagDept] = useState<string | null>(null);
 
   const showCohortToggle = cohortOptions.length > 1;
 
@@ -27,11 +28,18 @@ export default function ShareHomePage() {
     return searchDeptAndCareers(searchQuery);
   }, [searchQuery, selectedDepartment]);
 
+  // 선택한 관심 분야의 세부 학과 목록 (2단계 선택)
+  const tagDepartments = useMemo(
+    () => (selectedInterest ? getDepartmentsByTagId(selectedInterest) : []),
+    [selectedInterest],
+  );
+
   const canProceed = selectedDepartment !== null || selectedInterest !== null;
 
   function handleSelectDepartment(department: SearchResult) {
     setSelectedDepartment(department);
     setSelectedInterest(null);
+    setSelectedTagDept(null);
     setSearchQuery("");
   }
 
@@ -40,6 +48,15 @@ export default function ShareHomePage() {
       router.push(
         buildShareHref(basePath, "/recommend", {
           dept: selectedDepartment.departmentName,
+        }),
+      );
+      return;
+    }
+
+    if (selectedTagDept) {
+      router.push(
+        buildShareHref(basePath, "/recommend", {
+          dept: selectedTagDept,
         }),
       );
       return;
@@ -203,32 +220,103 @@ export default function ShareHomePage() {
 
       <section className="flex-1 px-5 pb-6 pt-4">
         <div className="mx-auto max-w-lg">
-          <h2 className="mb-3 text-sm font-medium text-foreground">
-            관심 분야를 골라봐
-          </h2>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-medium text-foreground">
+              관심 분야를 골라봐
+            </h2>
+            {selectedInterest && (
+              <span className="text-xs font-medium text-[var(--primary)]">
+                {interestTags.find((t) => t.id === selectedInterest)?.label} 선택됨
+              </span>
+            )}
+          </div>
           <div className="flex flex-wrap gap-2.5">
-            {interestTags.map((tag) => {
-              const isSelected = selectedInterest === tag.id;
-
-              return (
+            {/* 선택된 태그 먼저 */}
+            {interestTags
+              .filter((tag) => tag.id === selectedInterest)
+              .map((tag) => (
                 <button
                   key={tag.id}
                   type="button"
                   onClick={() => {
-                    setSelectedInterest(isSelected ? null : tag.id);
-                    setSelectedDepartment(null);
+                    setSelectedInterest(null);
+                    setSelectedTagDept(null);
                   }}
-                  className={cn(
-                    "min-h-[44px] rounded-full border px-4 py-2.5 text-sm font-medium transition-all active:scale-95",
-                    isSelected
-                      ? "border-[var(--primary)] bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
-                      : "border-border bg-card text-foreground hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5",
-                  )}
+                  className="min-h-[44px] rounded-full border border-[var(--primary)] bg-[var(--primary)] px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-[var(--primary)]/20 transition-all active:scale-95"
                 >
                   {tag.label}
                 </button>
-              );
-            })}
+              ))}
+
+            {/* 세부 학과 패널: 선택된 태그 바로 아래 */}
+            {selectedInterest && tagDepartments.length > 0 && (
+              <div className="mb-2 mt-1 w-full rounded-xl border border-border bg-card p-4">
+                <div className="mb-1.5 flex items-center gap-1.5">
+                  <ChevronDown className="h-4 w-4 text-[var(--primary)]" />
+                  <p className="text-sm font-medium text-foreground">
+                    “{interestTags.find((t) => t.id === selectedInterest)?.label}” 관련 학과를 선택해봐
+                  </p>
+                </div>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  선택하지 않아도 추천받을 수 있어
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {tagDepartments.map((dept) => {
+                    const isDeptSelected = selectedTagDept === dept.name;
+
+                    return (
+                      <button
+                        key={dept.name}
+                        type="button"
+                        onClick={() =>
+                          setSelectedTagDept((prev) =>
+                            prev === dept.name ? null : dept.name,
+                          )
+                        }
+                        className={cn(
+                          "min-h-[44px] rounded-lg border p-2.5 text-left transition-all active:scale-[0.98]",
+                          isDeptSelected
+                            ? "border-[var(--primary)] bg-[var(--primary)]/10 shadow-sm"
+                            : "border-border bg-background hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5",
+                        )}
+                      >
+                        <p
+                          className={cn(
+                            "text-sm font-semibold leading-tight",
+                            isDeptSelected
+                              ? "text-[var(--primary)]"
+                              : "text-foreground",
+                          )}
+                        >
+                          {dept.name}
+                        </p>
+                        <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                          {dept.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 나머지 미선택 태그 */}
+            {interestTags
+              .filter((tag) => tag.id !== selectedInterest)
+              .map((tag) => (
+                <button
+                  key={tag.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedInterest(tag.id);
+                    setSelectedDepartment(null);
+                    setSelectedTagDept(null);
+                  }}
+                  className="min-h-[44px] rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-all hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 active:scale-95"
+                >
+                  {tag.label}
+                </button>
+              ))}
           </div>
         </div>
       </section>
