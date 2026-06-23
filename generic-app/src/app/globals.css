@@ -93,11 +93,27 @@
 
   body {
     @apply bg-background text-foreground;
+    /* 한글 줄바꿈: 어절 단위로만 끊어 '한두 글자만 다음 줄로 넘어가는' 고아를 방지.
+       단, 긴 URL·영문 토큰은 넘치지 않게 break-word로 보완. */
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   html {
     @apply font-sans;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 헤드라인은 줄 길이를 고르게 분배해 마지막 줄 고아를 줄인다. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
