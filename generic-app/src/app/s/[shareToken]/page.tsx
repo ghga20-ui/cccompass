@@ -76,11 +76,9 @@ export default function ShareHomePage() {
       <section className="px-5 pb-6 pt-10 md:pt-16 md:text-center">
         <div className="mx-auto max-w-lg">
           <div className="mb-4 flex items-center gap-2.5 md:justify-center">
-            <img
-              src="/school-logo.png"
-              alt=""
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-border"
-            />
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--secondary)] ring-1 ring-border">
+              <GraduationCap className="h-5 w-5 text-[var(--primary)]" />
+            </span>
             <span className="text-2xl font-bold tracking-normal text-foreground">
               {schoolData.schoolName}
             </span>

@@ -277,6 +277,10 @@ export default function Home() {
         </Reveal>
       </section>
 
+      <p className="px-6 pb-6 text-center text-xs text-slate-400">
+        만든 이 · 효자고등학교 박세준
+      </p>
+
       <Footer />
     </main>
   );
