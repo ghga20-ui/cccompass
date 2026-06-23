@@ -135,7 +135,7 @@ export function TutorialPlayer({ def }: { def: TutorialDef }) {
           <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
           <span className="ml-3 truncate text-xs text-muted-foreground">
-            {casual ? "학생 안내 페이지 (예시)" : "과목나침반"}
+            {casual ? "학생 안내 페이지 (예시)" : "커리컴퍼스"}
           </span>
         </div>
 

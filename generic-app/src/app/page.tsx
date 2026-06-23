@@ -128,7 +128,7 @@ export default function Home() {
         <BrandLogo size="lg" markClassName="compass-settle" />
         <Link
           href="/guide"
-          className="text-sm font-medium text-[var(--primary)] transition hover:underline"
+          className="whitespace-nowrap text-sm font-medium text-[var(--primary)] transition hover:underline"
         >
           사용법 둘러보기
         </Link>

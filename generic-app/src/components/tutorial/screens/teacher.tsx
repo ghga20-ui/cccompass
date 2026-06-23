@@ -27,7 +27,7 @@ export function LandingScreen(p: MockScreenProps) {
         className="inline-flex items-center gap-2"
       >
         <CompassMark className="h-7 w-7 text-[var(--primary)]" />
-        <span className="text-lg font-bold">과목나침반</span>
+        <span className="text-lg font-bold">커리컴퍼스</span>
       </span>
       <p className="mt-6 text-xs font-semibold text-[var(--primary)]">
         학교 편제표 업로드 기반

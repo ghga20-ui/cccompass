@@ -27,7 +27,7 @@ export default function GuidePage() {
 
       <section className="mx-auto w-full max-w-3xl px-6 pt-10 text-center">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          과목나침반 사용법
+          커리컴퍼스 사용법
         </h1>
         <p className="mt-2.5 text-sm leading-6 text-slate-600 sm:text-base">
           편제표를 올리는 선생님도, 로드맵을 짜는 학생도 직접 따라 해볼 수

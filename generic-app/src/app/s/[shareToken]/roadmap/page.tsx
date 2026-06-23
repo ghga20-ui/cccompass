@@ -455,7 +455,7 @@ function RoadmapContent() {
 
       ctx.font = `400 11px ${FONT}`;
       ctx.fillStyle = "#d1d5db";
-      const wm = `${schoolData.schoolName} · 과목나침반`;
+      const wm = `${schoolData.schoolName} · 커리컴퍼스`;
       ctx.fillText(wm, W - PAD - ctx.measureText(wm).width, cy + 14);
 
       const link = document.createElement("a");
