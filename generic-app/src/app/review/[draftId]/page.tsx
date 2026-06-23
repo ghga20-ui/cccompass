@@ -40,7 +40,7 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <section className="mx-auto w-full max-w-7xl px-6 py-10 sm:px-10 sm:py-12">
+      <section className="mx-auto w-full max-w-3xl px-6 py-10 sm:px-10 sm:py-12">
         <Link href="/" className="inline-flex">
           <BrandLogo size="lg" />
         </Link>

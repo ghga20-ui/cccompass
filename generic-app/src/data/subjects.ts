@@ -110,6 +110,21 @@ export function getSubjectByName(name: string): Subject | undefined {
   return subjectByName.get(name);
 }
 
+// 학생 런타임(subject-catalog.ts)과 동일한 정규화: 공백 정리 + 소문자.
+// 이 집합에 없는 과목명은 학생 화면에서 '빈 추천 데이터' fallback이 되어
+// 관심분야/학과 추천에 노출되지 않는다.
+function normalizeForMatch(name: string): string {
+  return name.trim().replace(/\s+/g, " ").toLocaleLowerCase("ko-KR");
+}
+
+const knownSubjectNames = new Set(subjects.map((s) => normalizeForMatch(s.name)));
+
+/** 과목명이 마스터 카탈로그(2022 보통교과 + 전문교과 + 공통)에 있는지. */
+export function isKnownSubjectName(name: string): boolean {
+  const normalized = normalizeForMatch(name);
+  return normalized.length > 0 && knownSubjectNames.has(normalized);
+}
+
 export function getSubjectsByArea(area: string): Subject[] {
   return subjects.filter((s) => subjectAreaMatches(s.area, area));
 }

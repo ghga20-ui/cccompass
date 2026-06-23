@@ -64,6 +64,21 @@ export function resolveConcentratedName(name: string, semester: number): string 
 }
 
 /**
+ * 집중이수 과목명("A↔B")을 개별 과목명 배열로 분해한다.
+ * 마커가 없으면 정규화된 원본 1개를 반환. (선택 칩 UI에서 사용)
+ */
+export function splitConcentratedNames(name: string): string[] {
+  if (!name.includes(CONCENTRATED_MARKER)) {
+    return [normalizeSubjectName(name)];
+  }
+  const parts = name
+    .split(CONCENTRATED_MARKER)
+    .map((part) => normalizeSubjectName(part))
+    .filter((part) => part.length > 0);
+  return parts.length > 0 ? Array.from(new Set(parts)) : [normalizeSubjectName(name)];
+}
+
+/**
  * 사용자가 직접 입력한 여러 줄/쉼표 텍스트를 과목명 목록으로 만든다.
  * 자동 구분자가 없는 뭉친 과목명을 수동으로 분리할 때 사용.
  */

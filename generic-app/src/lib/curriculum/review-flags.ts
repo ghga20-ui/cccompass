@@ -1,3 +1,4 @@
+import { isKnownSubjectName } from "@/data/subjects";
 import type { CurriculumSubject } from "@/lib/curriculum/schema";
 
 export interface ReviewFlag {
@@ -15,7 +16,7 @@ function longestKoreanRun(name: string): number {
 
 /**
  * 파싱 결과 과목이 사람 검수가 필요한지 판정.
- * 우선순위: 집중이수(↔) > 과목 뭉침 의심 > AI 불확실.
+ * 우선순위: 집중이수(↔) > 과목 뭉침 의심 > 미확인(카탈로그 외) > AI 불확실.
  * null이면 특별히 확인할 필요 없음.
  */
 export function getReviewFlag(subject: CurriculumSubject): ReviewFlag | null {
@@ -23,7 +24,7 @@ export function getReviewFlag(subject: CurriculumSubject): ReviewFlag | null {
     return {
       label: "집중이수 확인",
       reason:
-        "두 과목이 학기별로 번갈아 열리는 '집중이수'일 수 있어요. '집중이수 N학기 배정' 버튼을 눌러 이 학기에 맞는 과목만 남겨 주세요.",
+        "두 과목이 학기별로 번갈아 열리는 '집중이수'일 수 있어요. 아래 칩에서 이 학기에 실제로 열리는 과목을 골라 주세요. (예: 1학기 정보 / 2학기 한문)",
     };
   }
 
@@ -31,7 +32,15 @@ export function getReviewFlag(subject: CurriculumSubject): ReviewFlag | null {
     return {
       label: "붙어있는지 확인",
       reason:
-        "여러 과목이 하나로 붙어서 읽혔을 수 있어요. 실제로 여러 과목이면 '과목 나누기' 버튼으로 나눠 주세요.",
+        "여러 과목이 하나로 붙어서 읽혔을 수 있어요. 실제로 여러 과목이면 이 항목을 삭제하고 과목을 하나씩 추가해 주세요.",
+    };
+  }
+
+  if (!isKnownSubjectName(subject.name)) {
+    return {
+      label: "미확인 과목",
+      reason:
+        "2022 개정 보통교과 목록에 없는 과목이에요. 과목명 오타이거나, 고시 외·전문교과일 수 있어요. 이대로 게시하면 학생 화면의 관심분야·학과 추천에 나오지 않고 설명도 표시되지 않아요. 표준 과목명으로 고치거나, 의도한 과목이면 그대로 두세요.",
     };
   }
 

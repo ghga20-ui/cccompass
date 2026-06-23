@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import { ChoiceGroupEditor } from "@/components/curriculum/ChoiceGroupEditor";
 import { SubjectRow } from "@/components/curriculum/SubjectRow";
-import {
-  createEmptyChoiceGroup,
-  createEmptySubject,
-} from "@/lib/curriculum/factory";
+import { AddSubjectControl } from "@/components/curriculum/AddSubjectControl";
+import { Button } from "@/components/ui/button";
+import { createEmptyChoiceGroup } from "@/lib/curriculum/factory";
 import { getReviewFlag } from "@/lib/curriculum/review-flags";
 import {
   schoolCurriculumSchema,
@@ -30,9 +30,6 @@ type ApiPayload = {
 
 const fallbackSaveError = "저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 const fallbackPublishError = "게시 중 문제가 발생했습니다. 저장 내용을 확인한 뒤 다시 시도해 주세요.";
-
-const secondaryButtonClass =
-  "inline-flex items-center justify-center rounded-md border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40";
 
 async function readApiPayload(response: Response): Promise<ApiPayload> {
   try {
@@ -105,6 +102,26 @@ export function CurriculumReviewForm({
     return n;
   }
 
+  // 특정 코호트의 한 학년에 남은 '확인 필요' 개수 (학년 탭 배지용)
+  function flagsForGrade(cohortIndex: number, gradeNumber: number): number {
+    const grade = curriculum.cohorts[cohortIndex]?.grades.find(
+      (g) => g.grade === gradeNumber,
+    );
+    if (!grade) return 0;
+    let n = 0;
+    for (const semester of grade.semesters) {
+      semester.requiredSubjects.forEach((s) => {
+        if (getReviewFlag(s)) n += 1;
+      });
+      semester.choiceGroups.forEach((gr) =>
+        gr.subjects.forEach((s) => {
+          if (getReviewFlag(s)) n += 1;
+        }),
+      );
+    }
+    return n;
+  }
+
   // 학기 예상 학점 합계 (지정 + 선택군 택N×과목당학점)
   function semesterCreditSum(semester: CurriculumSemester): number {
     const designated = semester.requiredSubjects.reduce((sum, s) => sum + (s.credits || 0), 0);
@@ -127,21 +144,17 @@ export function CurriculumReviewForm({
     });
   }
 
-  function replaceRequiredSubject(
+  function addRequiredSubject(
     c: number,
     g: number,
     s: number,
-    subjectIndex: number,
-    replacements: CurriculumSubject[],
+    input: { name: string; credits: number },
   ) {
     updateCurriculum((draft) => {
-      semesterOf(draft, c, g, s).requiredSubjects.splice(subjectIndex, 1, ...replacements);
-    });
-  }
-
-  function addRequiredSubject(c: number, g: number, s: number) {
-    updateCurriculum((draft) => {
-      semesterOf(draft, c, g, s).requiredSubjects.push(createEmptySubject());
+      semesterOf(draft, c, g, s).requiredSubjects.push({
+        name: input.name,
+        credits: input.credits,
+      });
     });
   }
 
@@ -318,6 +331,7 @@ export function CurriculumReviewForm({
   function renderSemesterPanel(
     cohortIndex: number,
     gradeIndex: number,
+    gradeNumber: number,
     semester: CurriculumSemester,
     semesterIndex: number,
   ) {
@@ -325,11 +339,14 @@ export function CurriculumReviewForm({
     return (
       <section
         key={`${semester.semester}-${semesterIndex}`}
-        className="space-y-4 rounded-lg border border-slate-300 bg-white p-4"
+        className="space-y-4 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm"
       >
-        <div className="flex items-baseline justify-between gap-2">
-          <h4 className="text-base font-bold text-slate-900">{semester.semester}학기</h4>
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+        <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
+          <h4 className="text-base font-bold text-slate-900">
+            {gradeNumber}학년{" "}
+            <span className="text-[var(--primary)]">{semester.semester}학기</span>
+          </h4>
+          <span className="rounded-full bg-[var(--secondary)] px-2.5 py-0.5 text-xs font-semibold text-[var(--primary)]">
             학점 합계 약 {semesterCreditSum(semester)}학점
           </span>
         </div>
@@ -351,24 +368,14 @@ export function CurriculumReviewForm({
               onDelete={() =>
                 removeRequiredSubject(cohortIndex, gradeIndex, semesterIndex, subjectIndex)
               }
-              onReplace={(replacements) =>
-                replaceRequiredSubject(
-                  cohortIndex,
-                  gradeIndex,
-                  semesterIndex,
-                  subjectIndex,
-                  replacements,
-                )
-              }
             />
           ))}
-          <button
-            type="button"
-            onClick={() => addRequiredSubject(cohortIndex, gradeIndex, semesterIndex)}
-            className={secondaryButtonClass}
-          >
-            + 지정 과목 추가
-          </button>
+          <AddSubjectControl
+            label="지정 과목 추가"
+            onAdd={(input) =>
+              addRequiredSubject(cohortIndex, gradeIndex, semesterIndex, input)
+            }
+          />
         </div>
 
         <div className="space-y-2">
@@ -377,51 +384,38 @@ export function CurriculumReviewForm({
             <p className="text-xs text-slate-400">선택 그룹이 없습니다.</p>
           ) : null}
           {semester.choiceGroups.map((group, groupIndex) => (
-            <div key={group.id} className="space-y-2">
-              <div className="flex flex-wrap justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    convertGroupToRequired(cohortIndex, gradeIndex, semesterIndex, groupIndex)
-                  }
-                  className={secondaryButtonClass}
-                  title="이 선택군을 지정(필수) 과목으로 옮깁니다. 집중이수 교정에 사용하세요."
-                >
-                  지정과목으로 전환
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    removeChoiceGroup(cohortIndex, gradeIndex, semesterIndex, groupIndex)
-                  }
-                  className={secondaryButtonClass}
-                >
-                  선택군 삭제
-                </button>
-              </div>
-              <ChoiceGroupEditor
-                group={group}
-                semester={semester.semester}
-                labelPrefix={`${labelBase}-group-${groupIndex}`}
-                onChange={(updatedGroup) =>
-                  updateChoiceGroup(
-                    cohortIndex,
-                    gradeIndex,
-                    semesterIndex,
-                    groupIndex,
-                    updatedGroup,
-                  )
-                }
-              />
-            </div>
+            <ChoiceGroupEditor
+              key={group.id}
+              group={group}
+              semester={semester.semester}
+              groupNumber={groupIndex + 1}
+              labelPrefix={`${labelBase}-group-${groupIndex}`}
+              onChange={(updatedGroup) =>
+                updateChoiceGroup(
+                  cohortIndex,
+                  gradeIndex,
+                  semesterIndex,
+                  groupIndex,
+                  updatedGroup,
+                )
+              }
+              onConvertToRequired={() =>
+                convertGroupToRequired(cohortIndex, gradeIndex, semesterIndex, groupIndex)
+              }
+              onRemove={() =>
+                removeChoiceGroup(cohortIndex, gradeIndex, semesterIndex, groupIndex)
+              }
+            />
           ))}
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={() => addChoiceGroup(cohortIndex, gradeIndex, semesterIndex)}
-            className={secondaryButtonClass}
           >
-            + 선택군 추가
-          </button>
+            <Plus className="h-4 w-4" />
+            선택군 추가
+          </Button>
         </div>
       </section>
     );
@@ -439,9 +433,9 @@ export function CurriculumReviewForm({
           <p className="mt-1.5 text-sm leading-relaxed text-amber-800">
             AI가 편제표를 자동으로 읽었지만 완벽하지 않을 수 있어요. 아래에서
             <span className="mx-1 rounded bg-amber-100 px-1.5 py-0.5 text-[12px] font-medium">⚠️ 노란색 표시</span>
-            가 붙은 과목을 원본 편제표와 비교해 확인해 주세요. 틀렸으면 과목명을 직접
-            고치거나, <b>과목 나누기</b>(여러 과목이 붙었을 때)·<b>집중이수 배정</b>(↔ 표시)·
-            <b>삭제</b> 버튼으로 바로잡을 수 있어요.
+            가 붙은 과목을 원본 편제표와 비교해 확인해 주세요. 과목명을 직접 고치거나,
+            <b>집중이수 배정</b>(↔ 표시)·<b>삭제</b>로 바로잡을 수 있어요. <b>미확인 과목</b>은
+            표준 과목명으로 고쳐야 학생 화면의 관심분야·학과 추천에 반영돼요.
           </p>
         </div>
       ) : null}
@@ -484,32 +478,48 @@ export function CurriculumReviewForm({
               <p className="mt-1 text-sm text-slate-600">입학 연도: {cohort.entranceYear}</p>
             </div>
 
-            {/* 학년 탭 */}
-            <div className="flex flex-wrap gap-2 border-b border-slate-200">
+            {/* 학년 탭 (잔여 확인 항목 배지) */}
+            <div className="flex flex-wrap gap-2 border-b border-[var(--border)]">
               {cohort.grades.map((grade) => {
                 const isActive = grade.grade === active;
+                const gradeFlags = flagsForGrade(cohortIndex, grade.grade);
                 return (
                   <button
                     key={grade.grade}
                     type="button"
                     onClick={() => setActiveGrade(cohortIndex, grade.grade)}
-                    className={`-mb-px rounded-t-md border-b-2 px-4 py-2 text-sm font-semibold transition ${
+                    className={`-mb-px inline-flex items-center gap-1.5 rounded-t-md border-b-2 px-4 py-2 text-sm font-semibold transition ${
                       isActive
                         ? "border-[var(--primary)] text-[var(--primary)]"
                         : "border-transparent text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     {grade.grade}학년
+                    {gradeFlags > 0 ? (
+                      <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-bold text-amber-950">
+                        {gradeFlags}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-emerald-500" aria-label="확인할 항목 없음">
+                        ✓
+                      </span>
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            {/* 활성 학년의 학기 2열 */}
+            {/* 활성 학년: 1학기 위 · 2학기 아래 (2행) */}
             {activeGrade ? (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="space-y-4">
                 {activeGrade.semesters.map((semester, semesterIndex) =>
-                  renderSemesterPanel(cohortIndex, activeGradeIndex, semester, semesterIndex),
+                  renderSemesterPanel(
+                    cohortIndex,
+                    activeGradeIndex,
+                    activeGrade.grade,
+                    semester,
+                    semesterIndex,
+                  ),
                 )}
               </div>
             ) : null}
@@ -531,25 +541,32 @@ export function CurriculumReviewForm({
         </p>
       ) : null}
 
-      <div className="sticky bottom-0 flex flex-wrap gap-3 border-t border-slate-200 bg-[var(--background)] py-4">
-        <button
+      <div className="sticky bottom-0 flex flex-wrap items-center gap-3 border-t border-[var(--border)] bg-[var(--background)] py-4">
+        <Button
           type="button"
+          variant="outline"
           onClick={save}
           disabled={isSaving || isPublishing}
           aria-busy={isSaving}
-          className="inline-flex items-center justify-center rounded-md border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-11 px-5 text-sm"
         >
-          {isSaving ? "저장 중" : "저장"}
-        </button>
-        <button
+          {isSaving ? "저장 중…" : "저장"}
+        </Button>
+        <Button
           type="button"
+          variant="cta"
           onClick={publish}
           disabled={isSaving || isPublishing}
           aria-busy={isPublishing}
-          className="inline-flex items-center justify-center rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+          className="h-11 px-6 text-sm"
         >
-          {isPublishing ? "게시 중" : "게시"}
-        </button>
+          {isPublishing ? "게시 중…" : "학생에게 게시"}
+        </Button>
+        {reviewCount > 0 ? (
+          <span className="text-xs text-amber-700">
+            아직 확인할 항목이 {reviewCount}개 있어요
+          </span>
+        ) : null}
       </div>
     </form>
   );
