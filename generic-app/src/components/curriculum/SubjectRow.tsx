@@ -22,6 +22,12 @@ type SubjectRowProps = {
   canDelete?: boolean;
   /** 선택군 안에서는 학점을 그룹 단위로 관리하므로 행의 학점 입력을 숨긴다 */
   hideCredits?: boolean;
+  /** 집중이수 묶기 모드: 행 앞에 선택 체크박스 표시 */
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
+  /** 집중이수 페어 해제 (지정 과목 전용) */
+  onUnconcentrate?: () => void;
 };
 
 export function SubjectRow({
@@ -32,6 +38,10 @@ export function SubjectRow({
   onDelete,
   canDelete = true,
   hideCredits = false,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
+  onUnconcentrate,
 }: SubjectRowProps) {
   const rowId = labelPrefix.replace(/[^a-zA-Z0-9_-]/g, "-");
   const [creditsText, setCreditsText] = useState(() => String(subject.credits));
@@ -47,6 +57,8 @@ export function SubjectRow({
   const concentrated = hasConcentratedMarker(subject.name);
   const reviewFlag = getReviewFlag(subject);
   const rawText = subject.rawText?.trim();
+  // 집중이수 페어로 묶인 지정 과목(다른 학기 과목과 학기 교차)
+  const isConcentratedPair = subject.concentrated === true;
 
   // 집중이수("A↔B") — 학기별로 번갈아 열리는 과목. 교사가 이 학기에 열리는 과목을 직접 고른다.
   const concentratedParts = concentrated ? splitConcentratedNames(subject.name) : [];
@@ -63,10 +75,23 @@ export function SubjectRow({
   return (
     <div
       className={`rounded-lg border px-2.5 py-2 ${
-        reviewFlag ? "border-amber-300 bg-amber-50/60" : "border-[var(--border)] bg-white"
+        reviewFlag
+          ? "border-amber-300 bg-amber-50/60"
+          : isConcentratedPair
+            ? "border-[var(--primary)]/30 bg-[var(--secondary)]/30"
+            : "border-[var(--border)] bg-white"
       }`}
     >
       <div className="flex items-center gap-2">
+        {selectable ? (
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelect}
+            aria-label={`${subject.name || "과목"} 집중이수 묶기 선택`}
+            className="h-4 w-4 shrink-0 accent-[var(--primary)]"
+          />
+        ) : null}
         <input
           id={`${rowId}-name`}
           type="text"
@@ -129,6 +154,28 @@ export function SubjectRow({
         </div>
       ) : rawText ? (
         <p className="mt-1 text-[11px] text-slate-400">원본: {rawText}</p>
+      ) : null}
+
+      {isConcentratedPair ? (
+        <div className="mt-1.5 flex flex-wrap items-center gap-2 rounded-md bg-[var(--secondary)] px-2 py-1 text-[11px]">
+          <span className="inline-flex items-center gap-1 font-semibold text-[var(--primary)]">
+            <ArrowLeftRight className="h-3.5 w-3.5" />집중이수
+          </span>
+          {subject.concentratedPartner ? (
+            <span className="text-slate-600">
+              다른 학기 ‘{subject.concentratedPartner}’와 한 슬롯(학기 교차)
+            </span>
+          ) : null}
+          {onUnconcentrate ? (
+            <button
+              type="button"
+              onClick={onUnconcentrate}
+              className="ml-auto rounded px-1.5 py-0.5 font-medium text-slate-500 transition hover:bg-white hover:text-destructive"
+            >
+              묶기 해제
+            </button>
+          ) : null}
+        </div>
       ) : null}
 
       {concentrated && concentratedParts.length >= 2 ? (
