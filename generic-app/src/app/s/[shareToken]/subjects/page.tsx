@@ -216,7 +216,7 @@ export default function SubjectsPage() {
           {gradeRangeText ? `${gradeRangeText} 과목 · ` : ""}
           {filtered.length}개 과목
         </p>
-        <div className="space-y-2.5">
+        <div className="flex flex-col gap-2.5">
           {filtered.map((subject) => (
             <SubjectCard
               key={subject.id}

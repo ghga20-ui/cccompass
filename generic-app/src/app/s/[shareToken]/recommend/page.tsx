@@ -316,7 +316,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                 />
               </button>
               {openSemesters.has(sem) && (
-                <div className="space-y-3 px-3 pb-3">
+                <div className="flex flex-col gap-3 px-3 pb-3">
                   {items.map((item) => (
                     <SubjectCard
                       key={item.subject.id}
@@ -351,7 +351,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
               />
             </button>
             {showUnavailable && (
-              <div className="mt-2.5 space-y-2 opacity-60">
+              <div className="mt-2.5 flex flex-col gap-2 opacity-60">
                 {unavailable.map((item) => (
                   <SubjectCard
                     key={item.subject.id}
@@ -516,7 +516,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                 />
               </button>
               {openSemesters.has(sem) && (
-                <div className="space-y-3 px-3 pb-3">
+                <div className="flex flex-col gap-3 px-3 pb-3">
                   {items.map((item) => (
                     <SubjectCard
                       key={item.subject.id}
@@ -551,7 +551,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
               />
             </button>
             {showUnavailable && (
-              <div className="mt-2.5 space-y-2 opacity-60">
+              <div className="mt-2.5 flex flex-col gap-2 opacity-60">
                 {unavailable.map((item) => (
                   <SubjectCard
                     key={item.subject.id}
