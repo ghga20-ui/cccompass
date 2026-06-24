@@ -16,6 +16,10 @@ type ChoiceGroupEditorProps = {
   onConvertToRequired: () => void;
   /** 선택군 삭제 */
   onRemove: () => void;
+  /** 같은 코호트 내 이동 가능 대상(학년/학기). 현재 위치는 isCurrent=true */
+  moveTargets?: { gradeIndex: number; semesterIndex: number; label: string; isCurrent: boolean }[];
+  /** 선택군 전체를 다른 학년/학기로 이동 */
+  onMove?: (gradeIndex: number, semesterIndex: number) => void;
 };
 
 // 옵션 수/입력이 바뀔 때 choose/min/maxChoose 불변식(정수·범위)을 보정한다.
@@ -44,7 +48,10 @@ export function ChoiceGroupEditor({
   onChange,
   onConvertToRequired,
   onRemove,
+  moveTargets,
+  onMove,
 }: ChoiceGroupEditorProps) {
+  const otherTargets = (moveTargets ?? []).filter((t) => !t.isCurrent);
   const groupId = labelPrefix.replace(/[^a-zA-Z0-9_-]/g, "-");
 
   const rangeOn = group.maxChoose !== undefined;
@@ -118,6 +125,30 @@ export function ChoiceGroupEditor({
           과목당 {creditValue}학점
         </span>
         <div className="ml-auto flex items-center gap-1">
+          {onMove && otherTargets.length > 0 ? (
+            <select
+              aria-label="이 선택군을 다른 학년/학기로 이동"
+              value=""
+              onChange={(event) => {
+                const value = event.target.value;
+                if (!value) return;
+                const [g, s] = value.split("-").map(Number);
+                onMove(g, s);
+              }}
+              className="rounded-md border border-[var(--primary)]/30 bg-white px-2 py-1 text-xs font-medium text-[var(--primary)] outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20"
+              title="이 선택군을 다른 학년·학기로 통째로 옮깁니다."
+            >
+              <option value="">다른 학기로 이동…</option>
+              {otherTargets.map((t) => (
+                <option
+                  key={`${t.gradeIndex}-${t.semesterIndex}`}
+                  value={`${t.gradeIndex}-${t.semesterIndex}`}
+                >
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          ) : null}
           <Button
             type="button"
             variant="ghost"

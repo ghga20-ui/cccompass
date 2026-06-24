@@ -7,7 +7,7 @@ import { ChoiceGroupEditor } from "@/components/curriculum/ChoiceGroupEditor";
 import { SubjectRow } from "@/components/curriculum/SubjectRow";
 import { AddSubjectControl } from "@/components/curriculum/AddSubjectControl";
 import { Button } from "@/components/ui/button";
-import { createEmptyChoiceGroup } from "@/lib/curriculum/factory";
+import { createEmptyChoiceGroup, generateGroupId } from "@/lib/curriculum/factory";
 import { getReviewFlag } from "@/lib/curriculum/review-flags";
 import {
   schoolCurriculumSchema,
@@ -188,6 +188,38 @@ export function CurriculumReviewForm({
     });
   }
 
+  // 선택군 전체를 같은 코호트의 다른 학년/학기로 이동(파싱이 학기를 잘못 잡은 경우 교정).
+  function moveChoiceGroup(
+    c: number,
+    fromGradeIndex: number,
+    fromSemesterIndex: number,
+    groupIndex: number,
+    toGradeIndex: number,
+    toSemesterIndex: number,
+  ) {
+    if (fromGradeIndex === toGradeIndex && fromSemesterIndex === toSemesterIndex) return;
+    const cohort = curriculum.cohorts[c];
+    const group =
+      cohort?.grades[fromGradeIndex]?.semesters[fromSemesterIndex]?.choiceGroups[groupIndex];
+    const toSem = cohort?.grades[toGradeIndex]?.semesters[toSemesterIndex];
+    const targetLabel =
+      cohort && toSem ? `${cohort.grades[toGradeIndex].grade}학년 ${toSem.semester}학기` : "";
+    updateCurriculum((draft) => {
+      const dc = draft.cohorts[c];
+      const fromSemester = dc?.grades[fromGradeIndex]?.semesters[fromSemesterIndex];
+      const toSemester = dc?.grades[toGradeIndex]?.semesters[toSemesterIndex];
+      if (!fromSemester || !toSemester) return;
+      const [moved] = fromSemester.choiceGroups.splice(groupIndex, 1);
+      if (!moved) return;
+      // 대상 학기 내 id 충돌 방지(React key·학생측 selection id 유일성)
+      toSemester.choiceGroups.push({ ...moved, id: generateGroupId(toSemester.choiceGroups) });
+    });
+    if (group && targetLabel) {
+      setMessageType("success");
+      setMessage(`'${group.label || "선택군"}' 선택군을 ${targetLabel}(으)로 옮겼어요.`);
+    }
+  }
+
   // 집중이수(예: 정보↔한문 오인) 교정: 선택군 옵션을 같은 학기 지정과목으로 옮기고 그룹 제거.
   function convertGroupToRequired(c: number, g: number, s: number, groupIndex: number) {
     updateCurriculum((draft) => {
@@ -335,6 +367,15 @@ export function CurriculumReviewForm({
     semesterIndex: number,
   ) {
     const labelBase = `cohort-${cohortIndex}-grade-${gradeIndex}-semester-${semesterIndex}`;
+    // 선택군 이동 대상: 같은 코호트의 모든 학년·학기(현재 위치 포함, isCurrent로 표시)
+    const moveTargets = curriculum.cohorts[cohortIndex].grades.flatMap((grd, gi) =>
+      grd.semesters.map((sem, si) => ({
+        gradeIndex: gi,
+        semesterIndex: si,
+        label: `${grd.grade}학년 ${sem.semester}학기`,
+        isCurrent: gi === gradeIndex && si === semesterIndex,
+      })),
+    );
     return (
       <section
         key={`${semester.semester}-${semesterIndex}`}
@@ -403,6 +444,17 @@ export function CurriculumReviewForm({
               }
               onRemove={() =>
                 removeChoiceGroup(cohortIndex, gradeIndex, semesterIndex, groupIndex)
+              }
+              moveTargets={moveTargets}
+              onMove={(toGradeIndex, toSemesterIndex) =>
+                moveChoiceGroup(
+                  cohortIndex,
+                  gradeIndex,
+                  semesterIndex,
+                  groupIndex,
+                  toGradeIndex,
+                  toSemesterIndex,
+                )
               }
             />
           ))}
