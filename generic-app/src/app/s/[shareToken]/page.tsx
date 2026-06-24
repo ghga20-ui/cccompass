@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, ChevronDown, GraduationCap, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Reveal } from "@/components/Reveal";
+import { CompassMotif } from "@/components/CompassMotif";
 import { useCohort } from "@/contexts/CohortContext";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import { buildShareHref } from "@/lib/hyoja/share-routes";
@@ -73,13 +75,18 @@ export default function ShareHomePage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <section className="px-5 pb-6 pt-10 md:pt-16 md:text-center">
-        <div className="mx-auto max-w-lg">
+      {/* 히어로 — 틴트존 + 컴퍼스 모티프 배경 */}
+      <section className="relative overflow-hidden bg-[var(--secondary)] px-5 pb-8 pt-10 md:pt-16 md:text-center">
+        <CompassMotif className="pointer-events-none absolute left-1/2 top-1/2 h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 text-[var(--primary)] opacity-[0.06]" />
+        <Reveal className="relative mx-auto max-w-lg">
           <div className="mb-4 flex items-center gap-3 md:justify-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--secondary)] ring-1 ring-border">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/70 ring-1 ring-[var(--primary)]/15">
               <GraduationCap className="h-6 w-6 text-[var(--primary)]" />
             </span>
-            <span className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            <span
+              className="text-3xl font-bold tracking-tight text-foreground md:text-4xl"
+              style={{ fontFamily: "var(--font-brand)" }}
+            >
               {schoolData.schoolName}
             </span>
           </div>
@@ -89,70 +96,69 @@ export default function ShareHomePage() {
             <span className="text-[var(--primary)]">선택과목</span>을 찾아보자
           </h1>
           <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground md:text-base">
-            우리 학교 편제표를 기반으로
+            우리 학교 편제표 그대로,
             <br className="md:hidden" />
-            진로에 맞는 과목을 추천해줄게
+            <span className="font-semibold text-[var(--cta)]">3분 안에</span> 진로 맞춤 과목을 추천해줄게
           </p>
-        </div>
+        </Reveal>
       </section>
 
       {showCohortToggle && (
-      <section className="px-5 pb-4">
-        <div className="mx-auto max-w-lg">
-          <div className="mb-2.5 flex items-center gap-1.5">
-            <GraduationCap className="h-4 w-4 text-[var(--primary)]" />
-            <h2 className="text-sm font-medium text-foreground">
-              입학 연도를 선택해줘
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            {cohortOptions.map((option) => {
-              const isSelected = cohort === option.entranceYear;
+        <section className="px-5 pb-4 pt-5">
+          <Reveal className="mx-auto max-w-lg">
+            <div className="mb-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <GraduationCap className="h-4 w-4 text-[var(--primary)]" />
+              <h2 className="text-sm font-medium text-foreground">입학 연도를 선택해줘</h2>
+              <span className="text-xs text-muted-foreground">학년마다 개설 과목이 달라</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              {cohortOptions.map((option) => {
+                const isSelected = cohort === option.entranceYear;
 
-              return (
-                <button
-                  key={option.entranceYear}
-                  type="button"
-                  onClick={() => setCohort(option.entranceYear)}
-                  className="text-center"
-                >
-                  <Card
-                    className={cn(
-                      "transition-all active:scale-[0.98]",
-                      isSelected
-                        ? "border-[var(--primary)] bg-[var(--primary)] shadow-md"
-                        : "border-border bg-card hover:border-[var(--primary)]/30",
-                    )}
+                return (
+                  <button
+                    key={option.entranceYear}
+                    type="button"
+                    onClick={() => setCohort(option.entranceYear)}
+                    className="text-center"
                   >
-                    <CardContent className="p-3.5">
-                      <p
-                        className={cn(
-                          "text-lg font-bold",
-                          isSelected ? "text-white" : "text-foreground",
-                        )}
-                      >
-                        {option.entranceYear}
-                      </p>
-                      <p
-                        className={cn(
-                          "mt-0.5 text-xs",
-                          isSelected ? "text-white/75" : "text-muted-foreground",
-                        )}
-                      >
-                        {option.label}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+                    <Card
+                      className={cn(
+                        "transition-all active:scale-[0.98]",
+                        isSelected
+                          ? "border-[var(--primary)] bg-[var(--primary)] shadow-md"
+                          : "border-border bg-card hover:border-[var(--primary)]/30",
+                      )}
+                    >
+                      <CardContent className="p-3.5">
+                        <p
+                          className={cn(
+                            "text-lg font-bold",
+                            isSelected ? "text-white" : "text-foreground",
+                          )}
+                        >
+                          {option.entranceYear}
+                        </p>
+                        <p
+                          className={cn(
+                            "mt-0.5 text-xs",
+                            isSelected ? "text-white/75" : "text-muted-foreground",
+                          )}
+                        >
+                          {option.label}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </button>
+                );
+              })}
+            </div>
+          </Reveal>
+        </section>
       )}
 
-      <section className="px-5 pb-4">
-        <div className="mx-auto max-w-lg">
+      <section className="px-5 pb-4 pt-1">
+        <Reveal className="mx-auto max-w-lg">
           <div className="mb-2.5 flex items-center gap-1.5">
             <Search className="h-4 w-4 text-[var(--primary)]" />
             <h2 className="text-sm font-medium text-foreground">학과로 검색</h2>
@@ -164,7 +170,7 @@ export default function ShareHomePage() {
               type="text"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="학과를 검색해봐"
+              placeholder="예) 간호학과, AI소프트웨어과"
               disabled={selectedDepartment !== null}
               className="min-h-[44px] w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 disabled:opacity-50"
             />
@@ -207,120 +213,131 @@ export default function ShareHomePage() {
               </button>
             </div>
           )}
-        </div>
+        </Reveal>
       </section>
 
-      <div className="px-5">
-        <div className="mx-auto max-w-lg">
-          <hr className="border-border" />
-        </div>
-      </div>
+      {/* 관심 분야 — 메인 행동 구역(틴트 카드로 그룹핑) */}
+      <section className="flex-1 px-5 pb-6 pt-2">
+        <Reveal className="mx-auto max-w-lg">
+          <div className="rounded-2xl border border-[var(--primary)]/10 bg-[var(--secondary)]/60 p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <h2
+                className="text-base font-bold text-foreground"
+                style={{ fontFamily: "var(--font-brand)" }}
+              >
+                관심 분야를 골라봐
+              </h2>
+              {selectedInterest && (
+                <span className="text-xs font-medium text-[var(--primary)]">
+                  {interestTags.find((t) => t.id === selectedInterest)?.label} 선택됨
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2.5">
+              {/* 선택된 태그 먼저 */}
+              {interestTags
+                .filter((tag) => tag.id === selectedInterest)
+                .map((tag) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedInterest(null);
+                      setSelectedTagDept(null);
+                    }}
+                    className="min-h-[44px] rounded-full border border-[var(--primary)] bg-[var(--primary)] px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-[var(--primary)]/20 transition-all active:scale-95"
+                  >
+                    {tag.label}
+                  </button>
+                ))}
 
-      <section className="flex-1 px-5 pb-6 pt-4">
-        <div className="mx-auto max-w-lg">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-foreground">
-              관심 분야를 골라봐
-            </h2>
-            {selectedInterest && (
-              <span className="text-xs font-medium text-[var(--primary)]">
-                {interestTags.find((t) => t.id === selectedInterest)?.label} 선택됨
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            {/* 선택된 태그 먼저 */}
-            {interestTags
-              .filter((tag) => tag.id === selectedInterest)
-              .map((tag) => (
-                <button
-                  key={tag.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedInterest(null);
-                    setSelectedTagDept(null);
-                  }}
-                  className="min-h-[44px] rounded-full border border-[var(--primary)] bg-[var(--primary)] px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-[var(--primary)]/20 transition-all active:scale-95"
-                >
-                  {tag.label}
-                </button>
-              ))}
-
-            {/* 세부 학과 패널: 선택된 태그 바로 아래 */}
-            {selectedInterest && tagDepartments.length > 0 && (
-              <div className="mb-2 mt-1 w-full rounded-xl border border-border bg-card p-4">
-                <div className="mb-1.5 flex items-center gap-1.5">
-                  <ChevronDown className="h-4 w-4 text-[var(--primary)]" />
-                  <p className="text-sm font-medium text-foreground">
-                    “{interestTags.find((t) => t.id === selectedInterest)?.label}” 관련 학과를 선택해봐
+              {/* 세부 학과 패널: 선택된 태그 바로 아래 */}
+              {selectedInterest && tagDepartments.length > 0 && (
+                <div className="mb-2 mt-1 w-full rounded-xl border border-border bg-card p-4">
+                  <div className="mb-1.5 flex items-center gap-1.5">
+                    <ChevronDown className="h-4 w-4 text-[var(--primary)]" />
+                    <p className="text-sm font-medium text-foreground">
+                      “{interestTags.find((t) => t.id === selectedInterest)?.label}” 관련 학과를 선택해봐
+                    </p>
+                  </div>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    선택하지 않아도 추천받을 수 있어
                   </p>
-                </div>
-                <p className="mb-3 text-xs text-muted-foreground">
-                  선택하지 않아도 추천받을 수 있어
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {tagDepartments.map((dept) => {
-                    const isDeptSelected = selectedTagDept === dept.name;
+                  <div className="grid grid-cols-2 gap-2">
+                    {tagDepartments.map((dept) => {
+                      const isDeptSelected = selectedTagDept === dept.name;
 
-                    return (
-                      <button
-                        key={dept.name}
-                        type="button"
-                        onClick={() =>
-                          setSelectedTagDept((prev) =>
-                            prev === dept.name ? null : dept.name,
-                          )
-                        }
-                        className={cn(
-                          "min-h-[44px] rounded-lg border p-2.5 text-left transition-all active:scale-[0.98]",
-                          isDeptSelected
-                            ? "border-[var(--primary)] bg-[var(--primary)]/10 shadow-sm"
-                            : "border-border bg-background hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5",
-                        )}
-                      >
-                        <p
+                      return (
+                        <button
+                          key={dept.name}
+                          type="button"
+                          onClick={() =>
+                            setSelectedTagDept((prev) =>
+                              prev === dept.name ? null : dept.name,
+                            )
+                          }
                           className={cn(
-                            "text-sm font-semibold leading-tight",
+                            "min-h-[44px] rounded-lg border p-2.5 text-left transition-all active:scale-[0.98]",
                             isDeptSelected
-                              ? "text-[var(--primary)]"
-                              : "text-foreground",
+                              ? "border-[var(--primary)] bg-[var(--primary)]/10 shadow-sm"
+                              : "border-border bg-background hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5",
                           )}
                         >
-                          {dept.name}
-                        </p>
-                        <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
-                          {dept.description}
-                        </p>
-                      </button>
-                    );
-                  })}
+                          <p
+                            className={cn(
+                              "text-sm font-semibold leading-tight",
+                              isDeptSelected
+                                ? "text-[var(--primary)]"
+                                : "text-foreground",
+                            )}
+                          >
+                            {dept.name}
+                          </p>
+                          <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                            {dept.description}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* 나머지 미선택 태그 */}
-            {interestTags
-              .filter((tag) => tag.id !== selectedInterest)
-              .map((tag) => (
-                <button
-                  key={tag.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedInterest(tag.id);
-                    setSelectedDepartment(null);
-                    setSelectedTagDept(null);
-                  }}
-                  className="min-h-[44px] rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-all hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 active:scale-95"
-                >
-                  {tag.label}
-                </button>
-              ))}
+              {/* 나머지 미선택 태그 */}
+              {interestTags
+                .filter((tag) => tag.id !== selectedInterest)
+                .map((tag) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedInterest(tag.id);
+                      setSelectedDepartment(null);
+                      setSelectedTagDept(null);
+                    }}
+                    className="min-h-[44px] rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-all hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 active:scale-95"
+                  >
+                    {tag.label}
+                  </button>
+                ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
-      <section className="sticky bottom-[72px] z-30 border-t border-border bg-card/95 px-5 py-3 backdrop-blur-md md:bottom-0">
+      {/* CTA — 오렌지 틴트 마감 존 + 상태 안내 카피 */}
+      <section className="sticky bottom-[72px] z-30 border-t border-[var(--cta)]/15 bg-orange-50/90 px-5 py-3 backdrop-blur-md md:bottom-0">
         <div className="mx-auto max-w-lg">
+          <p
+            className={cn(
+              "mb-2 text-center text-xs font-medium",
+              canProceed ? "text-[var(--cta)]" : "text-muted-foreground",
+            )}
+          >
+            {canProceed
+              ? "준비 완료! 맞춤 과목을 볼 수 있어"
+              : "관심 분야나 학과를 1개 골라줘"}
+          </p>
           <Button
             onClick={handleNext}
             disabled={!canProceed}
