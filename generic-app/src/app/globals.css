@@ -50,6 +50,7 @@
 }
 
 :root {
+  --font-pretendard: "Pretendard Variable", "Pretendard", system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --background: #FFFBEB;
   --foreground: #1E293B;
   --card: #FFFFFF;

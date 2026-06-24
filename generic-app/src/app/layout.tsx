@@ -46,6 +46,11 @@ export default function RootLayout({
       <body
         className={`${notoSansKR.variable} ${plusJakartaSans.variable} ${blackHanSans.variable} antialiased`}
       >
+        {/* Pretendard (특별 디스플레이용) — Tailwind 파이프라인 밖에서 로드 */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
         {children}
       </body>
     </html>

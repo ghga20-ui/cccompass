@@ -83,7 +83,10 @@ export default function ShareHomePage() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/70 ring-1 ring-[var(--primary)]/15">
               <GraduationCap className="h-6 w-6 text-[var(--primary)]" />
             </span>
-            <span className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            <span
+              className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl"
+              style={{ fontFamily: "var(--font-pretendard)" }}
+            >
               {schoolData.schoolName}
             </span>
           </div>
@@ -220,7 +223,7 @@ export default function ShareHomePage() {
             <div className="mb-3 flex items-center justify-between">
               <h2
                 className="text-base font-bold text-foreground"
-                style={{ fontFamily: "var(--font-brand)" }}
+                style={{ fontFamily: "var(--font-pretendard)" }}
               >
                 관심 분야를 골라봐
               </h2>
