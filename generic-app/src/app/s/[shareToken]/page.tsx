@@ -75,11 +75,11 @@ export default function ShareHomePage() {
     <div className="flex min-h-dvh flex-col">
       <section className="px-5 pb-6 pt-10 md:pt-16 md:text-center">
         <div className="mx-auto max-w-lg">
-          <div className="mb-4 flex items-center gap-2.5 md:justify-center">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--secondary)] ring-1 ring-border">
-              <GraduationCap className="h-5 w-5 text-[var(--primary)]" />
+          <div className="mb-4 flex items-center gap-3 md:justify-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--secondary)] ring-1 ring-border">
+              <GraduationCap className="h-6 w-6 text-[var(--primary)]" />
             </span>
-            <span className="text-2xl font-bold tracking-normal text-foreground">
+            <span className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               {schoolData.schoolName}
             </span>
           </div>

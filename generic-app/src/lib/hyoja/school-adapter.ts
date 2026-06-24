@@ -111,9 +111,23 @@ function uniqueNames(subjects: CurriculumSubject[]) {
   return names;
 }
 
+/**
+ * 학교명을 '~고등학교'로 정규화.
+ * 'xx고'→'xx고등학교', 이미 '고등학교'면 유지. 그 외(고로 안 끝남)는
+ * 영문명 등 훼손을 막기 위해 그대로 둔다(국내 고교명은 거의 '고'/'고등학교'로 끝남).
+ */
+export function normalizeSchoolName(raw: string): string {
+  const name = (raw ?? "").trim();
+  if (!name) return name;
+  if (name.endsWith("고등학교")) return name;
+  if (name.endsWith("고")) return `${name.slice(0, -1)}고등학교`;
+  return name;
+}
+
 export function adaptCurriculumForStudentAssistant(
   curriculum: SchoolCurriculum,
 ): StudentSchoolData {
+  const schoolName = normalizeSchoolName(curriculum.schoolName);
   const cohorts = curriculum.cohorts.reduce<Record<string, CohortData>>(
     (result, cohort) => {
       if (!hasPublicCohortData(cohort)) return result;
@@ -160,7 +174,7 @@ export function adaptCurriculumForStudentAssistant(
 
       result[cohort.entranceYear] = {
         label: cohort.label,
-        description: `${curriculum.schoolName} ${cohort.label}`,
+        description: `${schoolName} ${cohort.label}`,
         designated,
         selections,
       };
@@ -171,7 +185,7 @@ export function adaptCurriculumForStudentAssistant(
   );
 
   return {
-    schoolName: curriculum.schoolName,
+    schoolName,
     cohorts,
   };
 }
