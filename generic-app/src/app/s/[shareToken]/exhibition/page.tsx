@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { notFound, usePathname, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { ExhibitionSubjectCard } from "@/components/ExhibitionSubjectCard";
 import type { Subject } from "@/data/subjects";
@@ -22,6 +22,14 @@ interface ExhibitionItem {
 }
 
 export default function ExhibitionPage() {
+  // 전시관 비노출: 직접 URL 접근 차단(BottomNav에서도 내림 — 포스터 효자고 브랜딩이 공용 부적합).
+  // 추후 '진짜 전시관'으로 재정의 시 default가 ExhibitionPageImpl을 반환하도록 복원.
+  notFound();
+}
+
+// 보존: 추후 재정의 시 복원할 전시관 구현 (현재 미사용).
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function ExhibitionPageImpl() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { cohort, cohortLabel } = useCohort();

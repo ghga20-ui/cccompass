@@ -196,7 +196,7 @@ export function ProgressModalScreen(p: MockScreenProps) {
         ))}
       </ul>
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        약 55초 걸려요 · 끝나면 검토 화면으로 이동합니다
+        약 1분 걸려요 · 끝나면 검토 화면으로 이동합니다
       </p>
     </div>
   );

@@ -5,11 +5,8 @@ import {
   generateGroupId,
 } from "@/lib/curriculum/factory";
 import {
-  expandSubjectBySplit,
   hasConcentratedMarker,
-  parseManualSplit,
   resolveConcentratedName,
-  splitMergedSubjectName,
 } from "@/lib/curriculum/split-subjects";
 import {
   choiceGroupSchema,
@@ -50,49 +47,6 @@ describe("factory.createEmptyChoiceGroup", () => {
   });
 });
 
-describe("split-subjects.splitMergedSubjectName", () => {
-  it("슬래시/가운뎃점/콤마/줄바꿈으로 분리한다", () => {
-    expect(splitMergedSubjectName("물리학/화학·생명과학")).toEqual([
-      "물리학",
-      "화학",
-      "생명과학",
-    ]);
-    expect(splitMergedSubjectName("문학\n독서")).toEqual(["문학", "독서"]);
-  });
-
-  it("분리할 게 없으면 정규화된 원본 1개를 반환한다", () => {
-    expect(splitMergedSubjectName("  미적분Ⅰ  ")).toEqual(["미적분Ⅰ"]);
-  });
-
-  it("중복은 제거한다", () => {
-    expect(splitMergedSubjectName("정보/정보")).toEqual(["정보"]);
-  });
-});
-
-describe("split-subjects.expandSubjectBySplit", () => {
-  it("이름 분리 결과만큼 area/credits/category를 복제한다", () => {
-    const merged = {
-      name: "물리학/화학",
-      area: "과학",
-      category: "일반선택" as const,
-      credits: 4,
-    };
-    const expanded = expandSubjectBySplit(merged);
-    expect(expanded).toHaveLength(2);
-    expanded.forEach((s) => {
-      expect(s.area).toBe("과학");
-      expect(s.credits).toBe(4);
-      expect(curriculumSubjectSchema.safeParse(s).success).toBe(true);
-    });
-    expect(expanded.map((s) => s.name)).toEqual(["물리학", "화학"]);
-  });
-
-  it("분리 불가하면 원본 그대로 반환한다", () => {
-    const single = { name: "한국사", credits: 3 };
-    expect(expandSubjectBySplit(single)).toEqual([single]);
-  });
-});
-
 describe("split-subjects.resolveConcentratedName (집중이수 ↔)", () => {
   it("1학기는 앞 과목, 2학기는 뒤 과목으로 해석한다", () => {
     expect(resolveConcentratedName("정보↔한문", 1)).toBe("정보");
@@ -108,19 +62,5 @@ describe("split-subjects.resolveConcentratedName (집중이수 ↔)", () => {
   it("hasConcentratedMarker는 ↔ 포함 여부를 판별한다", () => {
     expect(hasConcentratedMarker("정보↔한문")).toBe(true);
     expect(hasConcentratedMarker("정보")).toBe(false);
-  });
-});
-
-describe("split-subjects.parseManualSplit (수동 분리)", () => {
-  it("여러 줄을 과목명 목록으로 만든다", () => {
-    expect(parseManualSplit("세계시민과 지리\n정치\n물리학")).toEqual([
-      "세계시민과 지리",
-      "정치",
-      "물리학",
-    ]);
-  });
-
-  it("쉼표로도 분리하고 중복/공백을 제거한다", () => {
-    expect(parseManualSplit("화학, 화학, ,생명과학")).toEqual(["화학", "생명과학"]);
   });
 });

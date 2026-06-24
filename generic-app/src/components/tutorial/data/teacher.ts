@@ -91,7 +91,7 @@ export const teacherTutorial: TutorialDef = {
       screen: "progressModal",
       title: "AI가 편제표를 정리하는 중",
       coachTip:
-        "파서 준비 → 문서 읽기 → 표 구조 분석 → AI가 과목 정리 순으로 진행돼요. 약 55초면 끝나고 검토 화면으로 자동 이동합니다.",
+        "파서 준비 → 문서 읽기 → 표 구조 분석 → AI가 과목 정리 순으로 진행돼요. 약 1분이면 끝나고 검토 화면으로 자동 이동합니다.",
       target: "progressBar",
       arrow: "none",
       interactive: false,

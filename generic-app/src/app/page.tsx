@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 
 const stats = [
   { value: "6종", label: "편제표 형식 지원" },
-  { value: "약 55초", label: "AI가 과목·선택군 자동 정리" },
+  { value: "약 1분", label: "AI가 과목·선택군 자동 정리" },
   { value: "3년", label: "학기별 수강 로드맵" },
 ];
 
@@ -26,7 +26,7 @@ const flow = [
   {
     icon: ListChecks,
     title: "과목·선택군 검토·수정",
-    desc: "약 55초면 AI가 과목을 정리합니다. 택N·집중이수만 확인하면 됩니다.",
+    desc: "약 1분이면 AI가 과목을 정리합니다. 택N·집중이수만 확인하면 됩니다.",
   },
   {
     icon: Share2,
