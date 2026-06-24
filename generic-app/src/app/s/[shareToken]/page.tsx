@@ -83,10 +83,7 @@ export default function ShareHomePage() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/70 ring-1 ring-[var(--primary)]/15">
               <GraduationCap className="h-6 w-6 text-[var(--primary)]" />
             </span>
-            <span
-              className="text-3xl font-bold tracking-tight text-foreground md:text-4xl"
-              style={{ fontFamily: "var(--font-brand)" }}
-            >
+            <span className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               {schoolData.schoolName}
             </span>
           </div>
@@ -98,7 +95,7 @@ export default function ShareHomePage() {
           <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground md:text-base">
             우리 학교 편제표 그대로,
             <br className="md:hidden" />
-            <span className="font-semibold text-[var(--cta)]">3분 안에</span> 진로 맞춤 과목을 추천해줄게
+            <span className="font-semibold text-[var(--cta)]">1분 안에</span> 진로 맞춤 과목을 추천해줄게
           </p>
         </Reveal>
       </section>
