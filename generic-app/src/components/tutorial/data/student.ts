@@ -111,7 +111,7 @@ export const studentTutorial: TutorialDef = {
       screen: "roadmap",
       title: "3년 로드맵 한눈에",
       coachTip:
-        "학교지정 과목은 자동으로 들어가 있어. 이제 선택과목군에서 원하는 과목만 담으면 돼. ‘택N · N학점’은 그 군에서 몇 과목을 골라야 하는지 알려줘.",
+        "학교지정 과목은 자동으로 들어가 있어. 이제 선택과목군에서 원하는 과목만 담으면 돼. ‘택1’은 1개, ‘택1~2’처럼 범위면 그 안에서 골라 담으면 되고, ‘과목당 N학점’은 한 과목당 학점이야.",
       target: "selectionGroup1",
       arrow: "up",
       interactive: false,

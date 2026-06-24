@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  ArrowLeftRight,
   Check,
   ChevronDown,
   Copy,
@@ -8,7 +9,6 @@ import {
   Loader2,
   Plus,
   Save,
-  Scissors,
   Send,
   Trash2,
   Upload,
@@ -16,7 +16,7 @@ import {
 import { CompassMark } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import type { MockScreenProps } from "../types";
-import { Chip, hot, hotClass } from "./_shared";
+import { hot, hotClass } from "./_shared";
 
 /* 1) 랜딩 ----------------------------------------------------------------- */
 export function LandingScreen(p: MockScreenProps) {
@@ -283,35 +283,26 @@ export function ReviewScreen(p: MockScreenProps) {
                 <input
                   {...hot("subjectNameField", p)}
                   readOnly
-                  value="정보한문"
+                  value="스포츠 문화*"
                   className="min-w-0 flex-1 rounded-md border border-amber-300 bg-white px-2 py-1 text-sm"
                 />
-                <span
-                  {...hot("creditSpin", p)}
-                  className="rounded-md border border-border bg-white px-2 py-1 text-sm text-muted-foreground"
-                >
-                  4
+                <span className="rounded-md border border-border bg-white px-2 py-1 text-sm text-muted-foreground">
+                  2
                 </span>
-              </div>
-              <div className="mt-1.5 flex items-center gap-2">
-                <Chip tone="cta">
-                  <AlertTriangle className="h-3 w-3" /> 확인 필요
-                </Chip>
-                <button
-                  {...hot("splitBtn", p)}
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-md border border-[var(--primary)]/40 bg-white px-2 py-1 text-xs font-semibold text-[var(--primary)]",
-                    hotClass("splitBtn", p),
-                  )}
-                >
-                  <Scissors className="h-3 w-3" /> 과목 나누기
-                </button>
+                <span className="text-[11px] text-slate-400">학점</span>
                 <button
                   {...hot("deleteBtn", p)}
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground"
+                  className="inline-flex items-center rounded-md px-1.5 py-1 text-destructive"
                 >
-                  <Trash2 className="h-3 w-3" /> 삭제
+                  <Trash2 className="h-4 w-4" />
                 </button>
+              </div>
+              <div className="mt-1.5 flex items-start gap-1.5 rounded-md bg-amber-100/70 px-2 py-1 text-[11px] leading-relaxed text-amber-900">
+                <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
+                <span>
+                  <b>미확인 과목</b> · 2022 보통교과 목록에 없어요. 표준 과목명으로
+                  고치면 학생 화면 추천에 반영돼요. (오타·고시외·전문교과일 수 있어요)
+                </span>
               </div>
             </div>
           </div>
@@ -319,7 +310,7 @@ export function ReviewScreen(p: MockScreenProps) {
             {...hot("addDesignatedBtn", p)}
             className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary)]"
           >
-            <Plus className="h-3 w-3" /> 과목 추가
+            <Plus className="h-3 w-3" /> 지정 과목 추가
           </button>
         </>
       )}
@@ -343,32 +334,45 @@ export function ReviewScreen(p: MockScreenProps) {
           </button>
           <div
             {...hot("groupSubjectList", p)}
-            className="mt-3 rounded-xl border border-border bg-white p-3"
+            className="mt-3 overflow-hidden rounded-xl border-2 border-[var(--primary)]/40 bg-[var(--secondary)]/40 shadow-sm"
           >
-            <div className="flex items-center justify-between">
+            {/* 헤더 바 — 선택군 구분 + 택N(범위) + 과목당 학점 */}
+            <div className="flex flex-wrap items-center gap-1.5 border-b border-[var(--primary)]/15 bg-[var(--secondary)] px-2.5 py-1.5">
+              <span className="text-xs font-bold text-[var(--primary)]">선택 그룹 1</span>
+              <span
+                {...hot("pickNControl", p)}
+                className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-[var(--primary)] ring-1 ring-[var(--primary)]/20"
+              >
+                택1~2
+              </span>
+              <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-500 ring-1 ring-slate-200">
+                과목당 3학점
+              </span>
+            </div>
+            <div className="p-2.5">
               <input
                 {...hot("groupNameField", p)}
                 readOnly
-                value="일본어 / 중국어"
-                className="min-w-0 flex-1 rounded-md border border-border bg-white px-2 py-1 text-sm font-medium"
+                value="제2외국어 선택"
+                className="w-full rounded-md border border-border bg-white px-2 py-1 text-sm font-medium"
               />
-              <span
-                {...hot("pickNControl", p)}
-                className="ml-2 rounded-md bg-[var(--secondary)] px-2 py-1 text-xs font-semibold text-[var(--primary)]"
-              >
-                택1 · 3학점
-              </span>
+              <div className="mt-2 space-y-1 text-sm text-foreground">
+                <div className="rounded-md border border-border bg-white px-2 py-1">일본어</div>
+                <div className="rounded-md border border-border bg-white px-2 py-1">중국어</div>
+                <div className="rounded-md border border-border bg-white px-2 py-1">한문</div>
+              </div>
             </div>
-            <div
-              {...hot("intensiveSwap", p)}
-              className="mt-2 inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-slate-600"
-            >
-              ↔ 집중이수 학기 배정
-            </div>
-            <div className="mt-2 space-y-1 text-sm text-foreground">
-              <div className="rounded-md bg-muted/60 px-2 py-1">일본어Ⅰ</div>
-              <div className="rounded-md bg-muted/60 px-2 py-1">중국어Ⅰ</div>
-            </div>
+          </div>
+          {/* 집중이수 안내 */}
+          <div
+            {...hot("intensiveSwap", p)}
+            className="mt-2 flex items-start gap-1.5 rounded-md bg-muted px-2 py-1.5 text-[11px] leading-relaxed text-slate-600"
+          >
+            <ArrowLeftRight className="mt-0.5 h-3 w-3 shrink-0 text-[var(--primary)]" />
+            <span>
+              <b>집중이수</b> — ‘정보↔한문’처럼 학기를 번갈아 여는 과목은 칩으로 이 학기 과목을
+              고르고, ↔ 표시가 없으면 ‘집중이수 묶기’로 1·2학기 과목을 묶어요.
+            </span>
           </div>
         </>
       )}

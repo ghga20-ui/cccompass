@@ -256,7 +256,7 @@ export function RoadmapScreen(p: MockScreenProps) {
       >
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-slate-500">선택과목군</p>
-          <Chip tone="primary">택1 · 4학점</Chip>
+          <Chip tone="primary">택1 · 과목당 4학점</Chip>
         </div>
         <div className="mt-2 space-y-2">
           <div
