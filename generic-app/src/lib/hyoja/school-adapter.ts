@@ -12,10 +12,6 @@ export interface DesignatedSubject {
   credits: number;
   grade: number;
   semester: number;
-  /** 집중이수(학기 교차) 과목 여부 */
-  concentrated?: boolean;
-  /** 다른 학기에서 같은 슬롯을 쓰는 과목명 */
-  concentratedPartner?: string;
 }
 
 export interface SelectionGroup {
@@ -99,8 +95,6 @@ function toDesignatedSubject(
     credits: subject.credits,
     grade,
     semester,
-    concentrated: subject.concentrated,
-    concentratedPartner: subject.concentratedPartner,
   };
 }
 

@@ -83,4 +83,67 @@ describe("post-process.postProcessCurriculum", () => {
     const out = postProcessCurriculum(input);
     expect(out.cohorts[0].grades[0].semesters[0].choiceGroups).toHaveLength(1);
   });
+
+  it("집중이수(↔) 지정과목을 앞→1학기 / 뒤→2학기로 분리한다", () => {
+    const input = schoolCurriculumSchema.parse({
+      schoolName: "테스트고",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [{ name: "정보↔한문", credits: 3 }],
+                  choiceGroups: [],
+                },
+                { semester: 2, requiredSubjects: [], choiceGroups: [] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const out = postProcessCurriculum(input);
+    const sems = out.cohorts[0].grades[0].semesters;
+    expect(sems.find((s) => s.semester === 1)!.requiredSubjects.map((s) => s.name)).toEqual(["정보"]);
+    expect(sems.find((s) => s.semester === 2)!.requiredSubjects.map((s) => s.name)).toEqual(["한문"]);
+    expect(schoolCurriculumSchema.safeParse(out).success).toBe(true);
+  });
+
+  it("↔가 양 학기에 중복돼 있어도 학기당 하나씩만 남긴다", () => {
+    const input = schoolCurriculumSchema.parse({
+      schoolName: "테스트고",
+      cohorts: [
+        {
+          entranceYear: "2026",
+          label: "2026",
+          grades: [
+            {
+              grade: 1,
+              semesters: [
+                {
+                  semester: 1,
+                  requiredSubjects: [{ name: "정보↔한문", credits: 3 }],
+                  choiceGroups: [],
+                },
+                {
+                  semester: 2,
+                  requiredSubjects: [{ name: "정보↔한문", credits: 3 }],
+                  choiceGroups: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const out = postProcessCurriculum(input);
+    const sems = out.cohorts[0].grades[0].semesters;
+    expect(sems.find((s) => s.semester === 1)!.requiredSubjects.map((s) => s.name)).toEqual(["정보"]);
+    expect(sems.find((s) => s.semester === 2)!.requiredSubjects.map((s) => s.name)).toEqual(["한문"]);
+  });
 });

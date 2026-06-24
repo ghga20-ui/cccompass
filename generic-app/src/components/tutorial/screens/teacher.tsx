@@ -370,8 +370,8 @@ export function ReviewScreen(p: MockScreenProps) {
           >
             <ArrowLeftRight className="mt-0.5 h-3 w-3 shrink-0 text-[var(--primary)]" />
             <span>
-              <b>집중이수</b> — ‘정보↔한문’처럼 학기를 번갈아 여는 과목은 칩으로 이 학기 과목을
-              고르고, ↔ 표시가 없으면 ‘집중이수 묶기’로 1·2학기 과목을 묶어요.
+              <b>집중이수</b> — ‘정보↔한문’처럼 번갈아 여는 과목은 업로드할 때 자동으로 1·2학기로
+              나뉘어요. 어쩌다 안 나뉜 건 칩으로 이 학기 과목만 고르면 됩니다.
             </span>
           </div>
         </>

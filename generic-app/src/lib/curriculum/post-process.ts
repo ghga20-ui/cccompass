@@ -1,6 +1,12 @@
 import { subjects } from "@/data/subjects";
+import {
+  hasConcentratedMarker,
+  resolveConcentratedName,
+  splitConcentratedNames,
+} from "@/lib/curriculum/split-subjects";
 import type {
   ChoiceGroup,
+  CurriculumGrade,
   CurriculumSubject,
   SchoolCurriculum,
 } from "@/lib/curriculum/schema";
@@ -84,31 +90,112 @@ function groupSignature(group: ChoiceGroup): string {
 }
 
 /**
+ * 집중이수(↔) 학기 교차 분리: 앞→1학기, 뒤→2학기. (손실 없이 양쪽 학기에 배치)
+ * 1·2학기가 모두 있으면 지정과목 ↔를 쪼개 각 학기로 이동, 한 학기뿐이면 그 학기 기준 제자리 해석.
+ * 선택군 옵션의 ↔는 선택군이 단일 학기 구성이므로 그 학기 기준 제자리 해석.
+ */
+function splitConcentratedAcrossSemesters(grade: CurriculumGrade): CurriculumGrade {
+  // 1) 선택군 옵션의 ↔는 각 학기 기준 제자리 해석
+  const semesters = grade.semesters.map((semester) => ({
+    ...semester,
+    choiceGroups: semester.choiceGroups.map((group) => ({
+      ...group,
+      subjects: group.subjects.map((s) =>
+        hasConcentratedMarker(s.name)
+          ? { ...s, name: resolveConcentratedName(s.name, semester.semester) }
+          : s,
+      ),
+    })),
+  }));
+
+  const sem1 = semesters.find((s) => s.semester === 1);
+  const sem2 = semesters.find((s) => s.semester === 2);
+
+  // 2) 1·2학기 둘 다 없으면 지정과목 ↔를 그 학기 기준 제자리 해석
+  if (!sem1 || !sem2) {
+    return {
+      ...grade,
+      semesters: semesters.map((semester) => ({
+        ...semester,
+        requiredSubjects: semester.requiredSubjects.map((s) =>
+          hasConcentratedMarker(s.name)
+            ? { ...s, name: resolveConcentratedName(s.name, semester.semester) }
+            : s,
+        ),
+      })),
+    };
+  }
+
+  // 3) 지정과목 ↔를 앞→1학기 / 뒤→2학기로 분리(원본 제거 후 양쪽에 추가, 이름 중복 방지)
+  const toSem1: CurriculumSubject[] = [];
+  const toSem2: CurriculumSubject[] = [];
+  const stripped = semesters.map((semester) => {
+    const requiredSubjects: CurriculumSubject[] = [];
+    for (const subject of semester.requiredSubjects) {
+      if (hasConcentratedMarker(subject.name)) {
+        const parts = splitConcentratedNames(subject.name);
+        if (parts.length >= 2) {
+          toSem1.push({ ...subject, name: parts[0] });
+          toSem2.push({ ...subject, name: parts[parts.length - 1] });
+          continue;
+        }
+      }
+      requiredSubjects.push(subject);
+    }
+    return { ...semester, requiredSubjects };
+  });
+
+  const addUnique = (list: CurriculumSubject[], additions: CurriculumSubject[]) => {
+    const have = new Set(list.map((s) => s.name));
+    for (const addition of additions) {
+      if (!have.has(addition.name)) {
+        list.push(addition);
+        have.add(addition.name);
+      }
+    }
+  };
+
+  return {
+    ...grade,
+    semesters: stripped.map((semester) => {
+      const requiredSubjects = [...semester.requiredSubjects];
+      if (semester.semester === 1) addUnique(requiredSubjects, toSem1);
+      if (semester.semester === 2) addUnique(requiredSubjects, toSem2);
+      return { ...semester, requiredSubjects };
+    }),
+  };
+}
+
+/**
  * 구조화 결과 후처리:
  *  1) 뭉친 과목명 분해(required/choice 옵션 모두) + 공백 정규화
  *  2) 같은 학기 내 동일 구성 선택군 중복 제거
+ *  3) 집중이수(↔) 학기 교차 분리(앞→1학기, 뒤→2학기)
  */
 export function postProcessCurriculum(curriculum: SchoolCurriculum): SchoolCurriculum {
   return {
     ...curriculum,
     cohorts: curriculum.cohorts.map((cohort) => ({
       ...cohort,
-      grades: cohort.grades.map((grade) => ({
-        ...grade,
-        semesters: grade.semesters.map((semester) => {
-          const requiredSubjects = expandSubjectList(semester.requiredSubjects);
-          const seenGroup = new Set<string>();
-          const choiceGroups: ChoiceGroup[] = [];
-          for (const group of semester.choiceGroups) {
-            const expanded = expandGroup(group);
-            const sig = groupSignature(expanded);
-            if (seenGroup.has(sig)) continue; // 동일 구성 중복 선택군 제거
-            seenGroup.add(sig);
-            choiceGroups.push(expanded);
-          }
-          return { ...semester, requiredSubjects, choiceGroups };
-        }),
-      })),
+      grades: cohort.grades.map((grade) => {
+        const expandedGrade: CurriculumGrade = {
+          ...grade,
+          semesters: grade.semesters.map((semester) => {
+            const requiredSubjects = expandSubjectList(semester.requiredSubjects);
+            const seenGroup = new Set<string>();
+            const choiceGroups: ChoiceGroup[] = [];
+            for (const group of semester.choiceGroups) {
+              const expanded = expandGroup(group);
+              const sig = groupSignature(expanded);
+              if (seenGroup.has(sig)) continue; // 동일 구성 중복 선택군 제거
+              seenGroup.add(sig);
+              choiceGroups.push(expanded);
+            }
+            return { ...semester, requiredSubjects, choiceGroups };
+          }),
+        };
+        return splitConcentratedAcrossSemesters(expandedGrade);
+      }),
     })),
   };
 }

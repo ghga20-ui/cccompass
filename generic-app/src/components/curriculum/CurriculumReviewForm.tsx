@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeftRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ChoiceGroupEditor } from "@/components/curriculum/ChoiceGroupEditor";
 import { SubjectRow } from "@/components/curriculum/SubjectRow";
 import { AddSubjectControl } from "@/components/curriculum/AddSubjectControl";
@@ -58,81 +58,12 @@ export function CurriculumReviewForm({
   const [isPublishing, setIsPublishing] = useState(false);
   // cohortIndex별 활성 학년(grade 숫자)
   const [activeGrades, setActiveGrades] = useState<Record<number, number>>({});
-  // 집중이수 묶기 모드 — 현재 모드인 학년 키("cohortIndex-gradeIndex")와 선택 목록
-  const [concentrateGrade, setConcentrateGrade] = useState<string | null>(null);
-  const [concentrateSel, setConcentrateSel] = useState<{ s: number; i: number }[]>([]);
-
   function activeGradeFor(cohortIndex: number, fallbackGrade: number) {
     return activeGrades[cohortIndex] ?? fallbackGrade;
   }
 
   function setActiveGrade(cohortIndex: number, grade: number) {
     setActiveGrades((prev) => ({ ...prev, [cohortIndex]: grade }));
-    // 학년을 바꾸면 진행 중인 집중이수 묶기 모드를 해제
-    setConcentrateGrade(null);
-    setConcentrateSel([]);
-  }
-
-  function gradeKey(cohortIndex: number, gradeIndex: number) {
-    return `${cohortIndex}-${gradeIndex}`;
-  }
-
-  function toggleConcentrateMode(cohortIndex: number, gradeIndex: number) {
-    const key = gradeKey(cohortIndex, gradeIndex);
-    setConcentrateGrade((prev) => (prev === key ? null : key));
-    setConcentrateSel([]);
-  }
-
-  function toggleConcentrateSel(s: number, i: number) {
-    setConcentrateSel((prev) => {
-      const exists = prev.some((x) => x.s === s && x.i === i);
-      if (exists) return prev.filter((x) => !(x.s === s && x.i === i));
-      return [...prev, { s, i }];
-    });
-  }
-
-  // 서로 다른 학기의 과목 2개를 골랐을 때만 묶기 가능
-  const canMergeConcentrate =
-    concentrateSel.length === 2 && concentrateSel[0].s !== concentrateSel[1].s;
-
-  function mergeConcentrate(c: number, g: number) {
-    if (!canMergeConcentrate) return;
-    const [a, b] = concentrateSel;
-    updateCurriculum((draft) => {
-      const grade = draft.cohorts[c].grades[g];
-      const subA = grade.semesters[a.s]?.requiredSubjects[a.i];
-      const subB = grade.semesters[b.s]?.requiredSubjects[b.i];
-      if (!subA || !subB) return;
-      subA.concentrated = true;
-      subA.concentratedPartner = subB.name;
-      subB.concentrated = true;
-      subB.concentratedPartner = subA.name;
-    });
-    setConcentrateGrade(null);
-    setConcentrateSel([]);
-  }
-
-  // 집중이수 페어 해제 — 본인 + 다른 학기의 짝 과목 표시를 함께 제거
-  function unconcentrate(c: number, g: number, s: number, i: number) {
-    updateCurriculum((draft) => {
-      const grade = draft.cohorts[c].grades[g];
-      const subject = grade.semesters[s]?.requiredSubjects[i];
-      if (!subject) return;
-      const partnerName = subject.concentratedPartner;
-      const selfName = subject.name;
-      subject.concentrated = undefined;
-      subject.concentratedPartner = undefined;
-      if (!partnerName) return;
-      grade.semesters.forEach((sem, semIdx) => {
-        if (semIdx === s) return;
-        sem.requiredSubjects.forEach((sub) => {
-          if (sub.concentrated && sub.name === partnerName && sub.concentratedPartner === selfName) {
-            sub.concentrated = undefined;
-            sub.concentratedPartner = undefined;
-          }
-        });
-      });
-    });
   }
 
   function updateCurriculum(mutator: (draft: SchoolCurriculum) => void) {
@@ -436,16 +367,6 @@ export function CurriculumReviewForm({
               onDelete={() =>
                 removeRequiredSubject(cohortIndex, gradeIndex, semesterIndex, subjectIndex)
               }
-              selectable={concentrateGrade === gradeKey(cohortIndex, gradeIndex)}
-              selected={concentrateSel.some(
-                (x) => x.s === semesterIndex && x.i === subjectIndex,
-              )}
-              onToggleSelect={() => toggleConcentrateSel(semesterIndex, subjectIndex)}
-              onUnconcentrate={
-                subject.concentrated
-                  ? () => unconcentrate(cohortIndex, gradeIndex, semesterIndex, subjectIndex)
-                  : undefined
-              }
             />
           ))}
           <AddSubjectControl
@@ -590,47 +511,6 @@ export function CurriculumReviewForm({
             {/* 활성 학년: 1학기 위 · 2학기 아래 (2행) */}
             {activeGrade ? (
               <div className="space-y-4">
-                {/* 집중이수(학기 교차) 묶기 도구 — 학기가 2개 이상일 때만 */}
-                {activeGrade.semesters.length >= 2 ? (
-                  concentrateGrade === gradeKey(cohortIndex, activeGradeIndex) ? (
-                    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--primary)]/30 bg-[var(--secondary)]/40 px-3 py-2">
-                      <span className="text-xs text-slate-700">
-                        학기 교차 집중이수로 묶을 <b>1학기·2학기 지정 과목을 하나씩</b> 선택하세요.
-                      </span>
-                      <div className="ml-auto flex items-center gap-1.5">
-                        <Button
-                          type="button"
-                          variant="cta"
-                          size="sm"
-                          disabled={!canMergeConcentrate}
-                          onClick={() => mergeConcentrate(cohortIndex, activeGradeIndex)}
-                        >
-                          선택한 과목 묶기
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleConcentrateMode(cohortIndex, activeGradeIndex)}
-                        >
-                          취소
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => toggleConcentrateMode(cohortIndex, activeGradeIndex)}
-                      title="↔ 표시가 없어도 학기별로 번갈아 열리는 집중이수 과목을 묶을 수 있어요."
-                    >
-                      <ArrowLeftRight className="h-4 w-4" />
-                      집중이수 묶기
-                    </Button>
-                  )
-                ) : null}
-
                 {activeGrade.semesters.map((semester, semesterIndex) =>
                   renderSemesterPanel(
                     cohortIndex,

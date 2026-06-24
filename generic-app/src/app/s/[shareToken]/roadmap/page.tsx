@@ -641,11 +641,6 @@ function RoadmapContent() {
                               {expandSubjectNames(d.subject).join("/")}
                             </span>
                             <span className="text-[10px] opacity-60">{d.credits}학점</span>
-                            {d.concentrated ? (
-                              <span className="rounded bg-[var(--secondary)] px-1 text-[9px] font-semibold text-[var(--primary)]">
-                                집중이수
-                              </span>
-                            ) : null}
                           </span>
                         ))}
                       </div>

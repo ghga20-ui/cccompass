@@ -16,10 +16,6 @@ export const curriculumSubjectSchema = z.object({
   credits: z.number().positive(),
   rawText: z.string().optional(),
   confidence: z.number().min(0).max(1).optional(),
-  // 집중이수(학기 교차): 이 지정 과목이 다른 학기의 과목과 한 슬롯을 번갈아 쓰는 경우.
-  // 예) 1학기 통합사회 ↔ 2학기 한국사. 배치는 각 학기 그대로, 페어로만 표시.
-  concentrated: z.boolean().optional(),
-  concentratedPartner: z.string().optional(),
 });
 
 export const choiceGroupSchema = z
