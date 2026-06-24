@@ -316,7 +316,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                 />
               </button>
               {openSemesters.has(sem) && (
-                <div className="space-y-2 px-3 pb-3">
+                <div className="space-y-3 px-3 pb-3">
                   {items.map((item) => (
                     <SubjectCard
                       key={item.subject.id}
@@ -516,7 +516,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                 />
               </button>
               {openSemesters.has(sem) && (
-                <div className="space-y-2 px-3 pb-3">
+                <div className="space-y-3 px-3 pb-3">
                   {items.map((item) => (
                     <SubjectCard
                       key={item.subject.id}

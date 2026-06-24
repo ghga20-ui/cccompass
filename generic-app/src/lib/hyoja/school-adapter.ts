@@ -24,6 +24,10 @@ export interface SelectionGroup {
   grade: number;
   semester: number;
   choose: number;
+  /** 최소 선택 수(범위 택N~M). 미지정이면 choose로 간주 */
+  minChoose?: number;
+  /** 최대 선택 수(범위 택N~M). 미지정이면 choose로 간주 — 학생 선택 캡 */
+  maxChoose?: number;
   creditsEach: number;
   totalCredits: number;
   options: string[];
@@ -141,12 +145,17 @@ export function adaptCurriculumForStudentAssistant(
                 const creditsEach =
                   group.creditsEach ?? group.subjects[0]?.credits ?? 0;
 
+                const minChoose = group.minChoose ?? group.choose;
+                const maxChoose = group.maxChoose ?? group.choose;
+
                 selections.push({
                   id: `${cohort.entranceYear}-${grade.grade}-${semester.semester}-${group.id}`,
                   label: group.label,
                   grade: grade.grade,
                   semester: semester.semester,
                   choose: group.choose,
+                  minChoose,
+                  maxChoose,
                   creditsEach,
                   totalCredits: creditsEach * group.choose,
                   options: uniqueNames(group.subjects),

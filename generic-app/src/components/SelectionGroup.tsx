@@ -45,8 +45,15 @@ export default function SelectionGroup({
   conflictSubjects,
   detailReturnPath,
 }: SelectionGroupProps) {
-  const isRadio = group.choose === 1;
-  const isFull = selected.length >= group.choose;
+  // 범위 택N~M 지원: 최대 선택 수(maxChoose)를 캡으로 사용
+  const maxChoose = group.maxChoose ?? group.choose;
+  const minChoose = group.minChoose ?? group.choose;
+  const isRange = maxChoose > minChoose;
+  const isRadio = maxChoose === 1;
+  const isFull = selected.length >= maxChoose;
+  // 최소 선택 수를 채웠는지(완료 판정). 범위면 minChoose, 아니면 choose
+  const isComplete = selected.length >= minChoose;
+  const chooseLabel = isRange ? `택${minChoose}~${maxChoose}` : `택${group.choose}`;
 
   const handleToggle = useCallback(
     (name: string) => {
@@ -63,7 +70,7 @@ export default function SelectionGroup({
           {group.label}
         </h4>
         <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-          택{group.choose} / {group.totalCredits}학점
+          {chooseLabel} / 과목당 {group.creditsEach}학점
         </span>
       </div>
 
@@ -183,15 +190,17 @@ export default function SelectionGroup({
         <span
           className={cn(
             "text-[11px] font-medium",
-            selected.length === group.choose
+            isComplete
               ? "text-emerald-600"
               : selected.length > 0
               ? "text-[var(--primary)]"
               : "text-muted-foreground"
           )}
         >
-          {selected.length}/{group.choose} 선택
-          {selected.length === group.choose && " ✓"}
+          {isRange
+            ? `${selected.length}/${minChoose}~${maxChoose} 선택`
+            : `${selected.length}/${group.choose} 선택`}
+          {isComplete && " ✓"}
         </span>
       </div>
     </div>

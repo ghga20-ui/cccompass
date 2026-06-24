@@ -658,7 +658,9 @@ function RoadmapContent() {
                         <SelectionGroup
                           group={group}
                           selected={selections[group.id] || []}
-                          onToggle={(name) => handleToggle(group.id, group.choose, name)}
+                          onToggle={(name) =>
+                            handleToggle(group.id, group.maxChoose ?? group.choose, name)
+                          }
                           getSubjectByName={subjectCatalog.getSubjectByName}
                           basePath={basePath}
                           recommendedSubjects={recommendedNames}
