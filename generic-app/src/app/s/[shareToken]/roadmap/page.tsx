@@ -565,7 +565,7 @@ function RoadmapContent() {
         </div>
       </div>
 
-      <div className="bg-white">
+      <div>
         <div className="mx-auto max-w-lg px-4 pt-4 space-y-3 pb-2">
           <div className="flex items-center gap-2 pb-1">
             <div>
