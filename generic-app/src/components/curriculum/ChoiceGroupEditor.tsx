@@ -104,7 +104,7 @@ export function ChoiceGroupEditor({
     "rounded-md border border-[var(--border)] bg-white px-2.5 py-1.5 text-sm text-center outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20";
 
   return (
-    <section className="overflow-hidden rounded-xl border border-[var(--primary)]/30 bg-[var(--secondary)]/30">
+    <section className="overflow-hidden rounded-xl border-2 border-[var(--primary)]/50 bg-[var(--secondary)]/40 shadow-sm ring-1 ring-[var(--primary)]/10">
       {/* 헤더 바 — 선택군임을 강하게 구분 */}
       <div className="flex flex-wrap items-center gap-2 border-b border-[var(--primary)]/15 bg-[var(--secondary)] px-3 py-2">
         <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--primary)] text-white">
@@ -151,8 +151,8 @@ export function ChoiceGroupEditor({
           />
         </div>
 
-        {/* 과목당 학점 + 선택 수(택N/범위) */}
-        <div className="flex flex-wrap items-end gap-x-5 gap-y-2">
+        {/* 과목당 학점 + 선택 수(택N/범위) — 우측 정렬 */}
+        <div className="flex flex-wrap items-end justify-end gap-x-5 gap-y-2">
           <div className="space-y-1">
             <label htmlFor={`${groupId}-credits`} className="block text-xs font-semibold text-slate-600">
               과목당 학점

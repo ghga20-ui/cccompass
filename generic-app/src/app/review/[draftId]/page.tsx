@@ -46,7 +46,7 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
         </Link>
         <div className="mt-7 max-w-3xl">
           <p className="text-sm font-semibold text-[var(--primary)]">교육과정 검토</p>
-          <h1 className="mt-4 text-4xl font-bold tracking-normal sm:text-5xl">
+          <h1 className="mt-4 text-3xl font-bold tracking-tight sm:whitespace-nowrap sm:text-[2rem]">
             업로드한 교육과정을 확인해 주세요
           </h1>
           <p className="mt-6 text-lg leading-8 text-slate-700">
