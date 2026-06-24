@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ExhibitionMediaPanel } from "@/components/ExhibitionMediaPanel";
 import { useCohort } from "@/contexts/CohortContext";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import {
@@ -161,6 +162,9 @@ export default function SubjectDetailPage({
             </p>
           </CardContent>
         </Card>
+
+        {/* 전시 포스터 (포스터가 있는 과목만) */}
+        <ExhibitionMediaPanel subjectId={subject.id} subjectName={subject.name} />
 
         {/* Recommended students */}
         {subject.recommendedFor && subject.recommendedFor.length > 0 && (
