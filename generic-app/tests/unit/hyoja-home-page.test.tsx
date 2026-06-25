@@ -77,7 +77,7 @@ describe("Hyoja share home page", () => {
   it("pushes Hyoja home CTA to share-token recommend route", () => {
     renderHome();
 
-    fireEvent.change(screen.getByPlaceholderText(/학과를 검색/), {
+    fireEvent.change(screen.getByPlaceholderText(/간호학과/), {
       target: { value: "간호" },
     });
     fireEvent.click(screen.getByRole("button", { name: /간호학과/ }));
