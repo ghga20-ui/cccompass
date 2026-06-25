@@ -11,6 +11,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/Logo";
+import {
+  MAX_PDF_PAGES,
+  countPdfPages,
+  isPdfUpload,
+  pdfPageLimitMessage,
+} from "@/lib/curriculum/pdf-limit";
 
 type UploadResponse = {
   reviewUrl?: string;
@@ -100,7 +106,7 @@ export default function CreatePage() {
     ? 100
     : Math.min(95, Math.round((1 - Math.exp(-elapsed / EXPECTED_SECONDS)) * 100));
 
-  function acceptFile(next: File | null) {
+  async function acceptFile(next: File | null) {
     if (!next) return;
     const extension = getExtension(next.name);
     if (!ALLOWED_EXTENSIONS.includes(extension)) {
@@ -112,6 +118,20 @@ export default function CreatePage() {
       setFile(null);
       setFileError("파일이 너무 커요. 5MB 이하 파일만 올릴 수 있어요.");
       return;
+    }
+    // PDF는 편제표만(최대 MAX_PDF_PAGES쪽) 받는다. 도움자료집·총론이 통째로 섞인
+    // PDF를 업로드 전에 걸러 비용/지연/정확도 저하를 막는다.
+    if (isPdfUpload(next.name, next.type)) {
+      try {
+        const pageCount = await countPdfPages(await next.arrayBuffer());
+        if (pageCount > MAX_PDF_PAGES) {
+          setFile(null);
+          setFileError(pdfPageLimitMessage(pageCount));
+          return;
+        }
+      } catch {
+        // 페이지 수를 못 세면(암호화·손상 등) 막지 않는다 — 서버에서 다시 검사한다.
+      }
     }
     setFileError("");
     setFile(next);
@@ -248,7 +268,9 @@ export default function CreatePage() {
               type="file"
               accept={ALLOWED_EXTENSIONS.join(",")}
               disabled={isUploading}
-              onChange={(event) => acceptFile(event.target.files?.[0] ?? null)}
+              onChange={(event) => {
+                void acceptFile(event.target.files?.[0] ?? null);
+              }}
               className="sr-only"
             />
 
@@ -301,7 +323,7 @@ export default function CreatePage() {
                 onDrop={(event) => {
                   event.preventDefault();
                   setDragActive(false);
-                  if (!isUploading) acceptFile(event.dataTransfer.files?.[0] ?? null);
+                  if (!isUploading) void acceptFile(event.dataTransfer.files?.[0] ?? null);
                 }}
                 aria-label="편제표 파일을 끌어다 놓거나 눌러서 선택"
                 className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center transition ${
@@ -316,6 +338,9 @@ export default function CreatePage() {
                 </span>
                 <span className="text-xs text-slate-400">
                   PDF · HWP · HWPX · 엑셀 · 워드 · 최대 5MB
+                </span>
+                <span className="text-xs text-slate-400">
+                  PDF는 편제표 페이지만 ({MAX_PDF_PAGES}쪽 이내)
                 </span>
               </div>
             )}

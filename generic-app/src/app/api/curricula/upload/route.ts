@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { schoolCurriculumSchema } from "@/lib/curriculum/schema";
+import {
+  MAX_PDF_PAGES,
+  countPdfPages,
+  isPdfUpload,
+  pdfPageLimitMessage,
+} from "@/lib/curriculum/pdf-limit";
 import { postProcessCurriculum } from "@/lib/curriculum/post-process";
 import { prisma } from "@/lib/db";
 import { getStructurerProvider } from "@/lib/llm";
@@ -128,6 +134,26 @@ export async function POST(request: Request) {
     console.error("Failed to read curriculum upload file", error);
 
     return NextResponse.json({ error: "업로드한 파일을 읽지 못했습니다." }, { status: 400 });
+  }
+
+  // PDF는 편제표만(최대 MAX_PDF_PAGES쪽) 받는다. 도움자료집·총론이 통째로 섞인
+  // 대용량 PDF는 파싱 전에 막아 비용/지연/정확도 저하를 차단한다.
+  if (isPdfUpload(file.name, file.type)) {
+    try {
+      const pageCount = await countPdfPages(buffer);
+
+      if (pageCount > MAX_PDF_PAGES) {
+        console.log(`[upload] PDF ${pageCount}p > ${MAX_PDF_PAGES}p 한도 초과 → 거부`);
+
+        return NextResponse.json(
+          { error: pdfPageLimitMessage(pageCount) },
+          { status: 400 },
+        );
+      }
+    } catch (error) {
+      // 페이지 수를 못 세면(암호화·손상 등) 막지 않고 통과시킨다.
+      console.warn("[upload] PDF page count failed; skipping page-limit check", error);
+    }
   }
 
   let parsed;
