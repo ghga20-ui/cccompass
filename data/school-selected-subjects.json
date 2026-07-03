@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-18",
+    "generatedAt": "2026-07-03",
     "schoolSource": "app/src/data/json/school.json",
     "excelSource": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
     "normalSheet": "보통 교과 데이터",
@@ -422,19 +422,19 @@
       "name": "관광 일본어",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "미용·관광·레저",
       "credits": {
         "sourceCreditText": "3~5",
         "defaultCredits": null
       },
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "미용·관광·레저"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "미용·관광·레저"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -473,19 +473,19 @@
       "name": "관광 중국어",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "미용·관광·레저",
       "credits": {
         "sourceCreditText": "3~5",
         "defaultCredits": null
       },
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "미용·관광·레저"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "미용·관광·레저"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -4175,19 +4175,19 @@
       "name": "식품과 영양",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "음식조리",
       "credits": {
         "sourceCreditText": "3~5",
         "defaultCredits": null
       },
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "음식조리 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "음식조리"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "음식조리"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -9035,19 +9035,19 @@
       "name": "프로그래밍",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "정보·통신",
       "credits": {
         "sourceCreditText": "3~5",
         "defaultCredits": null
       },
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "정보·통신"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "정보·통신"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -9596,19 +9596,19 @@
       "name": "현대 세계의 변화",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": {
         "sourceCreditText": "3~5",
         "defaultCredits": null
       },
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,

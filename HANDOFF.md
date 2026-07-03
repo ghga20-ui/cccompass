@@ -4,7 +4,90 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
-_최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅(12단계) + 편집 기능(E1~E5) 전부 완료·배포·검증**_
+_최종 갱신: 2026-07-03 (Claude Code) — **전문교과 professionalArea 계열 오류 전면 교정(파서 수정+재생성).** 이전: PDF 업로드 3쪽 제한(편제표만 받기) 구현·검증 완료, push→prod 배포(커밋 d87fad9·f4bed10). 이전: 편제표 수정 리디자인+검수, 브랜드 커리컴퍼스, 전시관→과목, 집중이수 자동분리·선택군 이동, 문의(mailto)·학교명 강조/정규화·로드맵 배경, 학생 홈 생동감 리디자인. push→prod 배포(…c07f48e·0eae144·7a75dc0)._
+
+**전문교과 professionalArea 계열 오류 교정 (2026-07-03, 커밋·푸시됨)**
+- 발견: 전문교과 263과목 중 다수의 `professionalArea`(계열)가 엉터리 — 108과목이 전부 '농림·수산', '심화 수학Ⅱ'가 예술계열 등. 파생 필드 `keyContents`·`relatedDepartments`와 fallback description에도 동일 오류 전파.
+- 근본 원인 2건 (`parse_excel_subjects.py`):
+  ① `전문 교과 데이터(목록만 살려)` 시트 86~96행(국제 정치~사회과제 연구, 국제계열)의 계열 셀이 원본에서 비어 있어 forward-fill로 직전 값 '외국어계열'이 채워짐.
+  ② `목록 데이터` 시트의 계열 열(4·6열)은 과목과 행 정렬된 표가 아니라 **드롭다운용 독립 목록**(계열명이 위에서부터 한 줄씩)인데, 파서가 (과목열, 계열열)을 행 단위로 짝지어 forward-fill → 전문교과Ⅰ 39과목·전문교과Ⅱ 124과목 계열 전멸.
+- 수정: ① `PROFESSIONAL_AREA_OVERRIDES`(국제계열 11과목 명시 보정) ② 행 짝짓기 제거, `PROFESSIONAL_LIST_GROUPS`(2015 개정 편제 기반 계열→과목 명시 매핑, 시트 순서·그룹 수 합계 124로 교차검증) 도입 + 미매핑 시 경고 출력. 재생성 시 경고 0.
+- 재생성: `data/subjects.json`·`app/src/data/json/subjects.json`·`school-selected-subjects.json` 2종. diff는 `professionalArea`/`keyContents`/`relatedDepartments`/fallback `description`/`generatedAt`만 변경(필드 단위 diff 집계로 확인). 학교 편성 과목 중 관광 일본어·중국어(미용·관광·레저), 식품과 영양(음식조리), 프로그래밍(정보·통신), 현대 세계의 변화(국제계열) 등 8과목 교정됨.
+- 검증: 기대 매핑 39건 검증 스크립트 수정 전 FAIL(56건 실패) → 수정 후 PASS. tsc는 기존 `exhibition-subjects.test.ts` implicit-any 1건만(무관). `tests/roadmap-selection-state.test.mjs` 3/3 통과. **주의: 이 체크아웃 app에는 vitest 미설치**(HANDOFF의 88개 테스트는 clean 브랜치 기준) — package.json에 test 스크립트 없음.
+- 참고: 원본 명칭 '내동 공조 일반'(냉동 오타)·반각 가운뎃점(･) 표기는 학교 데이터 이름 매칭 보호를 위해 의도적으로 보존.
+
+**PDF 업로드 3쪽 제한 (2026-06-26, 커밋 d87fad9 / 배포됨)**
+- 배경: 로그 확인 결과 유저들이 50쪽짜리 교육과정 도움자료집·총론(2022 개정 총론 등)을 통째로 업로드 → 입력 토큰·비용·지연 폭증, 정확도 저하. 편제표는 많아야 3쪽이고, **교육과정부 교사는 순수 편제표 파일을 따로 보유**(사용자 확인)하므로 친절한 우회 없이 하드 차단이 맞다는 결론.
+- 검토 과정: ① 앞 N쪽 캡 → "편제표가 앞에 있다는 보장 없음"으로 기각 ② kordoc(전체 텍스트, 페이지 경계 없음)+pdf.js(페이지 탐지)+pdf-lib(자르기) **자동탐지(A안)** 설계 → ③ 사용자가 **"초과 업로드 자체를 막자"**로 단순화 결정(상한 5→최종 3쪽) → **A안 폐기**.
+- 구현: `src/lib/curriculum/pdf-limit.ts` 신설 — `MAX_PDF_PAGES=3`, `isPdfUpload(name,mime)`, `countPdfPages(bytes)`(pdf-lib `PDFDocument.load`, **동적 import**라 클라 초기 번들 제외), `pdfPageLimitMessage(n)`(실제 쪽수 포함 안내). **PDF만** 검사(HWPX·엑셀은 페이지 개념 달라 제외).
+  - 클라(`app/create/page.tsx`): `acceptFile`을 async로, PDF면 페이지 카운트 → 초과 시 파일 거부+안내. 핸들러 `void` 처리. 드롭존 헬프텍스트에 'PDF는 편제표 페이지만(3쪽 이내)' 추가.
+  - 서버(`app/api/curricula/upload/route.ts`): 버퍼 읽은 뒤 파싱 전에 PDF 페이지 카운트 → 초과 시 400. 카운트 실패(암호화·손상)는 **fail-open**(막지 않고 통과).
+- 의존성: **pdf-lib 1.17.1** 추가(pnpm).
+- **부수 수정(기존 회귀, 이 작업 무관)**: ① `components/Reveal.tsx` — `window.matchMedia`를 무방비 호출해 jsdom에서 throw(바로 다음 줄 IntersectionObserver는 이미 feature-detect 중) → 같은 스타일로 matchMedia도 `typeof===function` 가드. ② `tests/unit/hyoja-home-page.test.tsx` — 홈 리라이트로 검색 placeholder가 '예) 간호학과…'로 바뀌었는데 테스트는 옛 `/학과를 검색/`를 찾아 실패 → 현재 카피 `/간호학과/`로 갱신. (이 둘로 전체 스위트 4 실패→0)
+- 검증: tsc 0 · lint 0(에러; 기존 경고 2건만) · **vitest 88 통과**(신규 유닛테스트 3건: PDF 판별/실제 쪽수 카운트/한도 메시지). 유닛으로 검증 가능한 범위까지. **전체 파이프라인 실업로드(kordoc+Gemini)는 키·실파일 필요라 사용자 실측 권장**(인터페이스 불변이라 위험 낮음).
+
+**학생 홈 생동감 리디자인 (2026-06-24, 커밋 7a75dc0 / 분석 workflow wvexmvp1n)**
+- 진단: 색 리듬 0·모션/브랜드 시그널 부재·균질 회색 태그. 사용자 결정: 퀵윈+히어로(B1)+CTA 오렌지틴트(STEP·태그색상화는 보류).
+- 적용: 히어로 `bg-secondary` 틴트존+CompassMotif 배경+학교명 Black Han Sans+부제 '3분 안에' 오렌지 / 전 섹션 Reveal / 관심분야 틴트 카드 그룹핑 / 검색 placeholder 예시화·코호트 라벨·hr 제거 / CTA 오렌지틴트+상태카피.
+- `CompassMotif`를 `components/CompassMotif.tsx`로 추출(랜딩 import 교체, 모티프 3개 회귀 확인). 좌측바 없음·토큰 4색·모바일·흐름 유지. tsc0·lint0·tests 85.
+- 후속(커밋 250193b): 학교명·'관심 분야' 헤딩을 **Pretendard**(특별 디스플레이체)로. 학교명 extrabold(800)·헤딩 bold. **주의: Tailwind v4는 `@import "tailwindcss"`를 인라인 확장해 globals.css의 원격 `@import url(폰트)`가 뒤로 밀려 'must precede' 500 발생 → 외부 폰트는 layout.tsx `<link>`로 로드(Pretendard variable dynamic-subset CDN). `--font-pretendard` 변수.**
+
+**문의 창구·학교명·로드맵 배경 (2026-06-24, 커밋 c07f48e·0eae144)**
+- 개발자 문의: Footer에 '개발자에게 문의하기' = `mailto:ghga20@gmail.com`(제목·본문 템플릿). 전역 노출.
+- 학생 홈 학교명 강조(text-3xl md:text-4xl + 아이콘 확대).
+- `normalizeSchoolName`(school-adapter): 'xx고'→'xx고등학교', 고등학교면 유지, 고로 안 끝나면 그대로(영문명 보호). 학생 어댑터에서 적용 → 모든 학생 출력·기존 게시본 커버.
+- 로드맵 콘텐츠 `bg-white` 제거 → 다른 학생 페이지와 동일하게 크림(#FFFBEB) 배경 통일.
+
+**선택군 다른 학년·학기로 이동 (2026-06-24, 커밋 e0a36c7)**
+- 배경: 파싱이 선택군을 엉뚱한 학년/학기로 잡는 경우가 있음.
+- 선택군 헤더에 '다른 학기로 이동…' 드롭다운(같은 코호트 전 학년·학기, 현재 위치 isCurrent로 제외). 선택 시 통째 이동.
+- `CurriculumReviewForm.moveChoiceGroup` — 원본 splice + 대상 push, **대상 학기 내 group.id 재발급**(generateGroupId, React key·학생측 selection id 충돌 방지), '○○학기로 옮겼어요' 안내. `ChoiceGroupEditor`에 moveTargets/onMove props.
+- 검증: dev에서 2학년 1학기 '제2외국어 선택' → 1학년 2학기 교차이동 확인(원본 제거·대상 배치·메시지). tsc0·lint0·tests 85.
+
+**집중이수 ↔ 자동분리로 단순화 (2026-06-24, 커밋 fd89e89)**
+- 사용자 결정: '집중이수 묶기' 대신 **↔를 파싱 단계에서 1·2학기로 자동분리**, 잘 안 되는 건 수동. (지금 방식이 과해서)
+- post-process에 `splitConcentratedAcrossSemesters` 추가 — ↔ 지정과목을 **앞→1학기 / 뒤→2학기**로 결정적·손실 없이 분리(한쪽만 있어도 반대편에 채움, 중복 방지). 선택군 옵션 ↔는 그 학기 기준 제자리 해석. 구조화 프롬프트도 학기 분리 지시 명확화.
+- **제거**: 집중이수 묶기(ReviewForm 모드·핸들러·툴바), `concentrated`/`concentratedPartner` 스키마 필드, school-adapter 전달, 로드맵 '집중이수' 배지, SubjectRow 체크박스/페어배지.
+- **유지**: 잔여 ↔용 칩 선택(1클릭 수정). 안 맞으면 이름 직접 수정.
+- 검증: post-process ↔ 분리 유닛테스트 2건 추가(앞→1/뒤→2, 양학기 중복 비중복). tsc0·lint0·tests 85. 튜토리얼 카피 갱신.
+
+**배포 전 전반 감사 + 반영 (2026-06-24, 워크플로 wkbq03n5p / 커밋 5da299a·11e0f26)**
+- 4관점(교사흐름/학생흐름/내비·구조/UX·위생) 병렬 감사. 결론: **진짜 P0(빌드/렌더 깨짐) 0건 → 조건부 배포 가능.** 사용자와 범위 합의 = "P0 + 핵심 P1 + 죽은코드", 푸터 유지(효자고/과목나침반 보조는 의도된 것), 카피는 '약 1분'만.
+- 반영: ① **전시관 라우트 직접 URL 접근 차단** — `exhibition/page.tsx` default를 `notFound()` 스텁으로, 구현은 `ExhibitionPageImpl`(미사용·eslint-disable)로 보존(추후 복원). ② 업로드 카피 '약 55초'→'약 1분'(랜딩·튜토리얼 4곳). ③ `app/error.tsx`·`app/not-found.tsx` 브랜드 에러/404 추가. ④ a11y: 로드맵 토스트 `role=status aria-live`, dialog/sheet 닫기 'Close'→'닫기'. ⑤ 죽은코드: `ExhibitionMediaPanel` 삭제, `split-subjects`의 과목나누기 잔재(splitMergedSubjectName·expandSubjectBySplit·parseManualSplit)+테스트 제거. tsc0·lint0·tests 83.
+- **미반영(후속 백로그, P1/P2)**: revalidatePath 실패 무음→응답 경고 플래그, 게시 데이터 손상 시 학생 안내 메시지, 배지색 디자인 토큰화, focus-ring 투명도/20→/40·키보드 포커스 전수, 로드맵 범위(택N~M) 최소충족 검증, 비교기능 진입점, 모바일 터치타깃<44px·초소형 폰트·scrollbar-hide, cohort 전환 시 선택 초기화. (감사 거짓양성: 선택군 마지막삭제 가드 존재/hero 이미지 존재/side-accent 위반 없음). **운영: .env 키 로테이션 별도 필요.**
+
+**전시관 통합 + 튜토리얼 정비 (2026-06-24, 커밋 2954cc9·2d3001a)**
+- 전시관 탭 내림: '과목'과 내용이 겹치고 포스터에 효자고 브랜딩이 박혀 공용 부적합 → 하단 4탭(홈·추천·로드맵·과목). 과목 상세의 전시 포스터 패널도 제거. **s/[shareToken]/exhibition 라우트·ExhibitionMediaPanel·posters는 보존**(추후 '진짜 전시관'으로 재정의해 재노출). 사용자: "지금은 과목으로 통일, 전시관은 추후 진짜 전시관처럼".
+- 튜토리얼(/guide) 정비: 교사 — 제거된 '과목 나누기' 단계/버튼 삭제 → '확인 필요·미확인 과목 점검·수정', 선택군 mockup을 헤더바+택1~2(범위)+과목당 학점+집중이수(칩/묶기)로 갱신. 학생 — 선택군 라벨 '택N·과목당 N학점'(범위 안내)로 정정. 학생 mockup엔 하단 내비가 없어 전시관 제거 영향 없음.
+
+**편집/학생 UX 다듬기 + 전시 포스터 복원 (2026-06-24, 커밋 16ba821·a5022bb·9c8cc58)**
+- A1 선택군 카드 테두리 강조(border-2+ring+shadow, 좌측바 없음) / A2 '과목당 학점·선택 수' 우측 정렬 / A3 검토 헤드라인 sm+ 한 줄(모바일 keep-all).
+- B1 추천 과목 카드 간격 space-y-2→3. / B2 로드맵 선택군 범위(택N~M) 선택 수정 — SelectionGroup이 choose 대신 maxChoose를 캡으로(min/maxChoose는 school-adapter에서 전달, 옵셔널+폴백). '택N~M' 라벨/카운터. 유닛 테스트 기댓값 갱신(90/90).
+- B3 전시관 전용 과목 페이지 복원: **조사(workflow wgxuonrph) 결론 — 효자고 원본엔 전용 라우트가 없고 subjects/[id]에 ExhibitionMediaPanel(포스터/영상)이 들어있었음.** generic-app은 이게 미포팅이라 전시관→과목에서 포스터가 안 보였던 것. → ExhibitionMediaPanel(포스터 중심, 영상 데이터 없음) 신설해 subjects/[id] 헤더 카드 아래 통합, 포스터 있는 과목만 렌더(hasExhibitionPoster). 효자고 공식 포스터는 전국 공유(posterSubjectIds)라 멀티스쿨에서도 동작.
+
+
+**편집 페이지 3차 개선 + 리브랜딩 (2026-06-24, 커밋 2ee43eb·ef5b95d·6d1eff7 / 브랜치 codex/generic-curriculum-assistant-clean)**
+- 수정 페이지 레이아웃 확정(사용자 승인 "이대로 좋은데"): 2행(학기)·좁은 중앙 컬럼(max-w-3xl)·콤팩트 한 줄 행, 선택군 헤더바 구분(**좌측 컬러바 절대 금지**), 과목 나누기 제거, 교과군→과목 드롭다운(AddSubjectControl).
+- ① 선택군 학점 단일화: 옵션별 학점란 제거 → 선택군 '과목당 학점'(creditsEach) 하나, 옵션 추가/합계 동기화. SubjectRow `hideCredits`.
+- ② 유연 택N: 선택군 범위 선택(택N~M). 기존 minChoose/maxChoose 활용 → 스키마 변경/마이그레이션 없음. 연계 그룹 하드강제는 비목표(범위로 흡수 — 사용자 확정).
+- ③ 미확인 과목: 마스터 카탈로그(@/data/subjects) 외 과목명 = 학생 런타임에서 빈추천 fallback이 되는 케이스 → '미확인 과목' 플래그(isKnownSubjectName, 학생 subject-catalog와 동일 normalize). 오타·고시외·전문교과 미수록 사전 경고.
+- ④ 집중이수(↔): 학기순 자동배정(모호·순서가정 오류) → 파싱된 과목을 '선택 칩'으로 제시, 교사가 이 학기 열리는 과목 직접 선택(학기순은 '추천' 표시만). split-subjects.splitConcentratedNames.
+- ⑤ 학기교차 집중이수 묶기(커밋 760de2a): ↔ 마커가 없어도 집중이수인 편제표 대응. 스키마에 `concentrated`/`concentratedPartner`(옵션·하위호환) 추가. 편집 페이지 '집중이수 묶기' 모드(지정과목 체크박스 → 서로 다른 학기 2개 선택 → 묶기), 페어 배지 + '묶기 해제'(양쪽 동시). 학생 배치는 학기 그대로 유지, school-adapter로 필드 전달 → 로드맵 지정과목 칩에 '집중이수' 배지. 사용자 결정: 단일표시 X, 두 과목 학기교차 묶기 O(연계 그룹 하드강제 비목표).
+- 브랜드: 워드마크 '커리컴퍼스' + 'CurriCompass'(sm+ 표기), 과목나침반은 툴팁/푸터 보조. Logo·Footer·layout(타이틀)·가이드·튜토리얼·로드맵 워터마크 일괄.
+- 줄넘김: globals.css body `word-break:keep-all` + `overflow-wrap:break-word`, h1~4 `text-wrap:balance`, p `pretty` (한두 글자 고아 제거). 모바일 헤더 영문 sm+·링크 nowrap.
+- 검증: tsc 0, lint 0(에러), dev E2E(범위 토글·미확인 플래그·집중이수 칩 클릭·로고·헤드라인) 스크린샷 확인. SubjectRow effect-setState 제거(빌드 lint 통과).
+
+**파싱 엔진 Gemini(비전) 전환 (2026-06-23, 커밋 d238aa4)**
+- 배경: 학교별 서식이 달라 파싱 품질 불만. OpenAI(텍스트) 역할 = kordoc 추출물(text/tables)을 스키마 JSON으로 재구성(파일 직접 안 봄). 병목 = kordoc 텍스트화 손실(특히 PDF의 셀 병합/rowspan).
+- 벤치마크(`data/parse-test/` 샘플 02~09, `harness-gemini.mjs` + `harness.mjs` + `compare-ab.mjs`): 집계 수치는 비슷(양쪽 뭉침0·무학점0 — '뭉친 이름' 참사는 2022 교육과정 파일엔 거의 없음, 그건 한민고 2015 PDF 이슈였음). **단 PDF의 rowspan 병합셀(택N) 해석에서 Gemini 비전이 명확히 정확**(09 북일고: 제2외국어 일/중/한문·예술 음악/미술을 OpenAI는 전부 '필수'로 오인, Gemini는 '택1'로 정확 — kordoc HTML의 rowspan 학점셀로 원본 검증).
+- 구현(`generic-app/src/lib/llm/`): `gemini-structurer.ts`(GeminiStructurerProvider, **gemini-3.5-flash**) — PDF는 inlineData 네이티브 비전 + kordoc text/tables 하이브리드, HWPX/엑셀 등은 텍스트만. `StructurerProvider`에 원본 file 전달 추가(upload route base64 동봉). 'JSON 뒤 잡텍스트' 버그 → balanced-JSON 추출. OpenAI provider는 폴백 유지(provider 추상화).
+- **운영 전환**: Vercel env `CURRICULUM_STRUCTURER_PROVIDER=openai→gemini`(prod+dev), `GEMINI_API_KEY` 생성. 되돌리려면 env만 openai로.
+- 측정 도구는 `data/parse-test/`에 보존(harness-gemini.mjs, compare-ab.mjs). 정답 라벨 기반 정밀 채점은 미실시(추후, 사용자 샘플로).
+- **업로드 행(hang) 버그 원인 확정+수정 (커밋 d5032a6)**: kordoc/Gemini fetch에 타임아웃이 없어, Render(무료티어) 콜드스타트 시 함수가 응답 없이 무한 대기(draft 0·로그 0). + Vercel 서버리스에서 Gemini 호출이 느림(~52초, 로컬 18초 대비). → fetch에 `AbortSignal.timeout`(kordoc 45s·Gemini 90s) + 단계 로그 + 스키마 `.default([])` 추가. **워밍 상태 E2E 성공 확인**(HTTP 200, 55초, draft 생성, 집중이수 ↔ 정상 분리). maxDuration=300은 정상 동작(함수가 55초+ 완주).
+- **남은 신뢰성 과제(미적용)**: Render 무료티어가 15분 유휴 시 잠들어 콜드스타트 지연 → **외부 핑(UptimeRobot/cron-job.org 등)으로 Render `/` 10~14분마다 keep-warm** 권장(Vercel Hobby 크론은 1일 1회 한계라 부적합). 선택적으로 Vercel Fluid Compute 활성화. 콜드일 때도 이제 무한대기 대신 45초 후 명확한 502 에러로 빠르게 실패.
+- **주의**: OpenAI 키·Gemini 키·Vercel 토큰이 세션 로그 노출 → 회전 권장.
+
+**랜딩 생동감 리디자인 (2026-06-22, 커밋 b009124)**: ui-ux-pro-max 스킬 점검("Muted colors + Low energy" 안티패턴)으로 흰 카드+크림 일색의 밋밋함 해소(신뢰감 유지, side-accent 바·비대칭 배치 제외). 색 리듬(블루 스탯밴드/딥블루 차별점 풀블리드 블록/틴트 카드/라이트블루 CTA), 컴퍼스 로즈 배경 모티프, 히어로 타이포 확대+키워드 컬러, `components/Reveal.tsx` 스크롤 페이드업(SSR-safe: 화면 밖만 숨김)+카드 hover+로고 settle 모션(globals.css, 전부 reduced-motion 존중). build/lint OK, 콘솔 0, 초기로드/전체렌더 브라우저 검증.
 
 **포팅 완료 (TaskList #1~12 전부 ✅)**: 게시 페이지(/s/[shareToken]/*)가 효자고 main과 동등.
 - 게시 검증 완료: 의정부여고 게시본 `/s/cYrKU6tM1r2EYzxia3ubO_9T7YQkXF13`
@@ -60,6 +143,27 @@ _최종 갱신: 2026-06-21 (Claude Code) — **효자고 풀 포팅(12단계) + 
 - structurer(OpenAI) 일시 실패 → upload route에 **자동 재시도 3회(지수 백오프)** 적용(해결). 테스트 90개 통과.
 - /create에 '되도록 한 학년도 입학생 편제표만 올리세요(예: 2026학년도 입학생 편제표)' 권장 안내 추가.
 - 랜딩 옛 문구(2·3학년/효자고) 정리.
+
+**랜딩 재설계 + 인터랙티브 튜토리얼 완료 (2026-06-22, 워크플로 wf_c4d4de53, 커밋 9f5b0c8 — 로컬검증·미배포)**
+사용자 피드백: 랜딩이 산만하고 핵심가치 전달 약함, 후킹 문구 별로, 우측 학생 미리보기 카드 빼기, NEIS 데모식 인터랙티브 튜토리얼 추가.
+- 랜딩(`src/app/page.tsx`) 전면 재구성: 우측 '학생 공개 화면' 미리보기 카드 제거, 2컬럼→**단일 컬럼 6섹션**(브랜드바·히어로·3단계흐름·차별점띠·효익3카드·마무리CTA+푸터).
+- 후킹 헤드라인(사용자 지정 문구 "추천과 3년 로드맵을 제공합니다"): **"편제표 한 장으로, / 진로 맞춤 추천과 / 3년 로드맵을 제공합니다"**. 주 CTA 오렌지 1개('편제표 올리고 시작하기') + 보조 '사용법 둘러보기'(→/guide) 블루 링크. CTA 색 위계 일관(오렌지=주행동, 블루=링크).
+- `/guide`(`src/app/guide/page.tsx`): **교사/학생 탭**으로 두 인터랙티브 튜토리얼 호스팅(효자고 예시).
+- 튜토리얼 엔진(`src/components/tutorial/`, 데이터 주도): `TutorialPlayer`+`useTutorial`+`types.ts`, `screens/`(teacher·student 모의화면 + `_shared.hot()`), `data/`(teacher·student 스텝 스크립트). **모의 화면 위 스포트라이트 디밍 + 화살표 + 코치 패널**; 진행 점/카운터, 좌측 '이전' + 우측 forward 버튼은 **모든 단계 '다음'으로 일관**(마지막만 '처음부터'). 클릭형(interactive) 스텝은 강조 요소를 직접 클릭해도 진행(필수 아님, 힌트로 안내) — 이전엔 설명형='다음'/클릭형='건너뛰기'로 갈려 혼란스러워 통일함(커밋 a351104).
+- 교사 10스텝(랜딩→/create 업로드→진행모달→/review 검토:학년탭·과목나누기·선택군·게시→공유링크), 학생 10스텝(홈 학년·관심분야→/recommend→/roadmap 담기→공유).
+- `Button`에 `cta`(오렌지) variant 추가. `SubjectRow` set-state-in-effect는 정당 패턴이라 eslint-disable 주석.
+- 검증: `npm run build`(`/`,`/guide` 정적생성) OK · `typecheck` OK · `lint` 0 errors(기존 img/unused 경고만) · Playwright로 양 탭 인터랙션·스포트라이트·콘솔에러 0 확인.
+- 후속(커밋 a351104): 튜토리얼 진행 버튼 일관화('건너뛰기' 제거 → 모든 단계 '다음', 마지막 '처음부터'). 클릭형 요소 클릭 진행은 유지.
+- **로고/워드마크 리브랜딩(커밋 ff4e3fb)**: ① `CompassMark`(Logo.tsx) 점선 링/납작 바늘 → **가는 링 + 슬림 4방위 컴퍼스 로즈**(북침 오렌지, 나머지 currentColor) + 허브. ② 워드마크('과목나침반') 폰트 Noto → **Black Han Sans**(`--font-brand`, layout.tsx next/font 배선; BrandLogo/Footer 적용). ③ 파비콘 `app/icon.svg`도 새 컴퍼스 로즈로 통일. 사용자가 logo-lab.html 비교 후 Black Han Sans 선택(임시 lab 페이지는 삭제). build/lint OK, 콘솔 0.
+- **배포 반영 완료(2026-06-22)**: 아래 '배포 구조' 참조. 라이브 검증 OK(`/guide` 200, 새 헤드라인·Black Han Sans 반영).
+
+**[중요] generic 사이트 배포 구조 (2026-06-22 규명)**:
+- 라이브 `generic-curriculum-assistant.vercel.app` = Vercel 프로젝트 **`generic-curriculum-assistant`**(team `team_PCu4d9FAk5Vh8RkcJXQNd3tf`, projectId `prj_EeUKasJ56q8Oly5asLobBux2N5Qo`). 그동안 **git 연결 없이 `vercel --prod` CLI 수동 배포**만 해와서, GitHub push로는 안 바뀌었음.
+- GitHub 저장소(`ghga20-ui/curriculum_hyoja`)의 자동배포는 **별개 프로젝트 `hyoja-curriculum`(sejunpark 개인 계정)** 에만 걸려 있음(효자고 `app/` 빌드). 헷갈리지 말 것.
+- **`generic-app/` 코드는 `codex/generic-curriculum-assistant-clean` 브랜치에만 존재**(main·다른 codex 브랜치엔 없음).
+- 이번에 API로 세팅함: ① generic 프로젝트에 GitHub 저장소 **연결**(link), ② **Root Directory = `generic-app`**, ③ `-clean` ref로 **프로덕션 배포 1회 트리거**(라이브 반영).
+- **자동배포 완료(2026-06-22)**: 사용자가 대시보드에서 Production Branch를 **`codex/generic-curriculum-assistant-clean`** 로 변경함(공개 API로는 불가, 대시보드 전용). 빈 커밋 push로 E2E 검증 완료 — `via=git` 트리거로 production 배포 QUEUED→BUILDING→READY 확인. **이제 `-clean`에 push하면 자동으로 프로덕션 배포됨.**
+- 수동 배포가 필요하면(토큰 보유 시): generic 프로젝트는 이제 rootDirectory=generic-app이라 **CLI는 저장소 루트에서** 쓰거나, API로 `POST /v13/deployments`(gitSource ref=-clean, target=production) 트리거.
 
 **파서 마스터리스트 확충 불필요(사용자 확인)**: 한민고 2023/24 입학생 파싱 약점은 2015 개정(구 과목명) 표를 테스트에 넣어서 생긴 것. 실서비스 대상은 2022 개정이라 현 subjects.json으로 충분. kordoc 표추출 자체 개선은 외부 라이브러리라 통제 불가 → 후처리/편집UI로 커버하는 현 방침 유지.
 
