@@ -29,6 +29,7 @@ from openpyxl import load_workbook
 ROOT = Path(__file__).resolve().parent
 EXCEL_FILE = ROOT / "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm"
 SCHOOL_JSON = ROOT / "app" / "src" / "data" / "json" / "school.json"
+DETAIL_SUPPLEMENTS_JSON = ROOT / "data" / "subject-detail-supplements.json"
 OUT_SUBJECTS_DATA = ROOT / "data" / "subjects.json"
 OUT_SUBJECTS_APP = ROOT / "app" / "src" / "data" / "json" / "subjects.json"
 OUT_SCHOOL_DATA = ROOT / "data" / "school-selected-subjects.json"
@@ -588,6 +589,26 @@ def parse_professional_subjects(
     return subjects
 
 
+def apply_detail_supplements(subjects: list[dict[str, Any]]) -> list[str]:
+    """Excel 원본에 세부정보가 없는 과목(전문교과 등)에 수기 보강 데이터를 병합한다."""
+    data = load_json(DETAIL_SUPPLEMENTS_JSON)
+    supplements = {
+        canonical_name(name): fields
+        for name, fields in data.get("subjects", {}).items()
+    }
+    applied: list[str] = []
+    for subject in subjects:
+        fields = supplements.get(canonical_name(subject.get("name")))
+        if not fields:
+            continue
+        subject.update(fields)
+        applied.append(subject["name"])
+    missing = sorted(set(supplements) - {canonical_name(n) for n in applied})
+    for name in missing:
+        print(f"warning: detail supplement target not found: {name!r}")
+    return applied
+
+
 def subject_for_school_only(
     name: str,
     id_by_name: dict[str, str],
@@ -704,6 +725,8 @@ def main() -> None:
         by_name[name] = supplemental
         all_subjects.append(supplemental)
 
+    detail_supplemented = apply_detail_supplements(all_subjects)
+
     subjects_payload = {
         "metadata": {
             "generatedAt": date.today().isoformat(),
@@ -711,6 +734,8 @@ def main() -> None:
             "normalSheet": NORMAL_SHEET,
             "professionalSheet": PROFESSIONAL_SHEET,
             "professionalListFallbackSheet": LIST_SHEET,
+            "detailSupplementSource": DETAIL_SUPPLEMENTS_JSON.name,
+            "detailSupplementedSubjects": detail_supplemented,
             "normalSubjectCount": len(normal_subjects),
             "professionalSubjectCount": len(professional_subjects),
             "schoolOnlySupplementCount": len(missing_school_names),
