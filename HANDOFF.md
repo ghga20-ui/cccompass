@@ -15,6 +15,7 @@ _최종 갱신: 2026-07-03 (Claude Code) — **전문교과 professionalArea 계
 - 재생성: `data/subjects.json`·`app/src/data/json/subjects.json`·`school-selected-subjects.json` 2종. diff는 `professionalArea`/`keyContents`/`relatedDepartments`/fallback `description`/`generatedAt`만 변경(필드 단위 diff 집계로 확인). 학교 편성 과목 중 관광 일본어·중국어(미용·관광·레저), 식품과 영양(음식조리), 프로그래밍(정보·통신), 현대 세계의 변화(국제계열) 등 8과목 교정됨.
 - 검증: 기대 매핑 39건 검증 스크립트 수정 전 FAIL(56건 실패) → 수정 후 PASS. tsc는 기존 `exhibition-subjects.test.ts` implicit-any 1건만(무관). `tests/roadmap-selection-state.test.mjs` 3/3 통과. **주의: 이 체크아웃 app에는 vitest 미설치**(HANDOFF의 88개 테스트는 clean 브랜치 기준) — package.json에 test 스크립트 없음.
 - 참고: 원본 명칭 '내동 공조 일반'(냉동 오타)·반각 가운뎃점(･) 표기는 학교 데이터 이름 매칭 보호를 위해 의도적으로 보존.
+- **프로덕션 반영(중요)**: 이 브랜치(docs) 커밋 0a89b97만으로는 배포 안 됨 — **실서비스는 `codex/generic-curriculum-assistant-clean` 브랜치의 `generic-app/`**(워크트리 `~/.config/superpowers/worktrees/project2_curriculum/generic-curriculum-assistant-impl`). 해당 브랜치에 교정 subjects.json+파서 커밋 323fdd9 푸시 → Vercel prod 배포 완료. 라이브(cccompass.xyz 공유 링크)에서 '프로그래밍'=정보·통신 표시 확인함. 공유 뷰 과목 상세는 Supabase가 아니라 앱 정적 subjects.json(createSubjectCatalog)에서 옴.
 
 **PDF 업로드 3쪽 제한 (2026-06-26, 커밋 d87fad9 / 배포됨)**
 - 배경: 로그 확인 결과 유저들이 50쪽짜리 교육과정 도움자료집·총론(2022 개정 총론 등)을 통째로 업로드 → 입력 토큰·비용·지연 폭증, 정확도 저하. 편제표는 많아야 3쪽이고, **교육과정부 교사는 순수 편제표 파일을 따로 보유**(사용자 확인)하므로 친절한 우회 없이 하드 차단이 맞다는 결론.
