@@ -13,7 +13,8 @@ _최종 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대
 - `career-mapping.ts` 추천 보강 단계를 새 함수로 교체 — **핵심과목 명시 지정만 집계(coreOnly+expandAreas:false)**해 보수적으로. 임계값 3개교 유지.
 - 기존 파서 중복 교정: `parse_all.py`에 동일 대학 중복 행 병합(base name 기준, requiredSubjects union) + summary 배열 dedup 추가. 컴퓨터공학 35→30개교, 미적분Ⅱ 카운트 30→27. **주의: parse_all.py 실행 시 school.json도 재생성되는데 커밋본과 달라져서 checkout으로 되돌림** — school.json 재생성 전 원본 엑셀 상태 확인 필요.
 - 출처 표기: Footer에 "대입 반영과목 · 한국대학교육협의회 「2028학년도 권역별 대학별 권장과목」(2026.2.) — 필수 이수 기준이 아닌 참고자료" 추가.
-- 검증: next build 통과(기존 exhibition-subjects.test.ts implicit-any 1건만, 무관). **프로덕션 반영은 별도**: clean 브랜치 `generic-app/`에 포팅해야 실배포됨(미진행).
+- 검증: next build 통과(기존 exhibition-subjects.test.ts implicit-any 1건만, 무관).
+- **배포 (2026-07-06)**: ① 이 브랜치 커밋 e187461 푸시(효자고 버전) ② clean 브랜치에 포팅 커밋 b53ec66 푸시(커리컴퍼스 prod, generic-app 빌드 통과 확인 후). generic-app도 동일 스택(career-mapping 보강+university-requirements)이라 같은 방식 적용, Footer 출처 표기는 커리컴퍼스 푸터 형식에 맞춰 추가.
 - 다음 후보: ① 합의도 뱃지 UI(핵심 N개교/권장 M개교) ② 로드맵 커버리지 점수 ③ 목표 대학 오버레이 — 데이터 기반은 이번에 마련됨.
 
 _이전 갱신: 2026-07-03 (Claude Code) — **전문교과 professionalArea 계열 오류 전면 교정(파서 수정+재생성).** 이전: PDF 업로드 3쪽 제한(편제표만 받기) 구현·검증 완료, push→prod 배포(커밋 d87fad9·f4bed10). 이전: 편제표 수정 리디자인+검수, 브랜드 커리컴퍼스, 전시관→과목, 집중이수 자동분리·선택군 이동, 문의(mailto)·학교명 강조/정규화·로드맵 배경, 학생 홈 생동감 리디자인. push→prod 배포(…c07f48e·0eae144·7a75dc0)._
