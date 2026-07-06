@@ -4,7 +4,19 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
-_최종 갱신: 2026-07-03 (Claude Code) — **전문교과 professionalArea 계열 오류 전면 교정(파서 수정+재생성).** 이전: PDF 업로드 3쪽 제한(편제표만 받기) 구현·검증 완료, push→prod 배포(커밋 d87fad9·f4bed10). 이전: 편제표 수정 리디자인+검수, 브랜드 커리컴퍼스, 전시관→과목, 집중이수 자동분리·선택군 이동, 문의(mailto)·학교명 강조/정규화·로드맵 배경, 학생 홈 생동감 리디자인. push→prod 배포(…c07f48e·0eae144·7a75dc0)._
+_최종 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
+
+**대입 반영과목 대교협 확장판 도입 (2026-07-06)**
+- 배경: 기존 `university-requirements.json`의 원본("2028학년도 계열별 대표 모집단위별 반영과목.xlsx", 42개교×16개 대표 모집단위)의 출처를 워크플로 리서치로 추적 → **대교협 대입상담센터 공식 자료**(2026-02-12 어디가 탑재본의 직전판)로 확인. 8일 뒤 확장 개정판 **「2028학년도 권역별 대학별 권장과목」(2026-02-20, 47개교·1,358개 모집단위, 핵심/권장 2단 구분)** 존재 확인 → 네이버 블로그 재게시본에서 원본 xlsx 확보(`260220-2028학년도 권역별 대학별 권장과목.xlsx`, 리포 루트 — `.gitignore`의 `*.xlsx` 규칙으로 **커밋엔 미포함**, 로컬에만 존재).
+- 신규 파서 `parse_kwonjang_2028.py` → `data/university-recommendations.json` + app 복사본. 셀 서식이 대학별 제각각(중첩 괄호·줄바꿈·서술형·오탈자)이라 **subjects.json 과목명 사전 최장일치 스캔** 방식. 우산 용어(수학·과학 등)는 `areas`로 분리, 서술형("적성 고려 자율")은 `isFlexible` 플래그. 오탈자 별칭 처리(물리과 에너지→역학과 에너지, 사화와 문화→사회와 문화 등). 잔여 미매칭은 서술형 조각뿐.
+- `app/src/data/university-recommendations.ts` 신설: 관심태그→모집단위 키워드 매칭(`tagToUnitKeywords` + crosstalk 차단 `tagToUnitExcludes` — 예: 산림경영학과가 business에 잡히던 문제), `getSubjectConsensusByInterests(interests, {coreOnly, expandAreas})` 대학 중복 제거 합의도 카운트, `getEntriesByUniversity`(향후 목표 대학 오버레이용).
+- `career-mapping.ts` 추천 보강 단계를 새 함수로 교체 — **핵심과목 명시 지정만 집계(coreOnly+expandAreas:false)**해 보수적으로. 임계값 3개교 유지.
+- 기존 파서 중복 교정: `parse_all.py`에 동일 대학 중복 행 병합(base name 기준, requiredSubjects union) + summary 배열 dedup 추가. 컴퓨터공학 35→30개교, 미적분Ⅱ 카운트 30→27. **주의: parse_all.py 실행 시 school.json도 재생성되는데 커밋본과 달라져서 checkout으로 되돌림** — school.json 재생성 전 원본 엑셀 상태 확인 필요.
+- 출처 표기: Footer에 "대입 반영과목 · 한국대학교육협의회 「2028학년도 권역별 대학별 권장과목」(2026.2.) — 필수 이수 기준이 아닌 참고자료" 추가.
+- 검증: next build 통과(기존 exhibition-subjects.test.ts implicit-any 1건만, 무관). **프로덕션 반영은 별도**: clean 브랜치 `generic-app/`에 포팅해야 실배포됨(미진행).
+- 다음 후보: ① 합의도 뱃지 UI(핵심 N개교/권장 M개교) ② 로드맵 커버리지 점수 ③ 목표 대학 오버레이 — 데이터 기반은 이번에 마련됨.
+
+_이전 갱신: 2026-07-03 (Claude Code) — **전문교과 professionalArea 계열 오류 전면 교정(파서 수정+재생성).** 이전: PDF 업로드 3쪽 제한(편제표만 받기) 구현·검증 완료, push→prod 배포(커밋 d87fad9·f4bed10). 이전: 편제표 수정 리디자인+검수, 브랜드 커리컴퍼스, 전시관→과목, 집중이수 자동분리·선택군 이동, 문의(mailto)·학교명 강조/정규화·로드맵 배경, 학생 홈 생동감 리디자인. push→prod 배포(…c07f48e·0eae144·7a75dc0)._
 
 **전문교과 professionalArea 계열 오류 교정 (2026-07-03, 커밋·푸시됨)**
 - 발견: 전문교과 263과목 중 다수의 `professionalArea`(계열)가 엉터리 — 108과목이 전부 '농림·수산', '심화 수학Ⅱ'가 예술계열 등. 파생 필드 `keyContents`·`relatedDepartments`와 fallback description에도 동일 오류 전파.
