@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="mt-8 border-t border-border px-5 pb-28 pt-6">
@@ -10,6 +12,11 @@ export default function Footer() {
         </p>
         <p>
           <span className="font-medium text-foreground/80">대입 반영과목</span> · 한국대학교육협의회 「2028학년도 권역별 대학별 권장과목」(2026.2.) — 필수 이수 기준이 아닌 참고자료
+        </p>
+        <p>
+          <Link href="/faq" className="underline underline-offset-2 hover:text-foreground/70">
+            자주 묻는 질문 · 자료 출처 안내
+          </Link>
         </p>
       </div>
     </footer>
