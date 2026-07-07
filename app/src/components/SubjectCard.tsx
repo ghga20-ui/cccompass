@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import type { Subject } from "@/data/subjects";
 import { getAssessmentBadge } from "@/data/assessment";
 import { buildSubjectDetailHref } from "@/lib/subject-navigation";
+import type { ConsensusBadge } from "@/data/university-recommendations";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 interface SubjectCardProps {
@@ -18,6 +19,7 @@ interface SubjectCardProps {
   suneung?: boolean;
   semesters?: string[]; // e.g. ["2-1", "3-2"]
   detailReturnPath?: string;
+  consensus?: ConsensusBadge;
 }
 
 const categoryColors: Record<string, string> = {
@@ -42,6 +44,7 @@ export default function SubjectCard({
   suneung,
   semesters,
   detailReturnPath,
+  consensus,
 }: SubjectCardProps) {
   const showAvailability = isAvailable !== undefined;
   const unavailable = showAvailability && !isAvailable;
@@ -128,6 +131,14 @@ export default function SubjectCard({
                   </span>
                 )}
               </div>
+
+              {consensus && (consensus.core > 0 || consensus.recommended > 0) && (
+                <p className="mt-1 text-[11px] font-medium text-[var(--cta)]">
+                  {consensus.core > 0 && `핵심과목 지정 ${consensus.core}개교`}
+                  {consensus.core > 0 && consensus.recommended > 0 && " · "}
+                  {consensus.recommended > 0 && `권장 ${consensus.recommended}개교`}
+                </p>
+              )}
 
               {!compact && (
                 <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground leading-relaxed">

@@ -15,6 +15,8 @@ import { getSubjectByName, type Subject } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
 import { getDepartmentRecommendation } from "@/data/search-index";
+import { getConsensusBadges, type ConsensusBadge } from "@/data/university-recommendations";
+import { normalizeSubjectName } from "@/lib/consensus";
 
 // ========== 권장 역량 접이식 컴포넌트 ==========
 function CompetencyAccordion({ items }: { items: string[] }) {
@@ -402,6 +404,14 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   // 추천에서 제외할 과목 (지정 + 이미 지난 학년)
   const excludedNames = useMemo(() => buildExcludedNames(cohort), [cohort]);
 
+  // 과목명 정규화 키 → 뱃지 (학교 과목명의 로마숫자 변형 흡수)
+  const consensusBadges = useMemo(() => {
+    const raw = getConsensusBadges(interests);
+    const normalized = new Map<string, ConsensusBadge>();
+    raw.forEach((badge, name) => normalized.set(normalizeSubjectName(name), badge));
+    return normalized;
+  }, [interests]);
+
   // 학기별로 그룹핑 + 미개설 분리
   const { bySemester, unavailable, semesterOrder } = useMemo(() => {
     const allItems: SubjectWithMeta[] = [];
@@ -540,6 +550,9 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
           <p className="text-sm text-foreground">
             우리 학교에서 수강 가능한 추천 과목 <span className="font-bold text-[var(--primary)]">{availableCount}개</span>
           </p>
+          <p className="mt-1 text-[10px] text-muted-foreground">
+            개교 수는 대교협 「2028학년도 권역별 대학별 권장과목」 중 선택한 계열 모집단위 기준
+          </p>
         </div>
 
         {/* 학기별 섹션 */}
@@ -579,6 +592,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       suneung={item.suneung}
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
+                      consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                     />
                   ))}
                 </div>
@@ -615,6 +629,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                     subject={item.subject}
                     suneung={item.suneung}
                     detailReturnPath={detailReturnPath}
+                    consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                   />
                 ))}
               </div>
