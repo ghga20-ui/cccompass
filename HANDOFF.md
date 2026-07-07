@@ -12,8 +12,8 @@ _최종 갱신: 2026-07-07 (Claude Code) — **합의도 뱃지 + 로드맵 커�
 - `getConsensusBadges(interests)` 래퍼(`university-recommendations.ts`) → SubjectCard `consensus` prop(optional) → InterestRecommendContent 두 섹션에서 정규화 키로 lookup. **DeptRecommendContent는 미적용(관심계열 매핑 없음).** Summary 카드에 대교협 출처 각주.
 - 로드맵: `CoverageGauge.tsx` + sticky 학점 바 내부 게이지. 분자=designated 자동+selections, 게이지 숨김 조건(관심계열 없음/분모 0) 적용.
 - 검증: lint 0에러·build 통과·테스트 9건 pass. **주의: `node --test tests/`는 Node 24에서 디렉터리 인자 오해석 — `node --test tests/*.mjs`로 실행할 것.**
-- 이월된 Minor(최종 리뷰에서 판단): ① 정렬 desc 미실증 테스트 ② Math.round 경로 미검증 ③ 정규화 키 충돌 시 덮어쓰기 ④ selections ↔결합 옵션 미확장(현 데이터 무해)
-- 커밋: 3c4c4b3(로직)·34a83e1(래퍼)·fbf09c8(뱃지)·f1b66be(게이지). generic-app 포팅은 진행 중.
+- 최종 전체 브랜치 리뷰 통과(머지 가능). **백로그 4건**(머지 비차단, 최종 리뷰 처분): ① consensus.test.mjs 정렬 desc 실증 테스트 추가(2원소 케이스) ② Math.round 비정수 비율 테스트 ③ 정규화 키 충돌 시 뱃지 max 병합(현 데이터 충돌 없음) ④ **roadmap taken에 ↔결합 확장 미적용 — school.json 선택군에 STEM ↔조합이 생기면 커버리지 과소집계 회귀. `getExpandedSubjectNames` 적용으로 해소** (회귀 트리거 명확).
+- 커밋: 메인 3c4c4b3·34a83e1·fbf09c8·f1b66be(+HANDOFF 68a2c88, 푸시됨) / clean 브랜치 포팅 d2099f9+각주픽스 9dac1bf(2회 리뷰 통과, 푸시됨). 스펙 각주는 두 버전 모두 InterestRecommendContent summary에 존재.
 
 _이전 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
 
