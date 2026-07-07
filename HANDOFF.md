@@ -4,6 +4,13 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
+**추천 근거 설명 + FAQ 페이지 (2026-07-08, 서브에이전트 sonnet 4태스크)**
+- 스펙 `docs/superpowers/specs/2026-07-08-faq-source-reliability-design.md` / 플랜 `.../plans/2026-07-08-faq-source-reliability.md`.
+- 신규 `/faq` 페이지(효자고 Q1~Q6, 커리컴퍼스 Q1변형+Q7): 자료 출처·신뢰도 문의 대응. 아코디언, 페이지 내 배열 상수.
+- 추천 화면 인라인 접이식 `RecommendBasisNote`(Dept/Interest 양쪽): "이 추천은 어떤 근거로?" → 3문단 + /faq 링크. 기존 CompetencyAccordion 패턴 재사용.
+- 푸터에 /faq 링크(양쪽 앱). 최종 리뷰 머지 가능(카피 사실 정확성·링크 일관성 확인, Minor만).
+- 커밋: 효자고 5aa8370(FAQ)·e64abd6(인라인) / 커리컴퍼스 clean 3e796dc. **배포**: 효자고 codex→main 머지, 커리컴퍼스 clean 푸시(아래 진행).
+
 **계열-과목 매핑 교차 검증 (2026-07-08, analyze_mapping_vs_kcue.py)**
 - 목적: career-mapping.json(효자고 안내서 기반)의 추천이 대교협 2028 권장과목과 정합하는지 21개 관심태그 전수 대조.
 - **결론: 매핑 수정 불필요 — 정합 확인.**
