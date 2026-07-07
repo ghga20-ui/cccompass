@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Career Signal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 720pt;
+      height: 405pt;
+      overflow: hidden;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+      background: #10251f;
+      color: #f4f0e7;
+    }
+    .slide {
+      width: 720pt;
+      height: 405pt;
+      padding: 38pt 46pt;
+      position: relative;
+    }
+    .signal {
+      position: absolute;
+      right: 34pt;
+      top: 26pt;
+      width: 240pt;
+      height: 240pt;
+      border-radius: 50%;
+      border: 28pt solid #caff72;
+      opacity: 0.92;
+    }
+    .label {
+      font-size: 12pt;
+      font-weight: 900;
+      color: #caff72;
+      margin-bottom: 18pt;
+    }
+    h1 {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      font-size: 58pt;
+      line-height: 1.02;
+      letter-spacing: -1.2pt;
+      font-weight: 900;
+      max-width: 440pt;
+    }
+    .question {
+      position: relative;
+      z-index: 2;
+      margin: 20pt 0 0;
+      width: 420pt;
+      font-size: 17pt;
+      line-height: 1.42;
+      font-weight: 700;
+      color: #d9dfd5;
+    }
+    .path {
+      position: absolute;
+      left: 46pt;
+      right: 46pt;
+      bottom: 44pt;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12pt;
+    }
+    .step {
+      min-height: 96pt;
+      padding: 16pt;
+      background: rgba(255, 255, 255, 0.08);
+      border-top: 4pt solid #caff72;
+    }
+    .step small {
+      display: block;
+      font-size: 9pt;
+      font-weight: 800;
+      color: #9bbf72;
+      margin-bottom: 8pt;
+    }
+    .step strong {
+      display: block;
+      font-size: 18pt;
+      line-height: 1.18;
+      font-weight: 900;
+    }
+    .career {
+      position: absolute;
+      right: 48pt;
+      bottom: 172pt;
+      width: 180pt;
+      font-size: 12pt;
+      line-height: 1.5;
+      font-weight: 800;
+      color: #caff72;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <section class="slide">
+    <div class="signal" aria-hidden="true"></div>
+    <p class="label">OPTION 03 · CAREER SIGNAL</p>
+    <h1>경제는<br />선택을 보는<br />레이더</h1>
+    <p class="question">돈의 흐름을 외우는 과목이 아니라, 사람들이 왜 그렇게 선택하는지 읽는 과목.</p>
+    <p class="career">경제학과 · 경영학과<br />국제통상 · 금융 · 회계</p>
+    <div class="path">
+      <div class="step"><small>01</small><strong>합리적<br />선택</strong></div>
+      <div class="step"><small>02</small><strong>수요와<br />공급</strong></div>
+      <div class="step"><small>03</small><strong>환율과<br />국제 거래</strong></div>
+    </div>
+  </section>
+</body>
+</html>
+

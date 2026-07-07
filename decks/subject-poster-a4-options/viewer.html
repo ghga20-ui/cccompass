@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A4 선택과목 포스터 방향 비교</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #151515;
+      color: #f4f4f4;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: rgba(21, 21, 21, 0.96);
+      border-bottom: 1px solid #333333;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 950;
+    }
+    p {
+      margin: 4px 0 0;
+      color: #aaaaaa;
+      font-size: 13px;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    button {
+      border: 1px solid #555555;
+      background: transparent;
+      color: #f4f4f4;
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    button.active {
+      background: #f4f4f4;
+      color: #151515;
+    }
+    .stage {
+      width: min(92vw, 794px);
+      margin: 28px auto 52px;
+    }
+    iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 794 / 1123;
+      border: 0;
+      background: #ffffff;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>A4 세로 포스터 디자인 방향 비교</h1>
+      <p>경제 과목 하나로 종이 포스터 비율을 먼저 맞췄습니다.</p>
+    </div>
+    <nav class="nav">
+      <button class="active" data-src="option-01.html">01 Type</button>
+      <button data-src="option-02.html">02 Notice</button>
+      <button data-src="option-03.html">03 Signal</button>
+      <button data-src="option-04.html">04 Cutout</button>
+    </nav>
+  </header>
+  <main class="stage">
+    <iframe id="frame" src="./option-01.html" title="A4 poster option"></iframe>
+  </main>
+  <script>
+    const frame = document.getElementById("frame");
+    const buttons = Array.from(document.querySelectorAll("button[data-src]"));
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        buttons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        frame.src = button.dataset.src;
+      });
+    });
+  </script>
+</body>
+</html>

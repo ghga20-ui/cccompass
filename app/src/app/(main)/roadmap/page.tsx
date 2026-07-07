@@ -11,6 +11,7 @@ import { useCohort } from "@/contexts/CohortContext";
 import {
   getDesignatedSubjects,
   getSelectionGroups,
+  getAllAvailableSubjectNames,
 } from "@/data/school";
 import {
   interestTags,
@@ -19,6 +20,9 @@ import {
 import { getDepartmentRecommendation } from "@/data/search-index";
 import { getInitialRoadmapSelections } from "@/lib/roadmap-selection-state";
 import SelectionGroup from "@/components/SelectionGroup";
+import CoverageGauge from "@/components/CoverageGauge";
+import { computeCoverage } from "@/lib/consensus";
+import { getConsensusBadges } from "@/data/university-recommendations";
 
 // ========== Types ==========
 
@@ -187,6 +191,34 @@ function RoadmapContent() {
       decodeSelections,
     });
   });
+
+  // 대학 핵심과목 커버리지 (관심계열 진입일 때만)
+  const coverage = useMemo(() => {
+    if (interests.length === 0) return null;
+
+    const coreCounts = new Map<string, number>();
+    getConsensusBadges(interests).forEach((badge, name) => {
+      if (badge.core > 0) coreCounts.set(name, badge.core);
+    });
+
+    const offered = new Set<string>();
+    const taken = new Set<string>();
+    semesterConfigs.forEach(({ grade, semester }) => {
+      getAllAvailableSubjectNames(cohort, grade, semester).forEach((n) =>
+        offered.add(n)
+      );
+      // 학교지정 과목은 자동 이수
+      getDesignatedSubjects(cohort, grade, semester).forEach((d) =>
+        taken.add(d.subject)
+      );
+    });
+    Object.values(selections).forEach((names) =>
+      names.forEach((n) => taken.add(n))
+    );
+
+    return computeCoverage(coreCounts, offered, taken, 3);
+  }, [interests, semesterConfigs, cohort, selections]);
+
   const detailReturnPath = useMemo(() => {
     const params = new URLSearchParams();
     if (deptName) params.set("dept", deptName);
@@ -647,6 +679,7 @@ function RoadmapContent() {
             </div>
           )}
         </div>
+        {coverage && <CoverageGauge result={coverage} />}
       </div>
 
       {/* 메인 콘텐츠 (캡처 제외) */}

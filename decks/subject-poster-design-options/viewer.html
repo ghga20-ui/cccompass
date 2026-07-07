@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>선택과목 포스터 디자인 방향 비교</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #161616;
+      color: #f4f4f4;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      padding: 22px 30px 14px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+    p {
+      margin: 6px 0 0;
+      color: #b8b8b8;
+      font-size: 14px;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    button {
+      border: 1px solid #555;
+      background: transparent;
+      color: #f4f4f4;
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.active {
+      background: #f4f4f4;
+      color: #161616;
+    }
+    .stage {
+      width: min(96vw, 1180px);
+      margin: 0 auto;
+      padding: 10px 0 28px;
+    }
+    iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      background: #ffffff;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    }
+    .hint {
+      width: min(96vw, 1180px);
+      margin: 0 auto 22px;
+      color: #8d8d8d;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>선택과목 포스터 디자인 방향 비교</h1>
+      <p>같은 과목(경제)을 4가지 시각 언어로 테스트합니다.</p>
+    </div>
+    <nav class="nav">
+      <button class="active" data-slide="slide-01.html">01 Editorial</button>
+      <button data-slide="slide-02.html">02 Campus</button>
+      <button data-slide="slide-03.html">03 Career</button>
+      <button data-slide="slide-04.html">04 Bold</button>
+    </nav>
+  </header>
+  <div class="hint">버튼으로 넘겨보면서 “전체 과목으로 확장해도 괜찮은 방향”을 골라주세요.</div>
+  <main class="stage">
+    <iframe id="frame" src="./slide-01.html" title="poster design option"></iframe>
+  </main>
+  <script>
+    const frame = document.getElementById("frame");
+    const buttons = Array.from(document.querySelectorAll("button[data-slide]"));
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        buttons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        frame.src = button.dataset.slide;
+      });
+    });
+  </script>
+</body>
+</html>

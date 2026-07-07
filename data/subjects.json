@@ -1,10 +1,20 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-18",
+    "generatedAt": "2026-07-03",
     "source": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
     "normalSheet": "보통 교과 데이터",
     "professionalSheet": "전문 교과 데이터(목록만 살려)",
     "professionalListFallbackSheet": "목록 데이터",
+    "detailSupplementSource": "subject-detail-supplements.json",
+    "detailSupplementedSubjects": [
+      "정보과학",
+      "합창·합주",
+      "드로잉",
+      "관광 일본어",
+      "관광 중국어",
+      "식품과 영양",
+      "프로그래밍"
+    ],
     "normalSubjectCount": 141,
     "professionalSubjectCount": 263,
     "schoolOnlySupplementCount": 2,
@@ -16313,14 +16323,41 @@
       "area": "전문교과",
       "professionalArea": "과학계열",
       "credits": "4",
-      "description": "컴퓨터과학의 기본 개념과 원리 및 기술을 바탕으로 다양한 분야의 문제를 창의적이고 효율적으로 해결하는 역량을 기르기 위한 과목이다.",
+      "description": "정보과학은 컴퓨터과학과 소프트웨어 공학에 대한 깊은 이해를 바탕으로 디지털 사회의 복잡한 문제를 분석하고 해결하는 능력을 키우며, 이를 통해 프로그래밍, 컴퓨팅 시스템의 활용, 문제 해결 역량 등을 개발하는 과학 계열의 진로 선택 과목이다.",
       "keywords": [],
       "keyContents": [
-        "과학계열"
+        "함수 정의와 호출",
+        "재귀관계와 재귀함수",
+        "스택과 큐",
+        "트리와 그래프",
+        "탐색 기반 알고리즘",
+        "관계 기반 알고리즘",
+        "알고리즘 복잡도",
+        "문제 발견과 프로젝트 설계",
+        "오픈소스와 공유",
+        "테스트와 디버깅"
       ],
-      "relatedCareers": [],
+      "relatedCareers": [
+        "인공지능 전문가",
+        "데이터 과학자",
+        "시스템 개발 전문가",
+        "컴퓨터 프로그래머",
+        "정보보호 전문가",
+        "게임 프로그래머",
+        "컴퓨터공학 기술자",
+        "통신망 설계 및 운영 기술자",
+        "반도체 설계 기술자"
+      ],
       "relatedDepartments": [
-        "과학계열"
+        "컴퓨터공학과",
+        "컴퓨터과학과",
+        "소프트웨어학과",
+        "인공지능학과",
+        "데이터과학과",
+        "전기·정보학과",
+        "빅데이터분석과",
+        "정보보호학과",
+        "뇌인지과학융합과"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -16438,14 +16475,48 @@
       "area": "전문교과",
       "professionalArea": "예술계열",
       "credits": "3~5",
-      "description": "여러 사람이 함께 노래함으로써 소리의 어울림과 균형을 경험하고 음악의 즐거움과 가치를 이해하여 창의적으로 표현할 수 있는 능력을 기르는 과목이다.",
+      "description": "합창·합주는 음악의 본질과 가치를 심도 있게 경험함으로써, 미적 감수성, 음악적 표현력, 협동성을 계발 및 활용하여 소리의 어울림과 관련 기능을 익히고, 조화와 균형적 측면에서 음악을 함께 연주할 수 있는 능력을 신장하기 위한 예술 계열의 진로 선택 과목이다.",
       "keywords": [],
       "keyContents": [
-        "예술계열"
+        "합창·합주의 역사, 양식, 연주 형태, 편성",
+        "합창·합주 악곡의 음악 요소, 원리, 구성의 특징과 해석",
+        "합창 발성법이나 합주법, 기보법, 표현 의도, 균형과 조화, 완성도",
+        "다양한 공동체, 사회, 문화 속 합창·합주 활동 양상과 실제",
+        "다양한 소리, 음악적·음향적 아이디어, 매체, 타 예술 등의 상호작용과 활용",
+        "합창·합주의 의미, 역할, 사회적 기능과 공헌"
       ],
-      "relatedCareers": [],
+      "relatedCareers": [
+        "음악교사",
+        "전공실기 강사",
+        "방과 후 강사",
+        "연주자",
+        "음악치료사",
+        "실기지도사",
+        "문화예술 교육사",
+        "악기 수리가",
+        "방송 디지털 음악 전문가",
+        "멀티미디어콘텐츠 제작 전문가",
+        "합창단원",
+        "오케스트라단원",
+        "싱어송라이터",
+        "음악 평론가",
+        "음악 PD",
+        "공연기획자",
+        "예술 감독"
+      ],
       "relatedDepartments": [
-        "예술계열"
+        "피아노과",
+        "성악과",
+        "작곡과",
+        "관현악과",
+        "국악과",
+        "음악교육과",
+        "실용음악과",
+        "종교음악과",
+        "반주학과",
+        "뮤지컬학과",
+        "공연제작과",
+        "음향제작과"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -16538,14 +16609,36 @@
       "area": "전문교과",
       "professionalArea": "예술계열",
       "credits": "3~5",
-      "description": "미술의 역사적 흐름과 배경 요인을 탐구하고, 미술 작품의 가치와 의미를 주체적으로 분석하는 능력을 키우는 과목이다. 다양한 문화권에서 형성되어 온 회화, 서예, 조소, 건축, 디자인, 공예 등 미술 분야 전반의 역사적 흐름과 시대별 특성, 배경 요인 등을 고찰한다.",
+      "description": "드로잉은 주로 선을 활용하여 사물의 형태나 심상의 세계 등을 표현하는 방법을 탐색하는 실기 과목이며, 조형 활동의 기본적인 기법과 표현력을 높이며 다양한 장르의 작품 제작에도 폭넓게 활용할 수 있는 예술 교과 예술 계열의 진로 선택 과목이다.",
       "keywords": [],
       "keyContents": [
-        "예술계열"
+        "드로잉의 의미와 특성",
+        "재료와 용구의 특징",
+        "목적과 형식에 따른 드로잉의 종류",
+        "드로잉의 표현 기법",
+        "다양한 드로잉 재료",
+        "주제 표현의 방법",
+        "표현의 확장",
+        "전공 실기와 연계한 표현 방법"
       ],
-      "relatedCareers": [],
+      "relatedCareers": [
+        "애니메이션 디자이너",
+        "일러스트레이터",
+        "게임그래픽 디자이너",
+        "만화가",
+        "영상그래픽 디자이너"
+      ],
       "relatedDepartments": [
-        "예술계열"
+        "애니메이션학과",
+        "회화과",
+        "서양화과",
+        "한국화과",
+        "디지털디자인학과",
+        "커뮤니케이션디자인학과",
+        "영상학과",
+        "게임그래픽학과",
+        "디자인학부",
+        "문화콘텐츠학과"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18061,16 +18154,16 @@
       "name": "국제 정치",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18086,16 +18179,16 @@
       "name": "국제 경제",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18111,16 +18204,16 @@
       "name": "국제법",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18136,16 +18229,16 @@
       "name": "지역 이해",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18161,16 +18254,16 @@
       "name": "한국 사회의 이해",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18186,16 +18279,16 @@
       "name": "비교 문화",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18211,16 +18304,16 @@
       "name": "세계 문제와 미래 사회",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18236,16 +18329,16 @@
       "name": "국제 관계와 국제기구",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18261,16 +18354,16 @@
       "name": "현대 세계의 변화",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18286,16 +18379,16 @@
       "name": "사회 탐구 방법",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18311,16 +18404,16 @@
       "name": "사회과제 연구",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "외국어계열",
+      "professionalArea": "국제계열",
       "credits": "3~5",
-      "description": "외국어계열 분야의 전문 교과 과목입니다.",
+      "description": "국제계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "외국어계열"
+        "국제계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "외국어계열"
+        "국제계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -18486,6 +18579,81 @@
       "name": "심화 수학Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
+      "professionalArea": "과학계열",
+      "credits": "3~5",
+      "description": "과학계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "과학계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "과학계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 12
+      }
+    },
+    {
+      "id": "subject_1de8238da2",
+      "name": "고급 수학Ⅰ",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "과학계열",
+      "credits": "3~5",
+      "description": "과학계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "과학계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "과학계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 13
+      }
+    },
+    {
+      "id": "subject_121f9d8490",
+      "name": "고급 수학Ⅱ",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "과학계열",
+      "credits": "3~5",
+      "description": "과학계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "과학계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "과학계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 14
+      }
+    },
+    {
+      "id": "subject_93b89763c3",
+      "name": "합창",
+      "category": "진로선택",
+      "area": "전문교과",
       "professionalArea": "예술계열",
       "credits": "3~5",
       "description": "예술계열 분야의 전문 교과 과목입니다.",
@@ -18503,12 +18671,337 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 12
+        "row": 31
       }
     },
     {
-      "id": "subject_1de8238da2",
-      "name": "고급 수학Ⅰ",
+      "id": "subject_3aaaeb592f",
+      "name": "합주",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 32
+      }
+    },
+    {
+      "id": "subject_a6a76fc6c6",
+      "name": "공연 실습",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 33
+      }
+    },
+    {
+      "id": "subject_540c748fe0",
+      "name": "평면 조형",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 37
+      }
+    },
+    {
+      "id": "subject_c5e378fb95",
+      "name": "입체 조형",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 38
+      }
+    },
+    {
+      "id": "subject_487232a27b",
+      "name": "매체 미술",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 39
+      }
+    },
+    {
+      "id": "subject_e04349b968",
+      "name": "문예 창작 입문",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 41
+      }
+    },
+    {
+      "id": "subject_552180b76d",
+      "name": "문학 개론",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 42
+      }
+    },
+    {
+      "id": "subject_7d1d01a52e",
+      "name": "고전문학 감상",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 45
+      }
+    },
+    {
+      "id": "subject_82c94ef3e8",
+      "name": "현대문학 감상",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 46
+      }
+    },
+    {
+      "id": "subject_caad69b738",
+      "name": "연극의 이해",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 51
+      }
+    },
+    {
+      "id": "subject_4ca5847ff3",
+      "name": "시나리오",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 56
+      }
+    },
+    {
+      "id": "subject_1c122e2319",
+      "name": "기초 촬영",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 60
+      }
+    },
+    {
+      "id": "subject_5cccdfc470",
+      "name": "사진 영상 편집",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "예술계열",
+      "credits": "3~5",
+      "description": "예술계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "예술계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "예술계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 63
+      }
+    },
+    {
+      "id": "subject_0f77c0026e",
+      "name": "체육과 진로 탐구",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "체육계열",
@@ -18528,12 +19021,262 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 13
+        "row": 66
       }
     },
     {
-      "id": "subject_121f9d8490",
-      "name": "고급 수학Ⅱ",
+      "id": "subject_3a20b69a5d",
+      "name": "체육 지도법",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 67
+      }
+    },
+    {
+      "id": "subject_11e58410d0",
+      "name": "육상 운동",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 68
+      }
+    },
+    {
+      "id": "subject_1d6c374e73",
+      "name": "체조 운동",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 69
+      }
+    },
+    {
+      "id": "subject_a75dbde6fc",
+      "name": "수상 운동",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 70
+      }
+    },
+    {
+      "id": "subject_0ff97509ba",
+      "name": "개인·대인 운동",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 71
+      }
+    },
+    {
+      "id": "subject_250d3454d6",
+      "name": "단체 운동",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 72
+      }
+    },
+    {
+      "id": "subject_72810fe234",
+      "name": "체육 전공 실기 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 73
+      }
+    },
+    {
+      "id": "subject_2288398440",
+      "name": "체육 전공 실기 심화",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 74
+      }
+    },
+    {
+      "id": "subject_eb9f769775",
+      "name": "체육 전공 실기 응용",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 75
+      }
+    },
+    {
+      "id": "subject_fe9596ff9b",
+      "name": "스포츠 경기 실습",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "체육계열",
+      "credits": "3~5",
+      "description": "체육계열 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "체육계열"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "체육계열"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 77
+      }
+    },
+    {
+      "id": "subject_dc38989b50",
+      "name": "심화 영어 회화 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "외국어계열",
@@ -18553,656 +19296,6 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 14
-      }
-    },
-    {
-      "id": "subject_93b89763c3",
-      "name": "합창",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 31
-      }
-    },
-    {
-      "id": "subject_3aaaeb592f",
-      "name": "합주",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 32
-      }
-    },
-    {
-      "id": "subject_a6a76fc6c6",
-      "name": "공연 실습",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 33
-      }
-    },
-    {
-      "id": "subject_540c748fe0",
-      "name": "평면 조형",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 37
-      }
-    },
-    {
-      "id": "subject_c5e378fb95",
-      "name": "입체 조형",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 38
-      }
-    },
-    {
-      "id": "subject_487232a27b",
-      "name": "매체 미술",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 39
-      }
-    },
-    {
-      "id": "subject_e04349b968",
-      "name": "문예 창작 입문",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 41
-      }
-    },
-    {
-      "id": "subject_552180b76d",
-      "name": "문학 개론",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 42
-      }
-    },
-    {
-      "id": "subject_7d1d01a52e",
-      "name": "고전문학 감상",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 45
-      }
-    },
-    {
-      "id": "subject_82c94ef3e8",
-      "name": "현대문학 감상",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 46
-      }
-    },
-    {
-      "id": "subject_caad69b738",
-      "name": "연극의 이해",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 51
-      }
-    },
-    {
-      "id": "subject_4ca5847ff3",
-      "name": "시나리오",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 56
-      }
-    },
-    {
-      "id": "subject_1c122e2319",
-      "name": "기초 촬영",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 60
-      }
-    },
-    {
-      "id": "subject_5cccdfc470",
-      "name": "사진 영상 편집",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 63
-      }
-    },
-    {
-      "id": "subject_0f77c0026e",
-      "name": "체육과 진로 탐구",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 66
-      }
-    },
-    {
-      "id": "subject_3a20b69a5d",
-      "name": "체육 지도법",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 67
-      }
-    },
-    {
-      "id": "subject_11e58410d0",
-      "name": "육상 운동",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 68
-      }
-    },
-    {
-      "id": "subject_1d6c374e73",
-      "name": "체조 운동",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 69
-      }
-    },
-    {
-      "id": "subject_a75dbde6fc",
-      "name": "수상 운동",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 70
-      }
-    },
-    {
-      "id": "subject_0ff97509ba",
-      "name": "개인·대인 운동",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 71
-      }
-    },
-    {
-      "id": "subject_250d3454d6",
-      "name": "단체 운동",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 72
-      }
-    },
-    {
-      "id": "subject_72810fe234",
-      "name": "체육 전공 실기 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 73
-      }
-    },
-    {
-      "id": "subject_2288398440",
-      "name": "체육 전공 실기 심화",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 74
-      }
-    },
-    {
-      "id": "subject_eb9f769775",
-      "name": "체육 전공 실기 응용",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 75
-      }
-    },
-    {
-      "id": "subject_fe9596ff9b",
-      "name": "스포츠 경기 실습",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 77
-      }
-    },
-    {
-      "id": "subject_dc38989b50",
-      "name": "심화 영어 회화 Ⅱ",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "국제계열",
-      "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "국제계열"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "국제계열"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
         "row": 80
       }
     },
@@ -19211,16 +19304,16 @@
       "name": "심화 영어 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19236,16 +19329,16 @@
       "name": "심화 영어 독해 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19261,16 +19354,16 @@
       "name": "심화 영어 작문 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19286,16 +19379,16 @@
       "name": "전공 기초 외국어",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19311,16 +19404,16 @@
       "name": "외국어 회화Ⅰ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19336,16 +19429,16 @@
       "name": "외국어 회화 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19361,16 +19454,16 @@
       "name": "외국어 독해와 작문Ⅰ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19386,16 +19479,16 @@
       "name": "외국어 독해와 작문 Ⅱ",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19411,16 +19504,16 @@
       "name": "외국어권 문화",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "국제계열",
+      "professionalArea": "외국어계열",
       "credits": "3~5",
-      "description": "국제계열 분야의 전문 교과 과목입니다.",
+      "description": "외국어계열 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "국제계열"
+        "외국어계열"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "국제계열"
+        "외국어계열"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -19486,6 +19579,381 @@
       "name": "기업과 경영",
       "category": "진로선택",
       "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 13
+      }
+    },
+    {
+      "id": "subject_65e2b9b610",
+      "name": "사무 관리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 14
+      }
+    },
+    {
+      "id": "subject_d33f38c8f7",
+      "name": "회계 원리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 15
+      }
+    },
+    {
+      "id": "subject_f9c566a2a0",
+      "name": "회계 정보처리 시스템",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 16
+      }
+    },
+    {
+      "id": "subject_d697cdb541",
+      "name": "기업 자원 통합 관리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 17
+      }
+    },
+    {
+      "id": "subject_8fb2c027e4",
+      "name": "세무 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 18
+      }
+    },
+    {
+      "id": "subject_f6698fe7e5",
+      "name": "유통 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 19
+      }
+    },
+    {
+      "id": "subject_c151c80cdc",
+      "name": "국제 상무",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 20
+      }
+    },
+    {
+      "id": "subject_5e801bcec6",
+      "name": "비즈니스 영어",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 21
+      }
+    },
+    {
+      "id": "subject_5ea4b8e49a",
+      "name": "금융 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 22
+      }
+    },
+    {
+      "id": "subject_a6c9de13d3",
+      "name": "보험 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 23
+      }
+    },
+    {
+      "id": "subject_a95b8f66ee",
+      "name": "마케팅과 광고",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 24
+      }
+    },
+    {
+      "id": "subject_c7e534e690",
+      "name": "창업 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 25
+      }
+    },
+    {
+      "id": "subject_8dbd8af548",
+      "name": "커뮤니케이션",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 26
+      }
+    },
+    {
+      "id": "subject_4d15bf5f73",
+      "name": "전자 상거래 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "경영·금융",
+      "credits": "3~5",
+      "description": "경영·금융 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "경영·금융"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "경영·금융"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 27
+      }
+    },
+    {
+      "id": "subject_d4c4e1d1fe",
+      "name": "인간 발달",
+      "category": "진로선택",
+      "area": "전문교과",
       "professionalArea": "보건·복지",
       "credits": "3~5",
       "description": "보건·복지 분야의 전문 교과 과목입니다.",
@@ -19503,12 +19971,337 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 13
+        "row": 28
       }
     },
     {
-      "id": "subject_65e2b9b610",
-      "name": "사무 관리",
+      "id": "subject_2c216b8b2b",
+      "name": "보육 원리와 보육 교사",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 29
+      }
+    },
+    {
+      "id": "subject_2f46f17d7a",
+      "name": "보육 과정",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 30
+      }
+    },
+    {
+      "id": "subject_a109e44751",
+      "name": "아동 생활 지도",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 31
+      }
+    },
+    {
+      "id": "subject_443ed85d95",
+      "name": "아동 복지",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 32
+      }
+    },
+    {
+      "id": "subject_9647f7dff1",
+      "name": "보육 실습",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 33
+      }
+    },
+    {
+      "id": "subject_d724b83b9d",
+      "name": "생활 서비스 산업의 이해",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 34
+      }
+    },
+    {
+      "id": "subject_f8d30fcc55",
+      "name": "복지 서비스의 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 35
+      }
+    },
+    {
+      "id": "subject_5b5ca743b3",
+      "name": "사회 복지 시설의 이해",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 36
+      }
+    },
+    {
+      "id": "subject_79914a201d",
+      "name": "공중 보건",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 37
+      }
+    },
+    {
+      "id": "subject_14b0b4b162",
+      "name": "인체 구조와 기능",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 38
+      }
+    },
+    {
+      "id": "subject_447ecfad86",
+      "name": "간호의 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 39
+      }
+    },
+    {
+      "id": "subject_a98bbf62e0",
+      "name": "기초 간호 임상 실무",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 40
+      }
+    },
+    {
+      "id": "subject_8c9172716c",
+      "name": "보건 간호",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "보건·복지",
+      "credits": "3~5",
+      "description": "보건·복지 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "보건·복지"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "보건·복지"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 41
+      }
+    },
+    {
+      "id": "subject_128c962231",
+      "name": "디자인 제도",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "디자인·문화콘텐츠",
@@ -19528,12 +20321,187 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 14
+        "row": 42
       }
     },
     {
-      "id": "subject_d33f38c8f7",
-      "name": "회계 원리",
+      "id": "subject_4ae5bbe7bf",
+      "name": "디자인 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 43
+      }
+    },
+    {
+      "id": "subject_b2c55e25d4",
+      "name": "조형",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 44
+      }
+    },
+    {
+      "id": "subject_2645202d43",
+      "name": "색채 관리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 45
+      }
+    },
+    {
+      "id": "subject_1285a76a1e",
+      "name": "컴퓨터 그래픽",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 46
+      }
+    },
+    {
+      "id": "subject_a7264ee45c",
+      "name": "미디어 콘텐츠 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 47
+      }
+    },
+    {
+      "id": "subject_c827e908ed",
+      "name": "문화 콘텐츠 산업 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 48
+      }
+    },
+    {
+      "id": "subject_305895738e",
+      "name": "영상 제작 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "디자인·문화콘텐츠",
+      "credits": "3~5",
+      "description": "디자인·문화콘텐츠 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "디자인·문화콘텐츠"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "디자인·문화콘텐츠"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 49
+      }
+    },
+    {
+      "id": "subject_c1d2982752",
+      "name": "미용의 기초",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "미용·관광·레저",
@@ -19553,12 +20521,253 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 15
+        "row": 50
       }
     },
     {
-      "id": "subject_f9c566a2a0",
-      "name": "회계 정보처리 시스템",
+      "id": "subject_83be41f417",
+      "name": "미용 안전·보건",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "미용·관광·레저"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "미용·관광·레저"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 51
+      }
+    },
+    {
+      "id": "subject_7aa1269063",
+      "name": "관광 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "미용·관광·레저"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "미용·관광·레저"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 52
+      }
+    },
+    {
+      "id": "subject_d600e7560c",
+      "name": "관광 사업",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "미용·관광·레저"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "미용·관광·레저"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 53
+      }
+    },
+    {
+      "id": "subject_9af01e1cc4",
+      "name": "관광 서비스",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "미용·관광·레저"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "미용·관광·레저"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 54
+      }
+    },
+    {
+      "id": "subject_8f11621a46",
+      "name": "관광 영어",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "미용·관광·레저 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "미용·관광·레저"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "미용·관광·레저"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 55
+      }
+    },
+    {
+      "id": "tourism_japanese",
+      "name": "관광 일본어",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "관광 분야에서 실용적으로 활용할 수 있는 일본어 의사소통 능력을 기르고, 일본의 관광 문화와 산업을 이해하는 과목이다.",
+      "keywords": [],
+      "keyContents": [
+        "관광 기초 회화",
+        "여행 서비스 상담과 예약",
+        "호텔 및 식음료 서비스 의사소통",
+        "관광 상품 설명과 판매",
+        "한국 문화와 관광지 안내"
+      ],
+      "relatedCareers": [
+        "관광통역안내사",
+        "국내여행안내사",
+        "호텔리어",
+        "항공 승무원",
+        "여행사 직원",
+        "면세점 판매원"
+      ],
+      "relatedDepartments": [
+        "일어일문학과",
+        "관광경영학과",
+        "호텔관광학과",
+        "항공서비스학과"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 56
+      }
+    },
+    {
+      "id": "tourism_chinese",
+      "name": "관광 중국어",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "미용·관광·레저",
+      "credits": "3~5",
+      "description": "관광 분야에서 실용적으로 활용할 수 있는 중국어 의사소통 능력을 기르고, 중국의 관광 문화와 산업을 이해하는 과목이다.",
+      "keywords": [],
+      "keyContents": [
+        "관광 기초 회화",
+        "여행 서비스 상담과 예약",
+        "호텔 및 식음료 서비스 의사소통",
+        "관광 상품 설명과 판매",
+        "한국 문화와 관광지 안내"
+      ],
+      "relatedCareers": [
+        "관광통역안내사",
+        "국내여행안내사",
+        "호텔리어",
+        "관광 통역사",
+        "무역 전문가",
+        "면세점 판매원"
+      ],
+      "relatedDepartments": [
+        "중어중문학과",
+        "관광경영학과",
+        "호텔관광학과",
+        "국제통상학과"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 57
+      }
+    },
+    {
+      "id": "food_and_nutrition",
+      "name": "식품과 영양",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "음식조리",
+      "credits": "3~5",
+      "description": "식품의 영양소 구성과 기능, 식생활과 건강의 관계를 탐구하고, 올바른 식생활 설계와 식품 선택 능력을 기르는 과목이다.",
+      "keywords": [],
+      "keyContents": [
+        "영양소와 식생활",
+        "생애 주기와 영양",
+        "식품의 성분과 특성",
+        "식품 가공과 저장",
+        "조리·식음료 분야 진로 탐색"
+      ],
+      "relatedCareers": [
+        "영양사",
+        "식품 연구원",
+        "식품 위생사",
+        "조리사",
+        "푸드 스타일리스트"
+      ],
+      "relatedDepartments": [
+        "식품영양학과",
+        "식품공학과",
+        "조리학과",
+        "식음료경영학과"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 58
+      }
+    },
+    {
+      "id": "subject_27f3eb56fd",
+      "name": "급식 관리",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "음식조리",
@@ -19578,12 +20787,12 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 16
+        "row": 59
       }
     },
     {
-      "id": "subject_d697cdb541",
-      "name": "기업 자원 통합 관리",
+      "id": "subject_37d7884825",
+      "name": "공업 일반",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "건설",
@@ -19603,12 +20812,212 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 17
+        "row": 60
       }
     },
     {
-      "id": "subject_8fb2c027e4",
-      "name": "세무 일반",
+      "id": "subject_27722b4e53",
+      "name": "기초 제도",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 61
+      }
+    },
+    {
+      "id": "subject_966d7c55be",
+      "name": "토목 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 62
+      }
+    },
+    {
+      "id": "subject_1fdcd22205",
+      "name": "토목 도면 해석과 제도",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 63
+      }
+    },
+    {
+      "id": "subject_0c9ec0ee6f",
+      "name": "토목 기초 실습",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 64
+      }
+    },
+    {
+      "id": "subject_48ca74b00a",
+      "name": "건축 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 65
+      }
+    },
+    {
+      "id": "subject_4cb1eb5a8d",
+      "name": "건축 도면 해석과 제도",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 66
+      }
+    },
+    {
+      "id": "subject_788163d914",
+      "name": "건축 기초 실습",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 67
+      }
+    },
+    {
+      "id": "subject_6af2cf2d72",
+      "name": "조경",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "건설",
+      "credits": "3~5",
+      "description": "건설 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "건설"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "건설"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 68
+      }
+    },
+    {
+      "id": "subject_5a6a9b88f5",
+      "name": "기계 제도",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "기계",
@@ -19628,12 +21037,287 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 18
+        "row": 69
       }
     },
     {
-      "id": "subject_f6698fe7e5",
-      "name": "유통 일반",
+      "id": "subject_0f6da39a86",
+      "name": "기계 기초 공작",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 70
+      }
+    },
+    {
+      "id": "subject_821b7d675b",
+      "name": "전자 기계 이론",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 71
+      }
+    },
+    {
+      "id": "subject_84ea908edf",
+      "name": "기계 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 72
+      }
+    },
+    {
+      "id": "subject_f108828d44",
+      "name": "자동차 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 73
+      }
+    },
+    {
+      "id": "subject_abf772be01",
+      "name": "내동 공조 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 74
+      }
+    },
+    {
+      "id": "subject_fb64024f0c",
+      "name": "유체 기계",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 75
+      }
+    },
+    {
+      "id": "subject_95845e6b4d",
+      "name": "자동차 기관",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 76
+      }
+    },
+    {
+      "id": "subject_dfa8e6892f",
+      "name": "자동차 섀시",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 77
+      }
+    },
+    {
+      "id": "subject_559bf1831d",
+      "name": "자동차 전기･전자 제어",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 78
+      }
+    },
+    {
+      "id": "subject_539c5b1bc5",
+      "name": "항공기 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 79
+      }
+    },
+    {
+      "id": "subject_f6aceacbf7",
+      "name": "항공기 실무 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "기계",
+      "credits": "3~5",
+      "description": "기계 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "기계"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "기계"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 80
+      }
+    },
+    {
+      "id": "subject_43267da105",
+      "name": "재료 시험",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "재료",
@@ -19653,12 +21337,112 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 19
+        "row": 81
       }
     },
     {
-      "id": "subject_c151c80cdc",
-      "name": "국제 상무",
+      "id": "subject_9719a4db44",
+      "name": "세라믹 재료",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "재료",
+      "credits": "3~5",
+      "description": "재료 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "재료"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "재료"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 82
+      }
+    },
+    {
+      "id": "subject_bd66bd9259",
+      "name": "세라믹 원리･공정",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "재료",
+      "credits": "3~5",
+      "description": "재료 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "재료"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "재료"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 83
+      }
+    },
+    {
+      "id": "subject_279991dfbc",
+      "name": "재료 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "재료",
+      "credits": "3~5",
+      "description": "재료 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "재료"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "재료"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 84
+      }
+    },
+    {
+      "id": "subject_28c084b0cc",
+      "name": "산업 설비",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "재료",
+      "credits": "3~5",
+      "description": "재료 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "재료"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "재료"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 85
+      }
+    },
+    {
+      "id": "subject_064a27f48c",
+      "name": "공업 화학",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "화학공업",
@@ -19678,12 +21462,62 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 20
+        "row": 86
       }
     },
     {
-      "id": "subject_5e801bcec6",
-      "name": "비즈니스 영어",
+      "id": "subject_359f74686a",
+      "name": "제조 화학",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "화학공업",
+      "credits": "3~5",
+      "description": "화학공업 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "화학공업"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "화학공업"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 87
+      }
+    },
+    {
+      "id": "subject_c8f39d1d75",
+      "name": "단위 조작",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "화학공업",
+      "credits": "3~5",
+      "description": "화학공업 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "화학공업"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "화학공업"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 88
+      }
+    },
+    {
+      "id": "subject_c711056420",
+      "name": "섬유 재료",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "섬유･의류",
@@ -19703,12 +21537,162 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 21
+        "row": 89
       }
     },
     {
-      "id": "subject_5ea4b8e49a",
-      "name": "금융 일반",
+      "id": "subject_5e8fa6318c",
+      "name": "섬유 공정",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 90
+      }
+    },
+    {
+      "id": "subject_c4e579b174",
+      "name": "염색·가공 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 91
+      }
+    },
+    {
+      "id": "subject_d1ebe9fc85",
+      "name": "의류 재료 관리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 92
+      }
+    },
+    {
+      "id": "subject_d0495ca297",
+      "name": "패션 디자인의 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 93
+      }
+    },
+    {
+      "id": "subject_f26e9ba1af",
+      "name": "의복 구성의 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 94
+      }
+    },
+    {
+      "id": "subject_3bc86c272a",
+      "name": "패션 마케팅",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "섬유･의류",
+      "credits": "3~5",
+      "description": "섬유･의류 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "섬유･의류"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "섬유･의류"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 95
+      }
+    },
+    {
+      "id": "subject_62527f2416",
+      "name": "전기 회로",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "전기·전자",
@@ -19728,12 +21712,187 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 22
+        "row": 96
       }
     },
     {
-      "id": "subject_a6c9de13d3",
-      "name": "보험 일반",
+      "id": "subject_33869f283c",
+      "name": "전기 기기",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 97
+      }
+    },
+    {
+      "id": "subject_1b41a1893b",
+      "name": "전기 설비",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 98
+      }
+    },
+    {
+      "id": "subject_fb7584c04d",
+      "name": "자동화 설비",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 99
+      }
+    },
+    {
+      "id": "subject_1a57c184cd",
+      "name": "전기･전자 기초",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 100
+      }
+    },
+    {
+      "id": "subject_c016934ff5",
+      "name": "전자 회로",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 101
+      }
+    },
+    {
+      "id": "subject_12b9a41046",
+      "name": "전기･전자 측정",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 102
+      }
+    },
+    {
+      "id": "subject_9b9eeda237",
+      "name": "디지털 논리 회로",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "전기·전자",
+      "credits": "3~5",
+      "description": "전기·전자 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "전기·전자"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "전기·전자"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 103
+      }
+    },
+    {
+      "id": "subject_e15805a253",
+      "name": "통신 일반",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "정보·통신",
@@ -19753,12 +21912,252 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 23
+        "row": 104
       }
     },
     {
-      "id": "subject_a95b8f66ee",
-      "name": "마케팅과 광고",
+      "id": "subject_038bb08976",
+      "name": "통신 시스템",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 105
+      }
+    },
+    {
+      "id": "subject_113721e7fd",
+      "name": "정보통신",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 106
+      }
+    },
+    {
+      "id": "subject_f4611fe779",
+      "name": "방송 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 107
+      }
+    },
+    {
+      "id": "subject_c0d829a002",
+      "name": "정보처리와 관리",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 108
+      }
+    },
+    {
+      "id": "subject_b267612957",
+      "name": "컴퓨터 구조",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 109
+      }
+    },
+    {
+      "id": "programming",
+      "name": "프로그래밍",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "다양한 프로그래밍 언어를 활용하여 실생활 및 타 교과의 문제를 해결하는 역량을 기르고, 알고리즘 설계와 구현을 통해 컴퓨팅 사고력을 심화하는 과목이다.",
+      "keywords": [],
+      "keyContents": [
+        "프로그래밍 언어의 기본 문법",
+        "변수와 자료형",
+        "제어 구조",
+        "함수와 모듈",
+        "디버깅과 테스트",
+        "간단한 응용 프로그램 구현"
+      ],
+      "relatedCareers": [
+        "소프트웨어 개발자",
+        "웹 개발자",
+        "앱 개발자",
+        "데이터 분석가",
+        "AI 개발자"
+      ],
+      "relatedDepartments": [
+        "컴퓨터공학과",
+        "소프트웨어학과",
+        "정보통신공학과",
+        "인공지능학과",
+        "데이터사이언스학과"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 110
+      }
+    },
+    {
+      "id": "subject_42e4ef84b8",
+      "name": "자료 구조",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 111
+      }
+    },
+    {
+      "id": "subject_8e3850a82f",
+      "name": "컴퓨터 시스템 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 112
+      }
+    },
+    {
+      "id": "subject_9b80d7f75e",
+      "name": "컴퓨터 네트워크",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "정보·통신",
+      "credits": "3~5",
+      "description": "정보·통신 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "정보·통신"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "정보·통신"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 113
+      }
+    },
+    {
+      "id": "subject_45b6680c70",
+      "name": "식품 과학",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "식품가공",
@@ -19778,12 +22177,87 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 24
+        "row": 114
       }
     },
     {
-      "id": "subject_c7e534e690",
-      "name": "창업 일반",
+      "id": "subject_85a1d0773c",
+      "name": "식품 위생",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "식품가공",
+      "credits": "3~5",
+      "description": "식품가공 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "식품가공"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "식품가공"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 115
+      }
+    },
+    {
+      "id": "subject_8ab75137f1",
+      "name": "식품 가공 기술",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "식품가공",
+      "credits": "3~5",
+      "description": "식품가공 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "식품가공"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "식품가공"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 116
+      }
+    },
+    {
+      "id": "subject_7bf9317a72",
+      "name": "식품 분석",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "식품가공",
+      "credits": "3~5",
+      "description": "식품가공 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "식품가공"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "식품가공"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 117
+      }
+    },
+    {
+      "id": "subject_758239480c",
+      "name": "인쇄 일반",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "인쇄･출판･공예",
@@ -19803,12 +22277,112 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 25
+        "row": 118
       }
     },
     {
-      "id": "subject_8dbd8af548",
-      "name": "커뮤니케이션",
+      "id": "subject_a1b0ac0fd3",
+      "name": "디지털 이미지 재현",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "인쇄･출판･공예",
+      "credits": "3~5",
+      "description": "인쇄･출판･공예 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "인쇄･출판･공예"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "인쇄･출판･공예"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 119
+      }
+    },
+    {
+      "id": "subject_7d82815836",
+      "name": "출판 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "인쇄･출판･공예",
+      "credits": "3~5",
+      "description": "인쇄･출판･공예 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "인쇄･출판･공예"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "인쇄･출판･공예"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 120
+      }
+    },
+    {
+      "id": "subject_e703a43eb1",
+      "name": "공예 일반",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "인쇄･출판･공예",
+      "credits": "3~5",
+      "description": "인쇄･출판･공예 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "인쇄･출판･공예"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "인쇄･출판･공예"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 121
+      }
+    },
+    {
+      "id": "subject_37df141a41",
+      "name": "공예 재료와 도구",
+      "category": "진로선택",
+      "area": "전문교과",
+      "professionalArea": "인쇄･출판･공예",
+      "credits": "3~5",
+      "description": "인쇄･출판･공예 분야의 전문 교과 과목입니다.",
+      "keywords": [],
+      "keyContents": [
+        "인쇄･출판･공예"
+      ],
+      "relatedCareers": [],
+      "relatedDepartments": [
+        "인쇄･출판･공예"
+      ],
+      "curriculumTrack": "전문 교과",
+      "suneung": false,
+      "source": {
+        "type": "excel",
+        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
+        "sheet": "목록 데이터",
+        "row": 122
+      }
+    },
+    {
+      "id": "subject_6defb14eba",
+      "name": "환경 화학 기초",
       "category": "진로선택",
       "area": "전문교과",
       "professionalArea": "환경·안전",
@@ -19828,2431 +22402,6 @@
         "type": "excel",
         "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
         "sheet": "목록 데이터",
-        "row": 26
-      }
-    },
-    {
-      "id": "subject_4d15bf5f73",
-      "name": "전자 상거래 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 27
-      }
-    },
-    {
-      "id": "subject_d4c4e1d1fe",
-      "name": "인간 발달",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 28
-      }
-    },
-    {
-      "id": "subject_2c216b8b2b",
-      "name": "보육 원리와 보육 교사",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 29
-      }
-    },
-    {
-      "id": "subject_2f46f17d7a",
-      "name": "보육 과정",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 30
-      }
-    },
-    {
-      "id": "subject_a109e44751",
-      "name": "아동 생활 지도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 31
-      }
-    },
-    {
-      "id": "subject_443ed85d95",
-      "name": "아동 복지",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 32
-      }
-    },
-    {
-      "id": "subject_9647f7dff1",
-      "name": "보육 실습",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 33
-      }
-    },
-    {
-      "id": "subject_d724b83b9d",
-      "name": "생활 서비스 산업의 이해",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 34
-      }
-    },
-    {
-      "id": "subject_f8d30fcc55",
-      "name": "복지 서비스의 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 35
-      }
-    },
-    {
-      "id": "subject_5b5ca743b3",
-      "name": "사회 복지 시설의 이해",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 36
-      }
-    },
-    {
-      "id": "subject_79914a201d",
-      "name": "공중 보건",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 37
-      }
-    },
-    {
-      "id": "subject_14b0b4b162",
-      "name": "인체 구조와 기능",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 38
-      }
-    },
-    {
-      "id": "subject_447ecfad86",
-      "name": "간호의 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 39
-      }
-    },
-    {
-      "id": "subject_a98bbf62e0",
-      "name": "기초 간호 임상 실무",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 40
-      }
-    },
-    {
-      "id": "subject_8c9172716c",
-      "name": "보건 간호",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 41
-      }
-    },
-    {
-      "id": "subject_128c962231",
-      "name": "디자인 제도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 42
-      }
-    },
-    {
-      "id": "subject_4ae5bbe7bf",
-      "name": "디자인 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 43
-      }
-    },
-    {
-      "id": "subject_b2c55e25d4",
-      "name": "조형",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 44
-      }
-    },
-    {
-      "id": "subject_2645202d43",
-      "name": "색채 관리",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 45
-      }
-    },
-    {
-      "id": "subject_1285a76a1e",
-      "name": "컴퓨터 그래픽",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 46
-      }
-    },
-    {
-      "id": "subject_a7264ee45c",
-      "name": "미디어 콘텐츠 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 47
-      }
-    },
-    {
-      "id": "subject_c827e908ed",
-      "name": "문화 콘텐츠 산업 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 48
-      }
-    },
-    {
-      "id": "subject_305895738e",
-      "name": "영상 제작 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 49
-      }
-    },
-    {
-      "id": "subject_c1d2982752",
-      "name": "미용의 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 50
-      }
-    },
-    {
-      "id": "subject_83be41f417",
-      "name": "미용 안전·보건",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 51
-      }
-    },
-    {
-      "id": "subject_7aa1269063",
-      "name": "관광 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 52
-      }
-    },
-    {
-      "id": "subject_d600e7560c",
-      "name": "관광 사업",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 53
-      }
-    },
-    {
-      "id": "subject_9af01e1cc4",
-      "name": "관광 서비스",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 54
-      }
-    },
-    {
-      "id": "subject_8f11621a46",
-      "name": "관광 영어",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 55
-      }
-    },
-    {
-      "id": "tourism_japanese",
-      "name": "관광 일본어",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 56
-      }
-    },
-    {
-      "id": "tourism_chinese",
-      "name": "관광 중국어",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 57
-      }
-    },
-    {
-      "id": "food_and_nutrition",
-      "name": "식품과 영양",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 58
-      }
-    },
-    {
-      "id": "subject_27f3eb56fd",
-      "name": "급식 관리",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 59
-      }
-    },
-    {
-      "id": "subject_37d7884825",
-      "name": "공업 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 60
-      }
-    },
-    {
-      "id": "subject_27722b4e53",
-      "name": "기초 제도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 61
-      }
-    },
-    {
-      "id": "subject_966d7c55be",
-      "name": "토목 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 62
-      }
-    },
-    {
-      "id": "subject_1fdcd22205",
-      "name": "토목 도면 해석과 제도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 63
-      }
-    },
-    {
-      "id": "subject_0c9ec0ee6f",
-      "name": "토목 기초 실습",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 64
-      }
-    },
-    {
-      "id": "subject_48ca74b00a",
-      "name": "건축 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 65
-      }
-    },
-    {
-      "id": "subject_4cb1eb5a8d",
-      "name": "건축 도면 해석과 제도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 66
-      }
-    },
-    {
-      "id": "subject_788163d914",
-      "name": "건축 기초 실습",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 67
-      }
-    },
-    {
-      "id": "subject_6af2cf2d72",
-      "name": "조경",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 68
-      }
-    },
-    {
-      "id": "subject_5a6a9b88f5",
-      "name": "기계 제도",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 69
-      }
-    },
-    {
-      "id": "subject_0f6da39a86",
-      "name": "기계 기초 공작",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 70
-      }
-    },
-    {
-      "id": "subject_821b7d675b",
-      "name": "전자 기계 이론",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 71
-      }
-    },
-    {
-      "id": "subject_84ea908edf",
-      "name": "기계 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 72
-      }
-    },
-    {
-      "id": "subject_f108828d44",
-      "name": "자동차 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 73
-      }
-    },
-    {
-      "id": "subject_abf772be01",
-      "name": "내동 공조 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 74
-      }
-    },
-    {
-      "id": "subject_fb64024f0c",
-      "name": "유체 기계",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 75
-      }
-    },
-    {
-      "id": "subject_95845e6b4d",
-      "name": "자동차 기관",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 76
-      }
-    },
-    {
-      "id": "subject_dfa8e6892f",
-      "name": "자동차 섀시",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 77
-      }
-    },
-    {
-      "id": "subject_559bf1831d",
-      "name": "자동차 전기･전자 제어",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 78
-      }
-    },
-    {
-      "id": "subject_539c5b1bc5",
-      "name": "항공기 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 79
-      }
-    },
-    {
-      "id": "subject_f6aceacbf7",
-      "name": "항공기 실무 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 80
-      }
-    },
-    {
-      "id": "subject_43267da105",
-      "name": "재료 시험",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 81
-      }
-    },
-    {
-      "id": "subject_9719a4db44",
-      "name": "세라믹 재료",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 82
-      }
-    },
-    {
-      "id": "subject_bd66bd9259",
-      "name": "세라믹 원리･공정",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 83
-      }
-    },
-    {
-      "id": "subject_279991dfbc",
-      "name": "재료 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 84
-      }
-    },
-    {
-      "id": "subject_28c084b0cc",
-      "name": "산업 설비",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 85
-      }
-    },
-    {
-      "id": "subject_064a27f48c",
-      "name": "공업 화학",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 86
-      }
-    },
-    {
-      "id": "subject_359f74686a",
-      "name": "제조 화학",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 87
-      }
-    },
-    {
-      "id": "subject_c8f39d1d75",
-      "name": "단위 조작",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 88
-      }
-    },
-    {
-      "id": "subject_c711056420",
-      "name": "섬유 재료",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 89
-      }
-    },
-    {
-      "id": "subject_5e8fa6318c",
-      "name": "섬유 공정",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 90
-      }
-    },
-    {
-      "id": "subject_c4e579b174",
-      "name": "염색·가공 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 91
-      }
-    },
-    {
-      "id": "subject_d1ebe9fc85",
-      "name": "의류 재료 관리",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 92
-      }
-    },
-    {
-      "id": "subject_d0495ca297",
-      "name": "패션 디자인의 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 93
-      }
-    },
-    {
-      "id": "subject_f26e9ba1af",
-      "name": "의복 구성의 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 94
-      }
-    },
-    {
-      "id": "subject_3bc86c272a",
-      "name": "패션 마케팅",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 95
-      }
-    },
-    {
-      "id": "subject_62527f2416",
-      "name": "전기 회로",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 96
-      }
-    },
-    {
-      "id": "subject_33869f283c",
-      "name": "전기 기기",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 97
-      }
-    },
-    {
-      "id": "subject_1b41a1893b",
-      "name": "전기 설비",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 98
-      }
-    },
-    {
-      "id": "subject_fb7584c04d",
-      "name": "자동화 설비",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 99
-      }
-    },
-    {
-      "id": "subject_1a57c184cd",
-      "name": "전기･전자 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 100
-      }
-    },
-    {
-      "id": "subject_c016934ff5",
-      "name": "전자 회로",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 101
-      }
-    },
-    {
-      "id": "subject_12b9a41046",
-      "name": "전기･전자 측정",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 102
-      }
-    },
-    {
-      "id": "subject_9b9eeda237",
-      "name": "디지털 논리 회로",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 103
-      }
-    },
-    {
-      "id": "subject_e15805a253",
-      "name": "통신 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 104
-      }
-    },
-    {
-      "id": "subject_038bb08976",
-      "name": "통신 시스템",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 105
-      }
-    },
-    {
-      "id": "subject_113721e7fd",
-      "name": "정보통신",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 106
-      }
-    },
-    {
-      "id": "subject_f4611fe779",
-      "name": "방송 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 107
-      }
-    },
-    {
-      "id": "subject_c0d829a002",
-      "name": "정보처리와 관리",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 108
-      }
-    },
-    {
-      "id": "subject_b267612957",
-      "name": "컴퓨터 구조",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 109
-      }
-    },
-    {
-      "id": "programming",
-      "name": "프로그래밍",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 110
-      }
-    },
-    {
-      "id": "subject_42e4ef84b8",
-      "name": "자료 구조",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 111
-      }
-    },
-    {
-      "id": "subject_8e3850a82f",
-      "name": "컴퓨터 시스템 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 112
-      }
-    },
-    {
-      "id": "subject_9b80d7f75e",
-      "name": "컴퓨터 네트워크",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 113
-      }
-    },
-    {
-      "id": "subject_45b6680c70",
-      "name": "식품 과학",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 114
-      }
-    },
-    {
-      "id": "subject_85a1d0773c",
-      "name": "식품 위생",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 115
-      }
-    },
-    {
-      "id": "subject_8ab75137f1",
-      "name": "식품 가공 기술",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 116
-      }
-    },
-    {
-      "id": "subject_7bf9317a72",
-      "name": "식품 분석",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 117
-      }
-    },
-    {
-      "id": "subject_758239480c",
-      "name": "인쇄 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 118
-      }
-    },
-    {
-      "id": "subject_a1b0ac0fd3",
-      "name": "디지털 이미지 재현",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 119
-      }
-    },
-    {
-      "id": "subject_7d82815836",
-      "name": "출판 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 120
-      }
-    },
-    {
-      "id": "subject_e703a43eb1",
-      "name": "공예 일반",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 121
-      }
-    },
-    {
-      "id": "subject_37df141a41",
-      "name": "공예 재료와 도구",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
-        "row": 122
-      }
-    },
-    {
-      "id": "subject_6defb14eba",
-      "name": "환경 화학 기초",
-      "category": "진로선택",
-      "area": "전문교과",
-      "professionalArea": "농림·수산",
-      "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
-      "keywords": [],
-      "keyContents": [
-        "농림·수산"
-      ],
-      "relatedCareers": [],
-      "relatedDepartments": [
-        "농림·수산"
-      ],
-      "curriculumTrack": "전문 교과",
-      "suneung": false,
-      "source": {
-        "type": "excel",
-        "file": "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm",
-        "sheet": "목록 데이터",
         "row": 123
       }
     },
@@ -22261,16 +22410,16 @@
       "name": "인간과 환경",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "환경·안전",
       "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "환경·안전 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "환경·안전"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "환경·안전"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,
@@ -22286,16 +22435,16 @@
       "name": "산업 안전 보건 기초",
       "category": "진로선택",
       "area": "전문교과",
-      "professionalArea": "농림·수산",
+      "professionalArea": "환경·안전",
       "credits": "3~5",
-      "description": "농림·수산 분야의 전문 교과 과목입니다.",
+      "description": "환경·안전 분야의 전문 교과 과목입니다.",
       "keywords": [],
       "keyContents": [
-        "농림·수산"
+        "환경·안전"
       ],
       "relatedCareers": [],
       "relatedDepartments": [
-        "농림·수산"
+        "환경·안전"
       ],
       "curriculumTrack": "전문 교과",
       "suneung": false,

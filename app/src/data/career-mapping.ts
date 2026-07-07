@@ -1,6 +1,6 @@
 import careerData from "./json/career-mapping.json";
 import { getSubjectByName, type Subject } from "./subjects";
-import { getSubjectPriorityScoresByInterests } from "./university-requirements";
+import { getSubjectConsensusByInterests } from "./university-recommendations";
 
 // ========== 기존 CareerGroup 인터페이스 (하위 호환) ==========
 export interface CareerGroup {
@@ -274,8 +274,13 @@ export function getRecommendedSubjectsByInterest(interestId: string): {
     });
   });
 
-  // university-requirements 기반 보강: 대입에서 요구하지만 career-mapping에 없는 과목 추가
-  const uniScores = getSubjectPriorityScoresByInterests([interestId]);
+  // 대교협 「2028학년도 권역별 대학별 권장과목」 기반 보강:
+  // 대입에서 요구하지만 career-mapping에 없는 과목 추가.
+  // 핵심과목 명시 지정만 집계해 보수적으로 판단한다.
+  const uniScores = getSubjectConsensusByInterests([interestId], {
+    coreOnly: true,
+    expandAreas: false,
+  });
   const allSeen = new Set(seen);
 
   uniScores.forEach((score, subjectName) => {

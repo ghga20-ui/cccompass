@@ -29,6 +29,7 @@ from openpyxl import load_workbook
 ROOT = Path(__file__).resolve().parent
 EXCEL_FILE = ROOT / "2026학년도 입학생을 위한 2022 개정 교육과정 선택 과목 안내서(EXCEL).xlsm"
 SCHOOL_JSON = ROOT / "app" / "src" / "data" / "json" / "school.json"
+DETAIL_SUPPLEMENTS_JSON = ROOT / "data" / "subject-detail-supplements.json"
 OUT_SUBJECTS_DATA = ROOT / "data" / "subjects.json"
 OUT_SUBJECTS_APP = ROOT / "app" / "src" / "data" / "json" / "subjects.json"
 OUT_SCHOOL_DATA = ROOT / "data" / "school-selected-subjects.json"
@@ -81,6 +82,117 @@ SECOND_LANGUAGE_ALIASES = {
         "러시아 문화",
         "아랍 문화",
         "베트남 문화",
+    ],
+}
+
+# '전문 교과 데이터(목록만 살려)' 시트는 국제계열 구간(86~96행)의 계열 셀이
+# 비어 있어 forward-fill 시 직전 값(외국어계열)이 잘못 채워진다. 명시 보정.
+PROFESSIONAL_AREA_OVERRIDES = {
+    name: "국제계열"
+    for name in [
+        "국제 정치",
+        "국제 경제",
+        "국제법",
+        "지역 이해",
+        "한국 사회의 이해",
+        "비교 문화",
+        "세계 문제와 미래 사회",
+        "국제 관계와 국제기구",
+        "현대 세계의 변화",
+        "사회 탐구 방법",
+        "사회과제 연구",
+    ]
+}
+
+# '목록 데이터' 시트의 계열 열(4·6열)은 과목과 행 정렬된 표가 아니라
+# 드롭다운용 독립 목록이므로 행 짝짓기로 계열을 얻을 수 없다.
+# 2015 개정 교육과정 편제(전문교과Ⅰ 계열 / 전문교과Ⅱ NCS 교과군)를 명시한다.
+# 과목명은 canonical_name 적용 후 기준.
+PROFESSIONAL_LIST_GROUPS = {
+    # 전문교과Ⅰ
+    "과학계열": [
+        "심화 수학Ⅰ", "심화 수학Ⅱ", "고급 수학Ⅰ", "고급 수학Ⅱ",
+        "고급 물리학", "고급 화학", "고급 생명과학", "고급 지구과학",
+        "물리학 실험", "화학 실험", "생명과학 실험", "지구과학 실험",
+        "융합과학 탐구", "과학과제 연구", "생태와 환경", "정보과학",
+    ],
+    "예술계열": [
+        "음악 이론", "음악사", "시창·청음", "음악 전공 실기", "합창", "합주", "공연 실습",
+        "미술 이론", "미술사", "드로잉", "평면 조형", "입체 조형", "매체 미술", "미술 전공 실기",
+        "문예 창작 입문", "문학 개론", "문장론", "문학과 매체", "고전문학 감상", "현대문학 감상",
+        "시 창작", "소설 창작", "극 창작",
+        "연극", "연극의 이해", "연기", "연극 제작 실습", "연극 감상과 비평",
+        "영화의 이해", "시나리오", "영화 제작 실습", "영화 감상과 비평",
+        "사진의 이해", "기초 촬영", "사진 표현 기법", "영상 제작의 이해",
+        "사진 영상 편집", "사진 감상과 비평",
+    ],
+    "체육계열": [
+        "스포츠 개론", "체육과 진로 탐구", "체육 지도법", "육상 운동", "체조 운동", "수상 운동",
+        "개인·대인 운동", "단체 운동", "체육 전공 실기 기초", "체육 전공 실기 심화",
+        "체육 전공 실기 응용", "스포츠 경기 체력", "스포츠 경기 실습", "스포츠 경기 분석",
+    ],
+    "외국어계열": [
+        "심화 영어 회화Ⅰ", "심화 영어 회화 Ⅱ", "심화 영어Ⅰ", "심화 영어 Ⅱ",
+        "심화 영어 독해Ⅰ", "심화 영어 독해 Ⅱ", "심화 영어 작문Ⅰ", "심화 영어 작문 Ⅱ",
+        "전공 기초 외국어", "외국어 회화Ⅰ", "외국어 회화 Ⅱ",
+        "외국어 독해와 작문Ⅰ", "외국어 독해와 작문 Ⅱ", "외국어권 문화",
+    ],
+    "국제계열": [
+        "국제 정치", "국제 경제", "국제법", "지역 이해", "비교 문화", "한국 사회의 이해",
+        "세계 문제와 미래 사회", "국제 관계와 국제기구", "현대 세계의 변화",
+        "사회 탐구 방법", "사회과제 연구",
+    ],
+    # 전문교과Ⅱ (NCS 교과군)
+    "전문공통": ["성공적인 직업생활"],
+    "경영·금융": [
+        "상업 경제", "기업과 경영", "사무 관리", "회계 원리", "회계 정보처리 시스템",
+        "기업 자원 통합 관리", "세무 일반", "유통 일반", "국제 상무", "비즈니스 영어",
+        "금융 일반", "보험 일반", "마케팅과 광고", "창업 일반", "커뮤니케이션",
+        "전자 상거래 일반",
+    ],
+    "보건·복지": [
+        "인간 발달", "보육 원리와 보육 교사", "보육 과정", "아동 생활 지도", "아동 복지",
+        "보육 실습", "생활 서비스 산업의 이해", "복지 서비스의 기초", "사회 복지 시설의 이해",
+        "공중 보건", "인체 구조와 기능", "간호의 기초", "기초 간호 임상 실무", "보건 간호",
+    ],
+    "디자인·문화콘텐츠": [
+        "디자인 제도", "디자인 일반", "조형", "색채 관리", "컴퓨터 그래픽",
+        "미디어 콘텐츠 일반", "문화 콘텐츠 산업 일반", "영상 제작 기초",
+    ],
+    "미용·관광·레저": [
+        "미용의 기초", "미용 안전·보건", "관광 일반", "관광 사업", "관광 서비스",
+        "관광 영어", "관광 일본어", "관광 중국어",
+    ],
+    "음식조리": ["식품과 영양", "급식 관리"],
+    "건설": [
+        "공업 일반", "기초 제도", "토목 일반", "토목 도면 해석과 제도", "토목 기초 실습",
+        "건축 일반", "건축 도면 해석과 제도", "건축 기초 실습", "조경",
+    ],
+    "기계": [
+        "기계 제도", "기계 기초 공작", "전자 기계 이론", "기계 일반", "자동차 일반",
+        "내동 공조 일반", "유체 기계", "자동차 기관", "자동차 섀시",
+        "자동차 전기･전자 제어", "항공기 일반", "항공기 실무 기초",
+    ],
+    "재료": ["재료 시험", "세라믹 재료", "세라믹 원리･공정", "재료 일반", "산업 설비"],
+    "화학공업": ["공업 화학", "제조 화학", "단위 조작"],
+    "섬유･의류": [
+        "섬유 재료", "섬유 공정", "염색·가공 기초", "의류 재료 관리",
+        "패션 디자인의 기초", "의복 구성의 기초", "패션 마케팅",
+    ],
+    "전기·전자": [
+        "전기 회로", "전기 기기", "전기 설비", "자동화 설비", "전기･전자 기초",
+        "전자 회로", "전기･전자 측정", "디지털 논리 회로",
+    ],
+    "정보·통신": [
+        "통신 일반", "통신 시스템", "정보통신", "방송 일반", "정보처리와 관리",
+        "컴퓨터 구조", "프로그래밍", "자료 구조", "컴퓨터 시스템 일반", "컴퓨터 네트워크",
+    ],
+    "식품가공": ["식품 과학", "식품 위생", "식품 가공 기술", "식품 분석"],
+    "인쇄･출판･공예": ["인쇄 일반", "디지털 이미지 재현", "출판 일반", "공예 일반", "공예 재료와 도구"],
+    "환경·안전": ["환경 화학 기초", "인간과 환경", "산업 안전 보건 기초"],
+    "농림·수산": [
+        "재배", "환경 보전", "생명 공학 기술", "원예", "생산 자재",
+        "조경 식물 관리", "화훼 장식 기초", "동물 자원", "반려동물 관리",
     ],
 }
 
@@ -428,6 +540,12 @@ def parse_professional_subjects(
     seen = set(existing_names)
     current_area = ""
 
+    list_area_by_name = {
+        canonical_name(name): area
+        for area, names in PROFESSIONAL_LIST_GROUPS.items()
+        for name in names
+    }
+
     for row in range(2, professional_ws.max_row + 1):
         name = canonical_name(professional_ws.cell(row, 1).value)
         if not name or name in seen:
@@ -438,7 +556,7 @@ def parse_professional_subjects(
         description = clean_text(professional_ws.cell(row, 5).value)
         subject = professional_subject(
             name,
-            current_area,
+            PROFESSIONAL_AREA_OVERRIDES.get(name, current_area),
             description,
             PROFESSIONAL_SHEET,
             row,
@@ -448,18 +566,17 @@ def parse_professional_subjects(
         subjects.append(subject)
         seen.add(name)
 
-    for name_col, area_col in ((3, 4), (5, 6)):
-        current_area = ""
+    for name_col in (3, 5):
         for row in range(11, list_ws.max_row + 1):
             name = canonical_name(list_ws.cell(row, name_col).value)
-            area = canonical_name(list_ws.cell(row, area_col).value)
-            if area:
-                current_area = area
             if not name or name.startswith("전문교과") or name in seen:
                 continue
+            area = list_area_by_name.get(name, "")
+            if not area:
+                print(f"warning: no professional area mapping for {name!r} ({LIST_SHEET} row {row})")
             subject = professional_subject(
                 name,
-                current_area,
+                area,
                 "",
                 LIST_SHEET,
                 row,
@@ -470,6 +587,26 @@ def parse_professional_subjects(
             seen.add(name)
 
     return subjects
+
+
+def apply_detail_supplements(subjects: list[dict[str, Any]]) -> list[str]:
+    """Excel 원본에 세부정보가 없는 과목(전문교과 등)에 수기 보강 데이터를 병합한다."""
+    data = load_json(DETAIL_SUPPLEMENTS_JSON)
+    supplements = {
+        canonical_name(name): fields
+        for name, fields in data.get("subjects", {}).items()
+    }
+    applied: list[str] = []
+    for subject in subjects:
+        fields = supplements.get(canonical_name(subject.get("name")))
+        if not fields:
+            continue
+        subject.update(fields)
+        applied.append(subject["name"])
+    missing = sorted(set(supplements) - {canonical_name(n) for n in applied})
+    for name in missing:
+        print(f"warning: detail supplement target not found: {name!r}")
+    return applied
 
 
 def subject_for_school_only(
@@ -588,6 +725,8 @@ def main() -> None:
         by_name[name] = supplemental
         all_subjects.append(supplemental)
 
+    detail_supplemented = apply_detail_supplements(all_subjects)
+
     subjects_payload = {
         "metadata": {
             "generatedAt": date.today().isoformat(),
@@ -595,6 +734,8 @@ def main() -> None:
             "normalSheet": NORMAL_SHEET,
             "professionalSheet": PROFESSIONAL_SHEET,
             "professionalListFallbackSheet": LIST_SHEET,
+            "detailSupplementSource": DETAIL_SUPPLEMENTS_JSON.name,
+            "detailSupplementedSubjects": detail_supplemented,
             "normalSubjectCount": len(normal_subjects),
             "professionalSubjectCount": len(professional_subjects),
             "schoolOnlySupplementCount": len(missing_school_names),

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A4 Option 02 - Notice Poster</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 794px;
+      height: 1123px;
+      overflow: hidden;
+      background: #ffffff;
+      color: #111111;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+    }
+    .poster {
+      width: 794px;
+      height: 1123px;
+      padding: 48px 54px 46px;
+      position: relative;
+    }
+    .notice-head {
+      border-top: 12px solid #111111;
+      border-bottom: 2px solid #111111;
+      padding: 24px 0 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .notice-head strong {
+      display: block;
+      font-size: 30px;
+      font-weight: 950;
+      color: #0b6b52;
+    }
+    .notice-head span {
+      font-size: 18px;
+      font-weight: 850;
+    }
+    h1 {
+      margin: 58px 0 26px;
+      font-size: 86px;
+      line-height: 1.02;
+      letter-spacing: -3px;
+      font-weight: 950;
+    }
+    .question {
+      margin: 0;
+      width: 610px;
+      font-size: 30px;
+      line-height: 1.42;
+      font-weight: 760;
+      word-break: keep-all;
+      color: #303030;
+    }
+    .table {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      bottom: 92px;
+      border-top: 3px solid #111111;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 168px 1fr;
+      border-bottom: 2px solid #111111;
+      min-height: 94px;
+    }
+    .th {
+      padding: 22px 0;
+      font-size: 21px;
+      font-weight: 950;
+      color: #0b6b52;
+    }
+    .td {
+      padding: 21px 0 21px 26px;
+      font-size: 24px;
+      line-height: 1.36;
+      font-weight: 780;
+      word-break: keep-all;
+    }
+    .stamp {
+      position: absolute;
+      right: 54px;
+      top: 410px;
+      border: 4px solid #0b6b52;
+      color: #0b6b52;
+      width: 164px;
+      height: 164px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 26px;
+      line-height: 1.18;
+      font-weight: 950;
+      transform: rotate(-7deg);
+    }
+    .source {
+      position: absolute;
+      left: 54px;
+      bottom: 34px;
+      font-size: 12px;
+      color: #777777;
+    }
+  </style>
+</head>
+<body>
+  <section class="poster">
+    <header class="notice-head">
+      <div>
+        <strong>경제</strong>
+        <span>효자고 선택과목 안내</span>
+      </div>
+      <span>사회 · 진로 선택</span>
+    </header>
+    <h1>돈 얘기 말고,<br />선택의 기술</h1>
+    <p class="question">가격, 환율, 시장, 정부. 뉴스에서 자주 보던 말들을 내 삶의 선택과 연결해 봅니다.</p>
+    <div class="stamp">뉴스가<br />읽히는<br />과목</div>
+    <section class="table">
+      <div class="row">
+        <div class="th">배우는 것</div>
+        <div class="td">합리적 선택 · 수요와 공급 · 환율과 국제 거래</div>
+      </div>
+      <div class="row">
+        <div class="th">맞는 학생</div>
+        <div class="td">뉴스를 그냥 넘기지 못하는 학생, 돈과 사회 변화가 궁금한 학생</div>
+      </div>
+      <div class="row">
+        <div class="th">진로 연결</div>
+        <div class="td">경제학과 · 경영학과 · 국제통상 · 금융 · 회계</div>
+      </div>
+    </section>
+    <div class="source">Source: 2022개정 고등학교 과목 선택 안내자료, 효자고 선택과목 데이터</div>
+  </section>
+</body>
+</html>
+
