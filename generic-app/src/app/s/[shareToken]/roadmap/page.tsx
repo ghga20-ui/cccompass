@@ -28,7 +28,10 @@ import {
   getRecommendedSubjectsByInterest,
 } from "@/data/career-mapping";
 import { getDepartmentRecommendation } from "@/data/search-index";
+import { getConsensusBadges } from "@/data/university-recommendations";
+import { computeCoverage } from "@/lib/consensus";
 import SelectionGroup from "@/components/SelectionGroup";
+import CoverageGauge from "@/components/CoverageGauge";
 
 // ========== 추천 과목명 집합 ==========
 
@@ -112,6 +115,40 @@ function RoadmapContent() {
     const decoded = decodeRoadmapSelectionState(sParam, validGroupIds);
     return decoded?.selections ?? {};
   });
+
+  // 대학 핵심과목 커버리지 (관심계열 진입일 때만)
+  const coverage = useMemo(() => {
+    if (interests.length === 0) return null;
+
+    const coreCounts = new Map<string, number>();
+    getConsensusBadges(interests).forEach((badge, name) => {
+      if (badge.core > 0) coreCounts.set(name, badge.core);
+    });
+
+    const offered = new Set<string>();
+    const taken = new Set<string>();
+    if (cohortData) {
+      // 학교지정 과목은 자동 이수 → 개설이자 이수
+      cohortData.designated.forEach((d) =>
+        expandSubjectNames(d.subject).forEach((n) => {
+          offered.add(n);
+          taken.add(n);
+        }),
+      );
+      // 선택과목군의 모든 옵션은 개설 과목
+      cohortData.selections.forEach((g) =>
+        g.options.forEach((o) =>
+          expandSubjectNames(o).forEach((n) => offered.add(n)),
+        ),
+      );
+    }
+    // 학생이 실제 고른 선택과목
+    Object.values(selections).forEach((names) =>
+      names.forEach((n) => taken.add(n)),
+    );
+
+    return computeCoverage(coreCounts, offered, taken, 3);
+  }, [interests, cohortData, selections]);
 
   const detailReturnPath = useMemo(() => {
     return buildShareHref(basePath, "/roadmap", {
@@ -603,6 +640,8 @@ function RoadmapContent() {
           <p className="text-xs text-muted-foreground leading-relaxed">
             학교지정 과목은 자동으로 포함됩니다. 선택과목군에서 원하는 과목을 골라 나만의 커리큘럼을 완성하세요.
           </p>
+
+          {coverage && <CoverageGauge result={coverage} />}
         </div>
 
         <div className="mx-auto max-w-lg px-4 pt-1 space-y-5 pb-6">

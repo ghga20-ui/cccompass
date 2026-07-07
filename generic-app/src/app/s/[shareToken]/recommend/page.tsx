@@ -20,6 +20,8 @@ import {
 } from "@/data/career-mapping";
 import type { Subject } from "@/data/subjects";
 import { getDepartmentRecommendation } from "@/data/search-index";
+import { getConsensusBadges, type ConsensusBadge } from "@/data/university-recommendations";
+import { normalizeSubjectName } from "@/lib/consensus";
 import { useCohort } from "@/contexts/CohortContext";
 import { useHyojaRuntime } from "@/contexts/HyojaRuntimeContext";
 import {
@@ -399,6 +401,14 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   const excludedNames = useMemo(() => buildExcludedNames(cohortData), [cohortData]);
   const semesterOrder = useMemo(() => buildSemesterOrder(cohortData), [cohortData]);
 
+  // 과목명 정규화 키 → 뱃지 (학교 과목명의 로마숫자 변형 흡수)
+  const consensusBadges = useMemo(() => {
+    const raw = getConsensusBadges(interests);
+    const normalized = new Map<string, ConsensusBadge>();
+    raw.forEach((badge, name) => normalized.set(normalizeSubjectName(name), badge));
+    return normalized;
+  }, [interests]);
+
   const { bySemester, unavailable } = useMemo(() => {
     const allItems: SubjectWithMeta[] = [];
     const seen = new Set<string>();
@@ -525,6 +535,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       suneung={item.suneung}
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
+                      consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                     />
                   ))}
                 </div>
@@ -559,6 +570,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                     basePath={basePath}
                     suneung={item.suneung}
                     detailReturnPath={detailReturnPath}
+                    consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                   />
                 ))}
               </div>

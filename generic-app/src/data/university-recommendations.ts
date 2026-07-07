@@ -1,4 +1,7 @@
 import recData from "./json/university-recommendations.json";
+import { buildBadgeMap, type ConsensusBadge } from "@/lib/consensus";
+
+export type { ConsensusBadge };
 
 // ========== 인터페이스 ==========
 export interface RecommendationCell {
@@ -181,4 +184,15 @@ export function getAvailableUniversities(): {
     result.push({ region: e.region, university: e.university });
   });
   return result;
+}
+
+/**
+ * 관심분야 태그들에 대한 과목별 합의도 뱃지.
+ * 명시적 과목명 지정만 집계(우산 용어 제외), 대학 중복 제거.
+ */
+export function getConsensusBadges(
+  interests: string[]
+): Map<string, ConsensusBadge> {
+  const entries = interests.flatMap((tagId) => getEntriesByInterest(tagId));
+  return buildBadgeMap(entries);
 }
