@@ -14,6 +14,8 @@ _최종 갱신: 2026-07-07 (Claude Code) — **합의도 뱃지 + 로드맵 커�
 - 검증: lint 0에러·build 통과·테스트 9건 pass. **주의: `node --test tests/`는 Node 24에서 디렉터리 인자 오해석 — `node --test tests/*.mjs`로 실행할 것.**
 - 최종 전체 브랜치 리뷰 통과(머지 가능). **백로그 4건**(머지 비차단, 최종 리뷰 처분): ① consensus.test.mjs 정렬 desc 실증 테스트 추가(2원소 케이스) ② Math.round 비정수 비율 테스트 ③ 정규화 키 충돌 시 뱃지 max 병합(현 데이터 충돌 없음) ④ **roadmap taken에 ↔결합 확장 미적용 — school.json 선택군에 STEM ↔조합이 생기면 커버리지 과소집계 회귀. `getExpandedSubjectNames` 적용으로 해소** (회귀 트리거 명확).
 - 커밋: 메인 3c4c4b3·34a83e1·fbf09c8·f1b66be(+HANDOFF 68a2c88, 푸시됨) / clean 브랜치 포팅 d2099f9+각주픽스 9dac1bf(2회 리뷰 통과, 푸시됨). 스펙 각주는 두 버전 모두 InterestRecommendContent summary에 존재.
+- **커리컴퍼스 라이브 확인 완료**: 의정부여고 게시본(/s/cYrKU6tM…/recommend?interests=cs-ai)에서 뱃지("핵심과목 지정 6개교" 등)+각주 렌더 확인.
+- **효자고 배포 경로 발견·해결 (2026-07-07)**: hyoja-curriculum.vercel.app은 **main 브랜치**에서 빌드됨 — codex 브랜치 푸시만으론 효자고 사이트 반영 안 됨(어제 e187461도 미반영이었음). 계보상 main=효자고가 맞다는 사용자 확인에 따라 **codex→main 머지 실행**: 워크트리 ../p2c-main-merge에서 충돌 15개 해소(전시관 자산 5개는 main 6/2 교정본 우선 — world_culture jpg·manifest·exhibition-subjects.ts/tests / 나머지 10개는 codex 우선), build+테스트 9/9 통과 후 머지 커밋 96e078c 푸시. **앞으로 효자고 반영 필요 시마다 codex→main 머지할 것.**
 
 _이전 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
 
