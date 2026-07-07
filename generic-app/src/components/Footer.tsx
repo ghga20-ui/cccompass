@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Mail } from "lucide-react";
 import { CompassMark } from "@/components/Logo";
 
@@ -42,6 +43,11 @@ export default function Footer() {
         <p className="text-xs text-foreground/45">문의·제안은 ghga20@gmail.com</p>
         <p className="mt-1 text-xs text-foreground/45">
           대입 반영과목 · 한국대학교육협의회 「2028학년도 권역별 대학별 권장과목」(2026.2.) — 필수 이수 기준이 아닌 참고자료
+        </p>
+        <p className="text-xs text-foreground/45">
+          <Link href="/faq" className="underline underline-offset-2 hover:text-foreground/70">
+            자주 묻는 질문 · 자료 출처 안내
+          </Link>
         </p>
       </div>
     </footer>

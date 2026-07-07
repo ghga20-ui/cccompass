@@ -63,6 +63,49 @@ function CompetencyAccordion({ items }: { items: string[] }) {
   );
 }
 
+// ========== 추천 근거 설명 접이식 ==========
+function RecommendBasisNote() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl border border-border bg-card mb-4">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3.5 py-3 text-left"
+      >
+        <p className="text-xs font-semibold text-[var(--primary)]">
+          이 추천은 어떤 근거로 만들어졌나요?
+        </p>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground ml-auto shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-3.5 pb-3.5 space-y-2 text-sm text-foreground leading-relaxed">
+          <p>
+            계열별 추천 과목은 <b>2022 개정 교육과정 선택 과목 안내서</b>를 바탕으로,
+            대학이 실제 요구하는 과목과 대조해 구성했습니다.
+          </p>
+          <p>
+            과목에 붙은 <b>「핵심 N개교」</b> 뱃지는 한국대학교육협의회(대교협)
+            「2028학년도 권역별 대학별 권장과목」(전국 47개 대학)에서 그 과목을 지정한
+            대학 수입니다.
+          </p>
+          <p>
+            뱃지가 없는 과목은 대입 반영과목은 아니지만, 탐구활동·세부능력특기사항 등
+            역량을 보여주기에 좋은 과목입니다.
+          </p>
+          <Link
+            href="/faq"
+            className="inline-block text-[var(--primary)] font-medium underline underline-offset-2"
+          >
+            자료 출처와 자주 묻는 질문 →
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ========== 편제 기반 헬퍼 (단일/다중 cohort 모두 동적 처리) ==========
 
 /** 편제에 존재하는 학기 순서 ("2-1", "3-2" 등) */
@@ -287,6 +330,9 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
             </p>
           </div>
 
+          {/* 추천 근거 설명 (접이식) */}
+          <RecommendBasisNote />
+
           {deptData.department.recommendedStudents.length > 0 && (
             <CompetencyAccordion items={deptData.department.recommendedStudents} />
           )}
@@ -509,6 +555,9 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
             개교 수는 대교협 「2028학년도 권역별 대학별 권장과목」 중 선택한 계열 모집단위 기준
           </p>
         </div>
+
+        {/* 추천 근거 설명 (접이식) */}
+        <RecommendBasisNote />
 
         {semesterOrder.map((sem) => {
           const items = bySemester.get(sem) || [];
