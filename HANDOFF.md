@@ -4,7 +4,18 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
-_최종 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
+_최종 갱신: 2026-07-07 (Claude Code) — **합의도 뱃지 + 로드맵 커버리지 게이지 구현(서브에이전트 주도, 5태스크).**_
+
+**합의도 뱃지 + 커버리지 게이지 (2026-07-07)**
+- 스펙: `docs/superpowers/specs/2026-07-07-consensus-badge-coverage-design.md`, 플랜: `docs/superpowers/plans/2026-07-07-consensus-badge-coverage.md`
+- `app/src/lib/consensus.ts` 신설(순수 로직, JSON import 금지 유지 — node:test .mjs가 직접 import): `buildBadgeMap`(명시 과목명만, areas 제외, 대학 dedup), `computeCoverage`(threshold 3, 미개설 분모 제외+notOffered 분리), `normalizeSubjectName`(로마숫자 Ⅱ/II 흡수). 테스트 `app/tests/consensus.test.mjs` 6건.
+- `getConsensusBadges(interests)` 래퍼(`university-recommendations.ts`) → SubjectCard `consensus` prop(optional) → InterestRecommendContent 두 섹션에서 정규화 키로 lookup. **DeptRecommendContent는 미적용(관심계열 매핑 없음).** Summary 카드에 대교협 출처 각주.
+- 로드맵: `CoverageGauge.tsx` + sticky 학점 바 내부 게이지. 분자=designated 자동+selections, 게이지 숨김 조건(관심계열 없음/분모 0) 적용.
+- 검증: lint 0에러·build 통과·테스트 9건 pass. **주의: `node --test tests/`는 Node 24에서 디렉터리 인자 오해석 — `node --test tests/*.mjs`로 실행할 것.**
+- 이월된 Minor(최종 리뷰에서 판단): ① 정렬 desc 미실증 테스트 ② Math.round 경로 미검증 ③ 정규화 키 충돌 시 덮어쓰기 ④ selections ↔결합 옵션 미확장(현 데이터 무해)
+- 커밋: 3c4c4b3(로직)·34a83e1(래퍼)·fbf09c8(뱃지)·f1b66be(게이지). generic-app 포팅은 진행 중.
+
+_이전 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
 
 **대입 반영과목 대교협 확장판 도입 (2026-07-06)**
 - 배경: 기존 `university-requirements.json`의 원본("2028학년도 계열별 대표 모집단위별 반영과목.xlsx", 42개교×16개 대표 모집단위)의 출처를 워크플로 리서치로 추적 → **대교협 대입상담센터 공식 자료**(2026-02-12 어디가 탑재본의 직전판)로 확인. 8일 뒤 확장 개정판 **「2028학년도 권역별 대학별 권장과목」(2026-02-20, 47개교·1,358개 모집단위, 핵심/권장 2단 구분)** 존재 확인 → 네이버 블로그 재게시본에서 원본 xlsx 확보(`260220-2028학년도 권역별 대학별 권장과목.xlsx`, 리포 루트 — `.gitignore`의 `*.xlsx` 규칙으로 **커밋엔 미포함**, 로컬에만 존재).
