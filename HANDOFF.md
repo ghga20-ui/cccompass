@@ -4,6 +4,21 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
+**추천 근거 설명 + FAQ 페이지 (2026-07-08, 서브에이전트 sonnet 4태스크)**
+- 스펙 `docs/superpowers/specs/2026-07-08-faq-source-reliability-design.md` / 플랜 `.../plans/2026-07-08-faq-source-reliability.md`.
+- 신규 `/faq` 페이지(효자고 Q1~Q6, 커리컴퍼스 Q1변형+Q7): 자료 출처·신뢰도 문의 대응. 아코디언, 페이지 내 배열 상수.
+- 추천 화면 인라인 접이식 `RecommendBasisNote`(Dept/Interest 양쪽): "이 추천은 어떤 근거로?" → 3문단 + /faq 링크. 기존 CompetencyAccordion 패턴 재사용.
+- 푸터에 /faq 링크(양쪽 앱). 최종 리뷰 머지 가능(카피 사실 정확성·링크 일관성 확인, Minor만).
+- 커밋: 효자고 5aa8370(FAQ)·e64abd6(인라인) / 커리컴퍼스 clean 3e796dc. **배포**: 효자고 codex→main 머지, 커리컴퍼스 clean 푸시(아래 진행).
+
+**계열-과목 매핑 교차 검증 (2026-07-08, analyze_mapping_vs_kcue.py)**
+- 목적: career-mapping.json(효자고 안내서 기반)의 추천이 대교협 2028 권장과목과 정합하는지 21개 관심태그 전수 대조.
+- **결론: 매핑 수정 불필요 — 정합 확인.**
+  - [누락] 대교협 핵심 5개교↑인데 매핑에 없는 과목은 5건뿐(간호: 대수·미적분Ⅰ / 심리·사회: 화법과 언어·독서와 작문 / 국제: 중국어)이고, **전부 런타임 보강(3개교↑ booster)이 이미 화면에 추가 중** — 실질 누락 0.
+  - [의심] "대학 근거 0" 항목 다수는 융합선택·탐구류(수학과제 탐구, 사회문제 탐구, 독서 토론과 글쓰기 등) — 대교협 자료가 국수영탐 반영과목 위주라 근거가 안 잡히는 게 정상이고, 세특·역량용 추천으로 정당. UI상 뱃지 유무로 자연 구분됨.
+  - 예체능(arts) 트랙의 국영수사 과목 다수 포함은 원본 안내서의 의도된 설계(예체능 입시 기초교과 병행)로 확인.
+- 스크립트 `analyze_mapping_vs_kcue.py` 리포에 보존(태그 키워드 테이블은 university-recommendations.ts와 수기 동기화 필요 — 테이블 변경 시 스크립트도 갱신할 것).
+
 _최종 갱신: 2026-07-07 (Claude Code) — **합의도 뱃지 + 로드맵 커버리지 게이지 구현(서브에이전트 주도, 5태스크).**_
 
 **합의도 뱃지 + 커버리지 게이지 (2026-07-07)**
@@ -14,6 +29,8 @@ _최종 갱신: 2026-07-07 (Claude Code) — **합의도 뱃지 + 로드맵 커�
 - 검증: lint 0에러·build 통과·테스트 9건 pass. **주의: `node --test tests/`는 Node 24에서 디렉터리 인자 오해석 — `node --test tests/*.mjs`로 실행할 것.**
 - 최종 전체 브랜치 리뷰 통과(머지 가능). **백로그 4건**(머지 비차단, 최종 리뷰 처분): ① consensus.test.mjs 정렬 desc 실증 테스트 추가(2원소 케이스) ② Math.round 비정수 비율 테스트 ③ 정규화 키 충돌 시 뱃지 max 병합(현 데이터 충돌 없음) ④ **roadmap taken에 ↔결합 확장 미적용 — school.json 선택군에 STEM ↔조합이 생기면 커버리지 과소집계 회귀. `getExpandedSubjectNames` 적용으로 해소** (회귀 트리거 명확).
 - 커밋: 메인 3c4c4b3·34a83e1·fbf09c8·f1b66be(+HANDOFF 68a2c88, 푸시됨) / clean 브랜치 포팅 d2099f9+각주픽스 9dac1bf(2회 리뷰 통과, 푸시됨). 스펙 각주는 두 버전 모두 InterestRecommendContent summary에 존재.
+- **커리컴퍼스 라이브 확인 완료**: 의정부여고 게시본(/s/cYrKU6tM…/recommend?interests=cs-ai)에서 뱃지("핵심과목 지정 6개교" 등)+각주 렌더 확인.
+- **효자고 배포 경로 발견·해결 (2026-07-07)**: hyoja-curriculum.vercel.app은 **main 브랜치**에서 빌드됨 — codex 브랜치 푸시만으론 효자고 사이트 반영 안 됨(어제 e187461도 미반영이었음). 계보상 main=효자고가 맞다는 사용자 확인에 따라 **codex→main 머지 실행**: 워크트리 ../p2c-main-merge에서 충돌 15개 해소(전시관 자산 5개는 main 6/2 교정본 우선 — world_culture jpg·manifest·exhibition-subjects.ts/tests / 나머지 10개는 codex 우선), build+테스트 9/9 통과 후 머지 커밋 96e078c 푸시. **앞으로 효자고 반영 필요 시마다 codex→main 머지할 것.**
 
 _이전 갱신: 2026-07-06 (Claude Code) — **대입 반영과목 데이터 대교협 2/20 확장판으로 업그레이드(신규 파서+합의도 재계산+중복 교정).**_
 
