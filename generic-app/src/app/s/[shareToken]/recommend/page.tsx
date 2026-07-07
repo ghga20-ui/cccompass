@@ -505,6 +505,9 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
             우리 학교에서 수강 가능한 추천 과목{" "}
             <span className="font-bold text-[var(--primary)]">{availableCount}개</span>
           </p>
+          <p className="mt-1 text-[10px] text-muted-foreground">
+            개교 수는 대교협 「2028학년도 권역별 대학별 권장과목」 중 선택한 계열 모집단위 기준
+          </p>
         </div>
 
         {semesterOrder.map((sem) => {
