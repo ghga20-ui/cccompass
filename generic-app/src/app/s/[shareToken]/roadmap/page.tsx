@@ -26,6 +26,7 @@ import {
 import {
   interestTags,
   getRecommendedSubjectsByInterest,
+  getInterestTagsByDept,
 } from "@/data/career-mapping";
 import { getDepartmentRecommendation } from "@/data/search-index";
 import { getConsensusBadges } from "@/data/university-recommendations";
@@ -116,12 +117,19 @@ function RoadmapContent() {
     return decoded?.selections ?? {};
   });
 
-  // 대학 핵심과목 커버리지 (관심계열 진입일 때만)
+  // 대학 핵심과목 커버리지 (관심계열·학과 진입 모두)
   const coverage = useMemo(() => {
-    if (interests.length === 0) return null;
+    // 학과 진입이면 학과가 속한 계열 태그로 환산
+    const effectiveInterests =
+      interests.length > 0
+        ? interests
+        : deptName
+          ? getInterestTagsByDept(deptName)
+          : [];
+    if (effectiveInterests.length === 0) return null;
 
     const coreCounts = new Map<string, number>();
-    getConsensusBadges(interests).forEach((badge, name) => {
+    getConsensusBadges(effectiveInterests).forEach((badge, name) => {
       if (badge.core > 0) coreCounts.set(name, badge.core);
     });
 
@@ -148,7 +156,7 @@ function RoadmapContent() {
     );
 
     return computeCoverage(coreCounts, offered, taken, 3);
-  }, [interests, cohortData, selections]);
+  }, [interests, deptName, cohortData, selections]);
 
   const detailReturnPath = useMemo(() => {
     return buildShareHref(basePath, "/roadmap", {
