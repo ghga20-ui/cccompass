@@ -10,6 +10,7 @@ import SubjectCard from "@/components/SubjectCard";
 import {
   interestTags,
   getRecommendedSubjectsByInterest,
+  getInterestTagsByDept,
 } from "@/data/career-mapping";
 import { getSubjectByName, type Subject } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
@@ -182,6 +183,15 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
   const allSchoolNames = useMemo(() => buildAllSchoolSubjectNames(cohort), [cohort]);
   const excludedNames = useMemo(() => buildExcludedNames(cohort), [cohort]);
 
+  // 과목명 정규화 키 → 대교협 합의도 뱃지 (학과가 속한 관심분야 계열 기준)
+  const consensusBadges = useMemo(() => {
+    const tags = getInterestTagsByDept(deptName);
+    const raw = getConsensusBadges(tags);
+    const normalized = new Map<string, ConsensusBadge>();
+    raw.forEach((badge, name) => normalized.set(normalizeSubjectName(name), badge));
+    return normalized;
+  }, [deptName]);
+
   const { bySemester, unavailable, semesterOrder } = useMemo(() => {
     if (!deptData) {
       return {
@@ -333,6 +343,11 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
           <p className="text-sm text-foreground">
             우리 학교에서 수강 가능한 추천 과목 <span className="font-bold text-[var(--primary)]">{availableCount}개</span>
           </p>
+          {consensusBadges.size > 0 && (
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              개교 수는 대교협 「2028학년도 권역별 대학별 권장과목」 중 해당 계열 모집단위 기준
+            </p>
+          )}
         </div>
 
         {/* 학기별 섹션 */}
@@ -372,6 +387,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                       suneung={item.suneung}
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
+                      consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                     />
                   ))}
                 </div>
@@ -408,6 +424,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                     subject={item.subject}
                     suneung={item.suneung}
                     detailReturnPath={detailReturnPath}
+                    consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
                   />
                 ))}
               </div>

@@ -240,6 +240,27 @@ export function getDepartmentsByTagId(tagId: string): { name: string; descriptio
   return depts;
 }
 
+// ========== 학과명 → 관심분야 태그 (getDepartmentsByTagId의 역방향) ==========
+// 계열별(학과) 추천 화면에서 대교협 합의도 뱃지를 재사용하기 위한 매핑.
+let deptToTagsCache: Map<string, string[]> | null = null;
+function buildDeptToTags(): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  interestTags.forEach((tag) => {
+    getDepartmentsByTagId(tag.id).forEach((dept) => {
+      const arr = map.get(dept.name) || [];
+      if (!arr.includes(tag.id)) arr.push(tag.id);
+      map.set(dept.name, arr);
+    });
+  });
+  return map;
+}
+
+/** 학과명이 속한 관심분야 태그 id 목록 (합의도 뱃지·커버리지 재사용용) */
+export function getInterestTagsByDept(deptName: string): string[] {
+  if (!deptToTagsCache) deptToTagsCache = buildDeptToTags();
+  return deptToTagsCache.get(deptName) || [];
+}
+
 export function getRecommendedSubjectsByInterest(interestId: string): {
   일반선택: Subject[];
   진로선택: Subject[];
