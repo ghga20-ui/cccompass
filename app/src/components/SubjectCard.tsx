@@ -150,7 +150,9 @@ export default function SubjectCard({
                   </span>
                   <span className="font-medium">
                     {professionalOffered && "우리 학교 개설 · "}
-                    {subject.professionalArea} 계열
+                    {subject.professionalArea.endsWith("계열")
+                      ? subject.professionalArea
+                      : `${subject.professionalArea} 계열`}
                   </span>
                 </p>
               )}
