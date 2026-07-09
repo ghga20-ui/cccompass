@@ -85,6 +85,10 @@ function RecommendBasisNote() {
             뱃지가 없는 과목은 대입 반영과목은 아니지만, 탐구활동·세부능력특기사항 등
             역량을 보여주기에 좋은 과목입니다.
           </p>
+          <p>
+            「전문교과」 라벨이 붙은 과목은 우리 학교가 개설한 전문교과입니다. 대교협 자료는 보통교과
+            위주라 전문교과를 다루지 않으므로, 대학별 반영과목 배지가 붙지 않습니다.
+          </p>
           <Link
             href="/faq"
             className="inline-block text-[var(--primary)] font-medium underline underline-offset-2"
