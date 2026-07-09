@@ -4,6 +4,12 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
+**계열별(학과) 플로우에도 합의도 뱃지/커버리지 노출 (2026-07-08, Claude Code)**
+- 증상: 효자고에서 배지(핵심 N개교·권장 M개교)·로드맵 게이지(대학 핵심과목 N%)가 안 보임. 원인: 이 기능들이 **관심사별(`?interests=`) 플로우에만** 연결돼 있고 **계열별(`?dept=`) 플로우(DeptRecommendContent/roadmap)엔 처음부터 미적용**(위 2026-07-07 항목 27줄에 명시된 원설계 갭). 배포/데이터 문제 아님 — 관심사 플로우는 라이브 정상.
+- 수정(양쪽 앱 각 3파일): `career-mapping.ts`에 `getInterestTagsByDept(deptName)` 역매핑(getDepartmentsByTagId 역방향, 캐시) 추가 → 학과를 소속 관심분야 태그로 환산 → 기존 `getConsensusBadges`/커버리지 재사용. recommend DeptRecommendContent에 consensusBadges + SubjectCard 2곳 배지 + Summary 각주(배지 있을 때만, "해당 계열 모집단위 기준"). roadmap coverage는 `effectiveInterests = interests ?? getInterestTagsByDept(deptName)`로 계열별에도 게이지 계산(deps에 deptName 추가).
+- 검증: 효자고 build 통과+로컬 prod 서버 Playwright 확인, 커리컴퍼스 build 통과. **라이브 4곳 전수 확인**: 효자고 recommend?dept(배지·각주)·roadmap?dept(36%), 커리컴퍼스 cccompass.xyz `/s/cYrKU6tM…` recommend?dept(배지·각주)·roadmap?dept(43%).
+- 커밋/배포: 효자고 `2356406`(codex) → main 머지 `b3906d0` 푸시. 커리컴퍼스 clean `5a1b567` 푸시. 둘 다 Vercel 자동배포 완료.
+
 **추천 근거 설명 + FAQ 페이지 (2026-07-08, 서브에이전트 sonnet 4태스크)**
 - 스펙 `docs/superpowers/specs/2026-07-08-faq-source-reliability-design.md` / 플랜 `.../plans/2026-07-08-faq-source-reliability.md`.
 - 신규 `/faq` 페이지(효자고 Q1~Q6, 커리컴퍼스 Q1변형+Q7): 자료 출처·신뢰도 문의 대응. 아코디언, 페이지 내 배열 상수.

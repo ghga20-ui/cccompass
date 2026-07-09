@@ -19,6 +19,7 @@ import {
   getInterestTagsByDept,
 } from "@/data/career-mapping";
 import { getDepartmentRecommendation } from "@/data/search-index";
+import { getProfessionalSubjectsForTags } from "@/data/professional-subjects";
 import { getInitialRoadmapSelections } from "@/lib/roadmap-selection-state";
 import SelectionGroup from "@/components/SelectionGroup";
 import CoverageGauge from "@/components/CoverageGauge";
@@ -125,6 +126,7 @@ function buildRecommendedNames(interests: string[]): Set<string> {
     rec["진로선택"].forEach((s) => names.add(s.name));
     rec["융합선택"].forEach((s) => names.add(s.name));
   });
+  getProfessionalSubjectsForTags(interests).forEach((s) => names.add(s.name));
   return names;
 }
 
@@ -136,6 +138,10 @@ function buildRecommendedNamesFromDept(deptName: string): Set<string> {
   deptData.subjects["일반선택"].forEach((n) => names.add(n));
   deptData.subjects["진로선택"].forEach((n) => names.add(n));
   deptData.subjects["융합선택"].forEach((n) => names.add(n));
+
+  getProfessionalSubjectsForTags(getInterestTagsByDept(deptName)).forEach((s) =>
+    names.add(s.name)
+  );
 
   return names;
 }

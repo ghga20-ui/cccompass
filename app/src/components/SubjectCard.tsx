@@ -20,6 +20,8 @@ interface SubjectCardProps {
   semesters?: string[]; // e.g. ["2-1", "3-2"]
   detailReturnPath?: string;
   consensus?: ConsensusBadge;
+  /** 전문교과가 우리 학교 편제에 있는지. 라벨 문구를 가른다. */
+  professionalOffered?: boolean;
 }
 
 const categoryColors: Record<string, string> = {
@@ -45,6 +47,7 @@ export default function SubjectCard({
   semesters,
   detailReturnPath,
   consensus,
+  professionalOffered,
 }: SubjectCardProps) {
   const showAvailability = isAvailable !== undefined;
   const unavailable = showAvailability && !isAvailable;
@@ -137,6 +140,20 @@ export default function SubjectCard({
                   {consensus.core > 0 && `핵심과목 지정 ${consensus.core}개교`}
                   {consensus.core > 0 && consensus.recommended > 0 && " · "}
                   {consensus.recommended > 0 && `권장 ${consensus.recommended}개교`}
+                </p>
+              )}
+
+              {subject.area === "전문교과" && subject.professionalArea && (
+                <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-foreground/70">
+                    전문교과
+                  </span>
+                  <span className="font-medium">
+                    {professionalOffered && "우리 학교 개설 · "}
+                    {subject.professionalArea.endsWith("계열")
+                      ? subject.professionalArea
+                      : `${subject.professionalArea} 계열`}
+                  </span>
                 </p>
               )}
 

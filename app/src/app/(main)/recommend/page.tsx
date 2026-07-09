@@ -12,6 +12,10 @@ import {
   getRecommendedSubjectsByInterest,
   getInterestTagsByDept,
 } from "@/data/career-mapping";
+import {
+  getProfessionalSubjectsForTags,
+  isProfessionalSubject,
+} from "@/data/professional-subjects";
 import { getSubjectByName, type Subject } from "@/data/subjects";
 import { getCohortData, getExpandedSubjectNames } from "@/data/school";
 import { useCohort } from "@/contexts/CohortContext";
@@ -80,6 +84,10 @@ function RecommendBasisNote() {
           <p>
             뱃지가 없는 과목은 대입 반영과목은 아니지만, 탐구활동·세부능력특기사항 등
             역량을 보여주기에 좋은 과목입니다.
+          </p>
+          <p>
+            「전문교과」 라벨이 붙은 과목은 우리 학교가 개설한 전문교과입니다. 대교협 자료는 보통교과
+            위주라 전문교과를 다루지 않으므로, 대학별 반영과목 배지가 붙지 않습니다.
           </p>
           <Link
             href="/faq"
@@ -221,6 +229,17 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
       });
     });
 
+    // 전문교과: 학교 개설분만 후보에 추가
+    getProfessionalSubjectsForTags(getInterestTagsByDept(deptName)).forEach((subject) => {
+      if (seen.has(subject.id)) return;
+      if (excludedNames.has(subject.name)) return;
+      const semesters = selectableMap.get(subject.name) || [];
+      const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
+      if (!isAvailable) return; // 미개설 전문교과는 노출하지 않음
+      seen.add(subject.id);
+      allItems.push({ subject, isAvailable: true, suneung: subject.suneung === true, semesters });
+    });
+
     const unavail = allItems.filter((item) => !item.isAvailable);
 
     const semMap = new Map<string, SubjectWithMeta[]>();
@@ -252,8 +271,15 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
       });
     });
 
+    // 보통교과 먼저, 전문교과 뒤 (Array.prototype.sort는 안정 정렬)
+    semMap.forEach((list) =>
+      list.sort(
+        (a, b) => Number(isProfessionalSubject(a.subject)) - Number(isProfessionalSubject(b.subject))
+      )
+    );
+
     return { bySemester: semMap, unavailable: unavail, semesterOrder: order };
-  }, [deptData, selectableMap, allSchoolNames, excludedNames, cohort]);
+  }, [deptData, selectableMap, allSchoolNames, excludedNames, cohort, deptName]);
 
   const [openSemesters, setOpenSemesters] = useState<Set<string>>(() => new Set(semesterOrder));
   const [showUnavailable, setShowUnavailable] = useState(false);
@@ -388,6 +414,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
                       consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
+                      professionalOffered
                     />
                   ))}
                 </div>
@@ -499,6 +526,17 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
       });
     });
 
+    // 전문교과: 학교 개설분만 후보에 추가
+    getProfessionalSubjectsForTags(interests).forEach((subject) => {
+      if (seen.has(subject.id)) return;
+      if (excludedNames.has(subject.name)) return;
+      const semesters = selectableMap.get(subject.name) || [];
+      const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
+      if (!isAvailable) return;
+      seen.add(subject.id);
+      allItems.push({ subject, isAvailable: true, suneung: subject.suneung === true, semesters });
+    });
+
     // 미개설 분리
     const unavail = allItems.filter((item) => !item.isAvailable);
 
@@ -534,6 +572,13 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
         return a.suneung === b.suneung ? 0 : a.suneung ? -1 : 1;
       });
     });
+
+    // 보통교과 먼저, 전문교과 뒤 (Array.prototype.sort는 안정 정렬)
+    semMap.forEach((list) =>
+      list.sort(
+        (a, b) => Number(isProfessionalSubject(a.subject)) - Number(isProfessionalSubject(b.subject))
+      )
+    );
 
     return { bySemester: semMap, unavailable: unavail, semesterOrder: order };
   }, [interests, selectableMap, allSchoolNames, excludedNames, cohort]);
@@ -659,6 +704,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
                       consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
+                      professionalOffered
                     />
                   ))}
                 </div>
