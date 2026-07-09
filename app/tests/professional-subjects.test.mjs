@@ -40,3 +40,15 @@ test("예술계열은 오버라이드로 미술/음악이 갈린다", () => {
 test("오버라이드는 area와 무관한 태그를 추가할 수 있다", () => {
   assert.ok(resolveTagsForProfessional("고급 생명과학", "과학계열").includes("medical"));
 });
+
+test("국제계열 법·정치 과목은 global과 law-politics를 모두 받는다", () => {
+  // 오버라이드는 area 기본값(global)을 대체하므로 global을 명시해야 유실되지 않는다
+  for (const name of ["국제법", "국제 정치", "국제 관계와 국제기구"]) {
+    assert.deepEqual(resolveTagsForProfessional(name, "국제계열"), ["global", "law-politics"]);
+  }
+});
+
+test("오버라이드 없는 국제계열 과목은 area 기본값 global만 받는다", () => {
+  assert.deepEqual(resolveTagsForProfessional("현대 세계의 변화", "국제계열"), ["global"]);
+  assert.deepEqual(resolveTagsForProfessional("비교 문화", "국제계열"), ["global"]);
+});

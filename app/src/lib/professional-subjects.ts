@@ -75,6 +75,12 @@ export const SUBJECT_OVERRIDES: Record<string, string[]> = {
   "음악과 문화": ["music-perform"],
   "공연 실습": ["music-perform"],
 
+  // 국제계열 — area 기본값은 global. 법·정치 성격이 뚜렷한 과목은 law-politics도 부여.
+  // (오버라이드는 area 기본값을 대체하므로 global을 명시해야 유실되지 않는다)
+  국제법: ["global", "law-politics"],
+  "국제 정치": ["global", "law-politics"],
+  "국제 관계와 국제기구": ["global", "law-politics"],
+
   // 미용·관광·레저 — area 기본값 없음
   "관광 일반": ["global"],
   "관광 사업": ["global"],
