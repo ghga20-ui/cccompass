@@ -4,6 +4,18 @@
 > **세션 시작 시 이 파일을 먼저 읽고**, **변화가 생길 때마다 즉시 갱신**한다.
 > 안 변하는 규칙은 `AGENTS.md` 참고.
 
+**전문교과 추천 보정 (2026-07-09, 서브에이전트 sonnet 7태스크)**
+- 문제: `프로그래밍` 같은 전문교과는 일반계고가 개설해도 추천에서 항상 탈락. 원인은 category 필터가 아니라 **추천 후보 목록(career-mapping.json 108과목)에 이름이 없어서**. 전문교과 263개 중 그 목록에 든 건 3개(문학 감상과 비평·문학과 매체·정보과학)뿐. 대교협 자료도 대입 반영과목(보통교과) 안내라 전문교과 미수록 — **자료에 없다 ≠ 권장 안 함**.
+- 해법: 새 데이터 없이 기존 `professionalArea`(22계열) 활용. `lib/professional-subjects.ts`(순수, JSON import 금지) — `AREA_TO_TAGS`+`SUBJECT_OVERRIDES`+`resolveTagsForProfessional`. 모호한 area(예술계열 62과목=음악·미술·무용·연극·영화·사진·문예 혼재, 미용·관광·레저, 전문공통)는 **기본값 빈 배열**로 두고 오버라이드로만 채움(오추천 방지, 미분류는 현 동작과 동일 → 회귀 없음). `data/professional-subjects.ts` — `getProfessionalSubjectsForTags(tags)`(개설 필터는 호출자 책임).
+- `프로그래밍` 오버라이드는 area(`cs-ai`)를 넓혀 `mechanical-elec` 추가 → 기계공학과 계열별 추천에도 노출.
+- 추천 화면: 두 플로우(Dept/Interest)에 **학교 개설분만** 합류(미개설은 미개설 아코디언에도 안 넣음), 「전문교과」 라벨 + "우리 학교 개설 · X 계열", 보통교과 먼저 안정 정렬. 로드맵은 `buildRecommendedNames(+FromDept)`만 수정, **커버리지 게이지 불변(36% 확인)**.
+- **`professionalOffered` prop 필요 이유**: `정보과학`은 전문교과이면서 career-mapping에도 있어 미개설 시 아코디언에 렌더됨 → 카드가 subject만 보고 "우리 학교 개설"을 찍으면 거짓 문구. 개설 여부를 호출자가 명시 전달.
+- **리뷰가 잡은 버그**: 라벨 `{professionalArea} 계열`이 `계열`로 끝나는 area 5종(과학/예술/체육/외국어/국제)에서 "과학계열 계열" 중복 → `endsWith` 분기로 수정(계획서 예시 코드의 결함).
+- FAQ 항목 1개 + `RecommendBasisNote` 문단 추가(양쪽 앱): 대교협 자료 범위와 전문교과 추천의 두 근거를 명시, 대입 반영 주장 안 함.
+- 검증: 효자고 빌드+테스트 15/15, 라이브 확인(추천 배지 없음·라벨 정상·중복 없음·미개설 누출 없음·게이지 36%). 커리컴퍼스 빌드 통과, 배포 번들에 라벨 로직 확인. **의정부여고는 편제에 전문교과가 없어 미노출되는 것이 정상 동작.**
+- 커밋/배포: 효자고 `872f526..8a4f699`(codex) → main 머지 `0788559`. 커리컴퍼스 clean `c2f1f32`. 스펙 `docs/superpowers/specs/2026-07-09-...-design.md`, 플랜 `docs/superpowers/plans/2026-07-09-...md`.
+- 후속 여지: `SUBJECT_OVERRIDES`는 효자고 개설분+STEM/예술 빈출 과목만 채움. 다른 학교가 개설한 전문교과가 미분류(빈 배열)면 추천 안 됨 — 개설 사례 확인 시 점진 추가.
+
 **계열별(학과) 플로우에도 합의도 뱃지/커버리지 노출 (2026-07-08, Claude Code)**
 - 증상: 효자고에서 배지(핵심 N개교·권장 M개교)·로드맵 게이지(대학 핵심과목 N%)가 안 보임. 원인: 이 기능들이 **관심사별(`?interests=`) 플로우에만** 연결돼 있고 **계열별(`?dept=`) 플로우(DeptRecommendContent/roadmap)엔 처음부터 미적용**(위 2026-07-07 항목 27줄에 명시된 원설계 갭). 배포/데이터 문제 아님 — 관심사 플로우는 라이브 정상.
 - 수정(양쪽 앱 각 3파일): `career-mapping.ts`에 `getInterestTagsByDept(deptName)` 역매핑(getDepartmentsByTagId 역방향, 캐시) 추가 → 학과를 소속 관심분야 태그로 환산 → 기존 `getConsensusBadges`/커버리지 재사용. recommend DeptRecommendContent에 consensusBadges + SubjectCard 2곳 배지 + Summary 각주(배지 있을 때만, "해당 계열 모집단위 기준"). roadmap coverage는 `effectiveInterests = interests ?? getInterestTagsByDept(deptName)`로 계열별에도 게이지 계산(deps에 deptName 추가).
