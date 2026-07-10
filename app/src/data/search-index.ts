@@ -33,11 +33,6 @@ interface JsonDepartment {
 interface JsonTrack {
   id: string;
   name: string;
-  recommendedSubjects: {
-    "일반선택": string[];
-    "진로선택": string[];
-    "융합선택": string[];
-  };
   departments: JsonDepartment[];
 }
 
@@ -113,16 +108,14 @@ export function getDepartmentRecommendation(deptName: string): {
     for (const track of field.tracks) {
       for (const dept of track.departments) {
         if (dept.name === deptName) {
-          // career-mapping 기반 과목: dept 레벨 + track 레벨 병합 (dedup)
-          const mergeUnique = (primary: string[], secondary: string[]): string[] => {
-            const seen = new Set(primary);
-            return [...primary, ...secondary.filter(x => !seen.has(x))];
-          };
-          const trackSubjects = track.recommendedSubjects;
+          // career-mapping 기반 과목: 학과 고유 목록만 사용한다.
+          // 트랙(계열) 목록은 그 트랙에 속한 형제 학과들의 합집합이라, 병합하면
+          // 수학교육과가 사회 교과 교육과의 「윤리와 사상」을 추천받는 식이 된다.
+          // 대입 근거가 있는 과목은 아래 university-requirements 보강이 다시 채운다.
           const cmSubjects = {
-            일반선택: mergeUnique(dept.recommendedSubjects["일반선택"], trackSubjects["일반선택"]),
-            진로선택: mergeUnique(dept.recommendedSubjects["진로선택"], trackSubjects["진로선택"]),
-            융합선택: mergeUnique(dept.recommendedSubjects["융합선택"], trackSubjects["융합선택"]),
+            일반선택: [...dept.recommendedSubjects["일반선택"]],
+            진로선택: [...dept.recommendedSubjects["진로선택"]],
+            융합선택: [...dept.recommendedSubjects["융합선택"]],
           };
 
           // university-requirements 기반 과목 보강
