@@ -19,10 +19,8 @@ import {
   getRecommendedSubjectsByInterest,
   getInterestTagsByDept,
 } from "@/data/career-mapping";
-import {
-  getProfessionalSubjectsForTags,
-  isProfessionalSubject,
-} from "@/data/professional-subjects";
+import { getProfessionalSubjectsForTags } from "@/data/professional-subjects";
+import { buildRecommendItems, type RecommendItem } from "@/lib/recommend-items";
 import type { Subject } from "@/data/subjects";
 import { getDepartmentRecommendation } from "@/data/search-index";
 import { getConsensusBadges, type ConsensusBadge } from "@/data/university-recommendations";
@@ -181,56 +179,7 @@ function buildExcludedNames(cohortData: CohortData | undefined): Set<string> {
   return names;
 }
 
-interface SubjectWithMeta {
-  subject: Subject;
-  isAvailable: boolean;
-  suneung: boolean;
-  semesters: string[];
-}
-
-const catOrder: Record<string, number> = {
-  일반선택: 0,
-  진로선택: 1,
-  융합선택: 2,
-};
-
-/** 추천 과목 목록을 학기별로 분류 + 미개설 분리 (공통 로직) */
-function groupSubjectsBySemester(allItems: SubjectWithMeta[], order: string[]) {
-  const unavailable = allItems.filter((item) => !item.isAvailable);
-
-  const semMap = new Map<string, SubjectWithMeta[]>();
-  const placed = new Set<string>();
-  order.forEach((sem) => semMap.set(sem, []));
-
-  allItems
-    .filter((item) => item.isAvailable)
-    .forEach((item) => {
-      if (placed.has(item.subject.id)) return;
-      const firstSem = order.find((sem) => item.semesters.includes(sem));
-      if (firstSem) {
-        semMap.get(firstSem)!.push(item);
-        placed.add(item.subject.id);
-      }
-    });
-
-  semMap.forEach((items) => {
-    items.sort((a, b) => {
-      const catDiff =
-        (catOrder[a.subject.category] ?? 3) - (catOrder[b.subject.category] ?? 3);
-      if (catDiff !== 0) return catDiff;
-      return a.suneung === b.suneung ? 0 : a.suneung ? -1 : 1;
-    });
-  });
-
-  // 보통교과 먼저, 전문교과 뒤 (Array.prototype.sort는 안정 정렬)
-  semMap.forEach((list) =>
-    list.sort(
-      (a, b) => Number(isProfessionalSubject(a.subject)) - Number(isProfessionalSubject(b.subject)),
-    ),
-  );
-
-  return { bySemester: semMap, unavailable };
-}
+type SubjectWithMeta = RecommendItem<Subject>;
 
 // ========== Department-based recommendation view ==========
 function DeptRecommendContent({ deptName }: { deptName: string }) {
@@ -265,39 +214,25 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
       };
     }
 
-    const allItems: SubjectWithMeta[] = [];
-    const seen = new Set<string>();
-
+    const baseSubjects: Subject[] = [];
     (["일반선택", "진로선택", "융합선택"] as const).forEach((cat) => {
       deptData.subjects[cat].forEach((subjectName) => {
         const subject = subjectCatalog.getSubjectByName(subjectName);
-        if (!subject) return;
-        if (seen.has(subject.id)) return;
-        if (subject.category === "공통") return;
-        if (excludedNames.has(subject.name)) return;
-        seen.add(subject.id);
-
-        const semesters = selectableMap.get(subject.name) || [];
-        const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
-        allItems.push({ subject, isAvailable, suneung: subject.suneung === true, semesters });
+        if (subject) baseSubjects.push(subject);
       });
     });
 
-    // 전문교과: 학교 개설분만 후보에 추가
-    getProfessionalSubjectsForTags(
-      getInterestTagsByDept(deptName),
-      subjectCatalog.getSubjectByName,
-    ).forEach((subject) => {
-      if (seen.has(subject.id)) return;
-      if (excludedNames.has(subject.name)) return;
-      const semesters = selectableMap.get(subject.name) || [];
-      const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
-      if (!isAvailable) return; // 미개설 전문교과는 노출하지 않음
-      seen.add(subject.id);
-      allItems.push({ subject, isAvailable: true, suneung: subject.suneung === true, semesters });
+    return buildRecommendItems({
+      baseSubjects,
+      professionalSubjects: getProfessionalSubjectsForTags(
+        getInterestTagsByDept(deptName),
+        subjectCatalog.getSubjectByName,
+      ),
+      selectableMap,
+      allSchoolNames,
+      excludedNames,
+      semesterOrder,
     });
-
-    return groupSubjectsBySemester(allItems, semesterOrder);
   }, [deptData, selectableMap, allSchoolNames, excludedNames, semesterOrder, subjectCatalog, deptName]);
 
   const [openSemesters, setOpenSemesters] = useState<Set<string>>(
@@ -420,7 +355,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
                       consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
-                      professionalOffered
+                      professionalOffered={item.professionalOffered}
                     />
                   ))}
                 </div>
@@ -456,6 +391,7 @@ function DeptRecommendContent({ deptName }: { deptName: string }) {
                     suneung={item.suneung}
                     detailReturnPath={detailReturnPath}
                     consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
+                    professionalOffered={item.professionalOffered}
                   />
                 ))}
               </div>
@@ -505,42 +441,28 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
   }, [interests]);
 
   const { bySemester, unavailable } = useMemo(() => {
-    const allItems: SubjectWithMeta[] = [];
-    const seen = new Set<string>();
-
+    const baseSubjects: Subject[] = [];
     interests.forEach((interestId) => {
       const byCategory = getRecommendedSubjectsByInterest(
         interestId,
         subjectCatalog.getSubjectByName,
       );
       (["일반선택", "진로선택", "융합선택"] as const).forEach((cat) => {
-        byCategory[cat].forEach((subject) => {
-          if (seen.has(subject.id)) return;
-          if (subject.category === "공통") return;
-          if (excludedNames.has(subject.name)) return;
-          seen.add(subject.id);
-
-          const semesters = selectableMap.get(subject.name) || [];
-          const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
-          allItems.push({ subject, isAvailable, suneung: subject.suneung === true, semesters });
-        });
+        byCategory[cat].forEach((subject) => baseSubjects.push(subject));
       });
     });
 
-    // 전문교과: 학교 개설분만 후보에 추가
-    getProfessionalSubjectsForTags(interests, subjectCatalog.getSubjectByName).forEach(
-      (subject) => {
-        if (seen.has(subject.id)) return;
-        if (excludedNames.has(subject.name)) return;
-        const semesters = selectableMap.get(subject.name) || [];
-        const isAvailable = semesters.length > 0 || allSchoolNames.has(subject.name);
-        if (!isAvailable) return;
-        seen.add(subject.id);
-        allItems.push({ subject, isAvailable: true, suneung: subject.suneung === true, semesters });
-      },
-    );
-
-    return groupSubjectsBySemester(allItems, semesterOrder);
+    return buildRecommendItems({
+      baseSubjects,
+      professionalSubjects: getProfessionalSubjectsForTags(
+        interests,
+        subjectCatalog.getSubjectByName,
+      ),
+      selectableMap,
+      allSchoolNames,
+      excludedNames,
+      semesterOrder,
+    });
   }, [interests, selectableMap, allSchoolNames, excludedNames, semesterOrder, subjectCatalog]);
 
   const [openSemesters, setOpenSemesters] = useState<Set<string>>(
@@ -650,7 +572,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                       semesters={item.semesters}
                       detailReturnPath={detailReturnPath}
                       consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
-                      professionalOffered
+                      professionalOffered={item.professionalOffered}
                     />
                   ))}
                 </div>
@@ -686,6 +608,7 @@ function InterestRecommendContent({ interests }: { interests: string[] }) {
                     suneung={item.suneung}
                     detailReturnPath={detailReturnPath}
                     consensus={consensusBadges.get(normalizeSubjectName(item.subject.name))}
+                    professionalOffered={item.professionalOffered}
                   />
                 ))}
               </div>
