@@ -16,6 +16,16 @@
 - **최종 리뷰가 잡은 Important**: 인라인 근거 문구가 "「전문교과」 라벨이 붙은 과목은 우리 학교가 개설한 전문교과"라고 단언했는데 거짓. `SubjectCard`는 개설 여부와 무관하게 라벨을 그리고("우리 학교 개설 ·" 접두어만 `professionalOffered`로 게이팅), `정보과학`·`문학 감상과 비평`·`문학과 매체`는 career-mapping에도 있어 미개설 시 아코디언에 라벨과 함께 렌더됨(효자고 실제 사례). → 문구를 "라벨은 전문교과라는 표시 / 학기별 목록에 뜬 것은 개설 과목"으로 정확화(양쪽 앱, `cc80eb2`·`e31c373`). **카드는 원래 정직했고 설명문만 과잉주장이었음.**
 - 커밋/배포: 효자고 `872f526..cc80eb2`(codex) → main 머지 `369021f`. 커리컴퍼스 clean `e31c373`. 스펙 `docs/superpowers/specs/2026-07-09-...-design.md`, 플랜 `docs/superpowers/plans/2026-07-09-...md`.
 - 검증 스크립트 주의: `RecommendBasisNote`는 `{open && ...}` 접이식이라 **curl로 안 잡힘**. 배지·라벨도 하이드레이션 후 클라이언트 렌더. 라이브 확인은 반드시 Playwright로 접이식을 열고 볼 것.
+**추천 목록 구성 로직 순수 모듈화 (2026-07-10)**
+- 배경: 중복 제거·공통 제외·개설 필터·학기 그룹핑·정렬 규칙이 `recommend/page.tsx`의 `useMemo` 안에 있어 테스트 불가. `useMemo`를 리팩터링하다 `if (!isAvailable) return;` 한 줄만 지워도 빌드·테스트 다 통과하며 미개설 전문교과가 새어 나감.
+- `lib/recommend-items.ts` 신설(**import 없음** — tests/*.mjs가 직접 import). `buildRecommendItems({baseSubjects, professionalSubjects, selectableMap, allSchoolNames, excludedNames, semesterOrder})` → `{bySemester, unavailable}`. 두 플로우(Dept/Interest)가 공유하며, 페이지는 baseSubjects 조립만 담당.
+- **`professionalOffered`를 아이템 필드로 계산**(`isAvailable && isProfessionalSubject`). "미개설 아코디언 카드엔 넘기지 말 것"이라는 암묵 규칙이 사라지고 네 호출부 모두 `item.professionalOffered`를 동일하게 넘긴다. 오표기 구조적 차단.
+- `isProfessionalSubject`가 data/lib 두 곳에 중복 정의돼 있어 `lib/recommend-items.ts`를 단일 출처로 두고 data는 재수출. generic-app의 `groupSubjectsBySemester` 헬퍼는 제거(동일 기능).
+- 테스트 9건 추가(총 26). 원본의 `placed` Set은 `seen`이 이미 id 중복을 막아 제거(동작 동일).
+- **동작 보존 검증**: 로컬 prod 빌드 vs 리팩터링 전 라이브를 Playwright로 대조 — 관심사·계열별 두 플로우의 학기 배치·과목 순서·전문교과 라벨·개설 표기·대교협 배지가 완전 일치.
+- ⚠️ **검증 중 발견**: `app/src/data/search-index.ts`에 **커밋 안 된 작업 중 수정**이 있음(세션 이전부터). `getDepartmentRecommendation`에서 track 레벨 추천 과목 병합을 제거하는 변경이라 계열별 추천 결과가 줄어든다(배포된 적 없음). 리팩터링 등가 비교 시 이것 때문에 차이가 나 보였음 — HEAD 버전으로 되돌려 비교 후 원상 복구함. **커밋 여부는 사용자 판단 필요.**
+- 커밋: 효자고 `b848ded`(추출)·`ac17634`(단일 출처화) → main `f1ae24f`. 커리컴퍼스 clean `14b2daf`.
+
 **국제계열 법·정치 오버라이드 (2026-07-09, 후속)**
 - `국제법`·`국제 정치`·`국제 관계와 국제기구` → `["global","law-politics"]`. 기존엔 area 기본값 `global`만 받아 법학/정치/행정 관심 학생에게 안 뜸. **오버라이드는 area 기본값을 대체하므로 `global`을 함께 명시**해야 유실 안 됨(테스트로 고정).
 - 검증: 테스트 2건 추가(17/17), 양쪽 빌드 통과, 두 앱 `lib/professional-subjects.ts` 바이트 동일 확인. 태그 커버리지 재검(오타 0, 공백 태그 4→3).
