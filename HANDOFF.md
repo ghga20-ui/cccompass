@@ -16,6 +16,19 @@
 - **최종 리뷰가 잡은 Important**: 인라인 근거 문구가 "「전문교과」 라벨이 붙은 과목은 우리 학교가 개설한 전문교과"라고 단언했는데 거짓. `SubjectCard`는 개설 여부와 무관하게 라벨을 그리고("우리 학교 개설 ·" 접두어만 `professionalOffered`로 게이팅), `정보과학`·`문학 감상과 비평`·`문학과 매체`는 career-mapping에도 있어 미개설 시 아코디언에 라벨과 함께 렌더됨(효자고 실제 사례). → 문구를 "라벨은 전문교과라는 표시 / 학기별 목록에 뜬 것은 개설 과목"으로 정확화(양쪽 앱, `cc80eb2`·`e31c373`). **카드는 원래 정직했고 설명문만 과잉주장이었음.**
 - 커밋/배포: 효자고 `872f526..cc80eb2`(codex) → main 머지 `369021f`. 커리컴퍼스 clean `e31c373`. 스펙 `docs/superpowers/specs/2026-07-09-...-design.md`, 플랜 `docs/superpowers/plans/2026-07-09-...md`.
 - 검증 스크립트 주의: `RecommendBasisNote`는 `{open && ...}` 접이식이라 **curl로 안 잡힘**. 배지·라벨도 하이드레이션 후 클라이언트 렌더. 라이브 확인은 반드시 Playwright로 접이식을 열고 볼 것.
+**학과 추천에서 트랙(계열) 과목 병합 제거 (2026-07-10)**
+- **원인**: `career-mapping.json`의 `track.recommendedSubjects`는 **그 트랙에 속한 형제 학과들의 합집합**이다. `search-index.ts`의 `getDepartmentRecommendation`이 이걸 학과 목록에 `mergeUnique`로 병합하고 있어서, 학과가 형제 학과의 과목을 통째로 받았다.
+  - 예: 「교육 계열」 트랙 = 언어/사회/수학/과학/교육학/초등/유아 교육과 → **수학교육과가 「윤리와 사상」·「세계사」·「정치」·「법과 사회」(사회 교과 교육과), 「생물의 유전」·「세포와 물질대사」(과학 교과 교육과), 「제2외국어」·「한문」(언어 교과 교육과)를 추천받음.**
+  - 「기계·전기·전자 계열」 → 기계공학과가 「지구과학」·「지구시스템과학」·「행성우주과학」을 받음.
+  - 규모: 119개 학과 평균 **+9.5과목**(최대 +34). 트랙이 응집적인 계열(IT·간호)은 영향 미미, 이질적인 교육 계열이 최악.
+- **안전망**: 병합 아래의 university-requirements 보강(`uniScores >= 3`)이 대입 근거 있는 과목을 다시 채운다. 실제로 수학교육과의 「역학과 에너지」·「전자기와 양자」는 학과 목록에 없지만 병합 제거 후에도 남았다. **사라지는 것은 근거 없는 계열 뭉뚱그리기뿐.**
+- 전후 대조(라이브 vs 로컬, Playwright): 수학교육과 31→16, 기계공학과 23→17, 컴퓨터공학과 22→21(경제 수학만), 간호학과 20→18. **과목이 늘어난 학과는 없음.**
+- `JsonTrack.recommendedSubjects` 인터페이스 필드도 제거(사용처 없음). JSON 데이터는 그대로 두었고 `career-mapping.ts`의 `buildCareerGroupsFromJson`은 계속 사용한다.
+- 라이브 검증: 효자고 수학교육과 16과목·형제학과 과목 0·대교협 보강 유지, 커리컴퍼스 18과목·형제학과 과목 0.
+- 커밋: 효자고 `b6597c0` → main `b4409b5`. 커리컴퍼스 clean `e320450`.
+- ⚠️ 이 변경은 원래 `search-index.ts`에 **커밋 안 된 작업 중 수정**으로 남아 있던 것을 검증 후 채택한 것이다. (2026-07-10 세션에서 발견)
+- **검증 함정**: `/recommend` 카드는 클라이언트 렌더라 `curl | grep`으로는 항상 0건이 나온다. 반드시 Playwright로 볼 것. 또 폴링을 자주 하면 Vercel Security Checkpoint에 걸린다.
+
 **추천 목록 구성 로직 순수 모듈화 (2026-07-10)**
 - 배경: 중복 제거·공통 제외·개설 필터·학기 그룹핑·정렬 규칙이 `recommend/page.tsx`의 `useMemo` 안에 있어 테스트 불가. `useMemo`를 리팩터링하다 `if (!isAvailable) return;` 한 줄만 지워도 빌드·테스트 다 통과하며 미개설 전문교과가 새어 나감.
 - `lib/recommend-items.ts` 신설(**import 없음** — tests/*.mjs가 직접 import). `buildRecommendItems({baseSubjects, professionalSubjects, selectableMap, allSchoolNames, excludedNames, semesterOrder})` → `{bySemester, unavailable}`. 두 플로우(Dept/Interest)가 공유하며, 페이지는 baseSubjects 조립만 담당.
