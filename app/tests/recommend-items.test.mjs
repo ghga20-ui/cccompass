@@ -146,3 +146,22 @@ test("isProfessionalSubject는 professionalArea가 없으면 false", () => {
   assert.equal(isProfessionalSubject(sub("x", "미상", "진로선택", { area: "전문교과" })), false);
   assert.equal(isProfessionalSubject(sub("a", "대수", "일반선택")), false);
 });
+
+test("교과군이 전문교과가 아니어도 professionalArea가 있으면 전문교과로 본다", () => {
+  // 「현대 세계의 변화」는 국제계열 전문교과지만 학교에서 사회 교과로 개설한다.
+  // 교과군 배치가 아니라 professionalArea 보유 여부로 판별해야 추천 경로가 유지된다.
+  const s = sub("cmw", "현대 세계의 변화", "진로선택", {
+    area: "사회",
+    professionalArea: "국제계열",
+  });
+  assert.equal(isProfessionalSubject(s), true);
+
+  const { bySemester } = call({
+    professionalSubjects: [s],
+    selectableMap: new Map([["현대 세계의 변화", ["3-1"]]]),
+    semesterOrder: ["3-1"],
+  });
+  const item = bySemester.get("3-1")[0];
+  assert.equal(item.subject.name, "현대 세계의 변화");
+  assert.equal(item.professionalOffered, true);
+});

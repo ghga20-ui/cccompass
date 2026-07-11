@@ -47,9 +47,15 @@ export interface BuildRecommendItemsResult<T extends RecommendSubject = Recommen
   unavailable: RecommendItem<T>[];
 }
 
-/** 전문교과이면서 계열 정보를 가진 과목인지 */
+/**
+ * 전문교과 성격의 과목인지.
+ *
+ * 교과군(`area`)이 아니라 `professionalArea` 보유 여부로 판단한다.
+ * 전문교과라도 학교가 보통교과군으로 편성해 개설할 수 있기 때문이다.
+ * (예: 「현대 세계의 변화」는 국제계열 전문교과이지만 사회 교과로 개설한다)
+ */
 export function isProfessionalSubject(subject: RecommendSubject): boolean {
-  return subject.area === PROFESSIONAL_AREA && !!subject.professionalArea;
+  return !!subject.professionalArea;
 }
 
 const CATEGORY_ORDER: Record<string, number> = {
