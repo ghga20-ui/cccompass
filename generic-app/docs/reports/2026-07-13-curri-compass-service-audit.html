@@ -393,7 +393,7 @@
           <div class="flow" aria-label="서비스 처리 흐름">
             <div class="flow-step"><b>1. 교사 업로드</b><span>학교명, 입학연도, PDF·HWP·HWPX·엑셀·워드 파일</span></div>
             <div class="flow-step"><b>2. 문서 파싱</b><span>Render의 Kordoc 워커가 텍스트·표 추출, 45초 타임아웃</span></div>
-            <div class="flow-step"><b>3. AI 구조화</b><span>OpenAI Responses가 과목·학점·선택군 구조화, 최대 3회 재시도</span></div>
+            <div class="flow-step"><b>3. AI 구조화</b><span>Gemini가 추출 데이터와 PDF 원본을 함께 판독, 최대 3회 재시도</span></div>
             <div class="flow-step"><b>4. 교사 검토·게시</b><span>후처리·Zod 검증 후 초안 저장, 토큰으로 수정·게시</span></div>
             <div class="flow-step"><b>5. 학생 사용</b><span>공개 링크에서 추천, 과목 탐색, 로드맵 저장·공유</span></div>
           </div>
@@ -401,7 +401,7 @@
           <div class="architecture">
             <article><strong>프런트·API</strong><small>Next.js 16 App Router, React 19, Tailwind 4, Vercel</small></article>
             <article><strong>파서</strong><small>별도 Render 워커, Kordoc 기반, 무료 티어 콜드스타트 가능</small></article>
-            <article><strong>AI 구조화</strong><small>OpenAI gpt-5.5 기본, JSON Schema 출력, 결정론적 후처리</small></article>
+            <article><strong>AI 구조화</strong><small>현재 Gemini 공급자 사용, PDF는 네이티브 비전 입력, JSON 출력 후 결정론적 후처리</small></article>
             <article><strong>데이터</strong><small>Supabase PostgreSQL + Prisma, 초안·게시본·원문 추출 텍스트 저장</small></article>
           </div>
 
@@ -409,6 +409,41 @@
             <strong>구조의 장점</strong><br />
             파서, 구조화 모델, 저장소, 학교 데이터 어댑터가 분리되어 공급자 교체가 가능하다. 게시본을 초안과 별도 스냅샷으로 보관해
             수정 중인 데이터가 공개 화면에 즉시 섞이지 않는 점도 좋다.
+          </div>
+
+          <div class="callout" style="margin-top:20px">
+            <strong>PDF 전용 Gemini 비전 분기</strong>
+            <p>
+              PDF는 일반 문서와 같은 텍스트 파이프라인만 거치지 않는다. 최대 3쪽 제한을 확인한 뒤 Render의 Kordoc 워커가
+              텍스트와 표를 추출하고, 구조화 단계에서 그 추출 결과와 원본 PDF의 base64 데이터를 Gemini에 함께 전달한다.
+              Gemini는 PDF의 셀 경계·셀 내부 줄바꿈·병합 셀을 구조 판단의 1차 근거로, Kordoc 결과를 과목명과 숫자의 문자 정확도
+              근거로 사용한다.
+            </p>
+            <div class="two-col">
+              <div class="mini-card">
+                <h3>PDF</h3>
+                <p>Kordoc 텍스트·표 + 원본 PDF <code>inlineData</code> → Gemini 멀티모달 구조화</p>
+              </div>
+              <div class="mini-card">
+                <h3>HWP·HWPX·엑셀·워드</h3>
+                <p>Kordoc 텍스트·표 → Gemini 텍스트 기반 구조화</p>
+              </div>
+            </div>
+            <p class="finding-evidence">
+              현재 공급자 설정은 <code>gemini</code>, 코드 기본 모델은 <code>gemini-3.5-flash</code>이며 Gemini 호출 제한은 90초다.
+              업로드 API 바깥 재시도 루프가 구조화 요청을 최대 3회 수행한다. 코드에는 OpenAI 공급자도 남아 있어 환경변수로 교체할 수
+              있으나, Gemini 실패 시 OpenAI를 호출하는 자동 폴백은 없다. README의 OpenAI 설정 예시와 현재 실행 설정이 달라 운영 문서
+              동기화가 필요하다.
+            </p>
+            <div class="note" style="margin-top:16px">
+              <strong>공급자 전환 및 사용량 해석 · 2026-07-14 확인</strong><br />
+              OpenAI 구조화 흐름은 2026-05-29 도입됐고, 2026-06-23 PDF 표 병합 해석 정확도를 이유로 프로덕션 공급자가 Gemini로
+              전환됐다. 현재 Vercel 프로덕션에는 OpenAI와 Gemini 키가 모두 있지만 <code>CURRICULUM_STRUCTURER_PROVIDER=gemini</code>이므로
+              OpenAI 키와 <code>gpt-5.5</code> 모델 설정은 실행 경로에서 사용되지 않는다. 프로덕션 DB의 초안 128건 중 전환 커밋 이전 생성은
+              16건, 이후 생성은 112건이다. 다만 초안 레코드에 실제 공급자·모델·입력 모드를 저장하지 않아 과거 16건이 모두 OpenAI 호출이었다고
+              사후 입증할 수는 없다. 업로드 작업 또는 초안에 <code>provider</code>, <code>model</code>, <code>inputMode</code>, 요청 ID, 처리시간과
+              재시도 횟수를 기록해야 비용·품질·장애를 정확히 대조할 수 있다.
+            </div>
           </div>
         </section>
 
@@ -656,7 +691,8 @@
               <h3>운영 신뢰성</h3>
               <ul class="compact-list">
                 <li>업로드 요청을 비동기 Job으로 전환해 Vercel 300초 의존 제거</li>
-                <li>Render 워커 상태·파싱시간·OpenAI 재시도·실패 원인을 구조화 로그로 수집</li>
+                <li>Render 워커 상태·파싱시간·Gemini 비전 사용 여부·LLM 재시도·실패 원인을 구조화 로그로 수집</li>
+                <li>초안별 공급자·모델·입력 모드·외부 요청 ID를 저장해 API 사용량과 결과 품질을 연결</li>
                 <li>학교·형식·페이지 수별 파싱 성공률 대시보드 구축</li>
                 <li>골든 편제표 회귀 세트에 실제 이상 문자열을 추가</li>
               </ul>
