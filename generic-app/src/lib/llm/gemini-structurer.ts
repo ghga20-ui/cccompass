@@ -1,7 +1,7 @@
 import { createSystemPrompt, parseJsonResponse } from "./openai-structurer";
 import type { StructurerProvider, StructuringFile, StructuringResult } from "./types";
 
-const defaultModel = "gemini-3.5-flash";
+const defaultModel = "gemini-3.7-flash";
 
 // 출력 JSON 형태를 명시 (Gemini responseSchema 방언 이슈를 피하고, 다운스트림 zod로 검증).
 const jsonShapeInstruction = [
