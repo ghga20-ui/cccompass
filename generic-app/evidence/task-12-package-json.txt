@@ -1,0 +1,6 @@
+package-json-ok
+README contains pnpm
+README contains /s/[shareToken]
+README contains Grade 1
+README contains Chrome
+README contains E2E

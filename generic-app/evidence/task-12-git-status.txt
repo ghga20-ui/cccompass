@@ -1,0 +1,36 @@
+ M generic-app/README.md
+ M generic-app/evidence/task-11-e2e-db.json
+ M generic-app/evidence/task-11-public-recommend.png
+ M generic-app/evidence/task-11-upload-publish.png
+D  generic-app/package-lock.json
+ M generic-app/package.json
+ M generic-app/playwright.config.ts
+ M generic-app/tests/e2e/hyoja-public-flow.spec.ts
+ M generic-app/tests/e2e/hyoja-upload-publish.spec.ts
+ M generic-app/tests/e2e/support/start-e2e-services.mjs
+ M generic-app/vitest.config.ts
+?? generic-app/evidence/task-12-build.txt
+?? generic-app/evidence/task-12-cleanup-ports.txt
+?? generic-app/evidence/task-12-command-summary.txt
+?? generic-app/evidence/task-12-e2e-http.txt
+?? generic-app/evidence/task-12-e2e.txt
+?? generic-app/evidence/task-12-hardcoding-scan.txt
+?? generic-app/evidence/task-12-lint.txt
+?? generic-app/evidence/task-12-lsp.txt
+?? generic-app/evidence/task-12-npm-install.txt
+?? generic-app/evidence/task-12-package-json.txt
+?? generic-app/evidence/task-12-package-scripts.txt
+?? generic-app/evidence/task-12-pnpm-approve-builds.txt
+?? generic-app/evidence/task-12-pnpm-import.txt
+?? generic-app/evidence/task-12-pnpm-install-green.txt
+?? generic-app/evidence/task-12-pnpm-install.txt
+?? generic-app/evidence/task-12-port-3000-pin.txt
+?? generic-app/evidence/task-12-port-pin.txt
+?? generic-app/evidence/task-12-protected-route-timeout-red.txt
+?? generic-app/evidence/task-12-status-pin.txt
+?? generic-app/evidence/task-12-test-public.txt
+?? generic-app/evidence/task-12-test.txt
+?? generic-app/evidence/task-12-typecheck.txt
+?? generic-app/evidence/task-12-verification-green.txt
+?? generic-app/pnpm-lock.yaml
+?? generic-app/pnpm-workspace.yaml

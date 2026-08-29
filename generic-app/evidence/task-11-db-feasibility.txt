@@ -1,0 +1,5 @@
+DATABASE_URL source: task harness uses E2E_JSON_DB_PATH=evidence/task-11-e2e-db.json for deterministic local non-production E2E storage.
+docker compose: unavailable in executor; tests/e2e/docker-compose.postgres.yml is present for real PostgreSQL environments.
+PGlite TCP probe: evidence/task-11-pglite-prisma-probe.txt documents Prisma db push compatibility, but Next dev cross-process access was unstable here.
+Manual-QA channel: Playwright real Chrome project executed upload, review, publish, and public /s/<shareToken> browser flow.
+Cleanup: evidence/task-11-cleanup-ports.txt shows no listening test ports after run.

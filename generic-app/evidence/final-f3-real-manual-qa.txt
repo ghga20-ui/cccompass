@@ -1,0 +1,38 @@
+﻿F3 real manual QA audit - generic Hyoja-parity public flow
+Date: 2026-06-18
+Verdict: APPROVE
+
+Manual-QA channel:
+Browser use via Playwright real Chrome exact invocation: powershell -NoProfile -Command "Set-Location 'C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl\generic-app'; corepack pnpm run test:e2e:hyoja"
+PASS observable: command exits 0 and all seven screenshot artifacts are non-empty.
+
+E2E result:
+- corepack pnpm run test:e2e:hyoja: PASS (evidence/fix-roadmap-e2e.txt)
+
+Screenshot artifacts:
+task-11-public-home.png: 58293 bytes
+task-11-public-recommend.png: 44100 bytes
+task-11-public-roadmap.png: 48242 bytes
+task-11-public-subjects.png: 61835 bytes
+task-11-public-subject-detail.png: 34775 bytes
+task-11-grade-one-absent.png: 61835 bytes
+task-11-upload-publish.png: 44372 bytes
+Missing screenshots: NONE
+
+Previous rejection resolution:
+- /s/[shareToken]/recommend no longer returns 404 in the required rerun.
+- /create upload/publish handoff is reachable in the same E2E run.
+
+Adversarial probes:
+- malformed input: E2E fixture includes grade-1-only data and public checks complete.
+- prompt injection: E2E fixture contains injection-looking grade-1 hidden text and public UI keeps it absent.
+- cancel/resume: Playwright webServer completed and cleaned up.
+- stale state: E2E resets/uses isolated JSON DB evidence.
+- dirty worktree: expected fix/evidence files only.
+- hung or long commands: E2E completed under timeout.
+- flaky tests: failing F3 rerun now passes after roadmap fix; public suite also passes.
+- misleading success output: screenshot sizes and exit code checked.
+- repeated interruptions: rerun evidence independent of previous task-12 pass.
+
+Cleanup receipt:
+NO_LISTENERS_3000_3100_55432

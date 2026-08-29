@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CurriculumDraft {
+  id             String                 @id @default(cuid())
+  schoolName     String
+  status         String                 @default("draft")
+  curriculumJson Json
+  parsedText     String
+  warnings       Json
+  sourceSnippets Json
+  editToken      String                 @unique
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  publication    CurriculumPublication?
+}
+
+model CurriculumPublication {
+  id             String          @id @default(cuid())
+  draftId        String          @unique
+  schoolName     String
+  curriculumJson Json
+  shareToken     String          @unique
+  editToken      String          @unique
+  publishedAt    DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  draft          CurriculumDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+}

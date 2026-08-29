@@ -1,0 +1,79 @@
+Handoff status - generic Hyoja-parity curriculum assistant
+Date: 2026-06-18
+Branch: codex/generic-curriculum-assistant-clean
+Worktree: C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl
+App: C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl\generic-app
+Plan: C:\Users\admin\Desktop\2026_project\project2_curriculum\plans\hyoja-parity-generic-assistant.md
+
+Current high-level state
+- Implementation tasks 1-12 are completed, committed, and pushed.
+- Latest pushed commit: 194b13b chore(verification): document Hyoja parity checks
+- Package manager has been switched to pnpm:
+  - package.json includes packageManager pnpm@11.7.0.
+  - package-lock.json was removed.
+  - pnpm-lock.yaml and pnpm-workspace.yaml were added.
+  - Local environment used corepack pnpm because global pnpm shim could not be enabled under Program Files permissions.
+- Task 12 pnpm verification passed before final wave:
+  - corepack pnpm install
+  - corepack pnpm run test
+  - corepack pnpm run lint
+  - corepack pnpm run typecheck
+  - corepack pnpm run build
+  - corepack pnpm run test:e2e:hyoja
+
+Final verification state
+- F1-F4 are NOT complete.
+- F1 was initially marked complete by a subagent despite a REJECT verdict, so the plan was corrected back to unchecked.
+- Final evidence artifacts currently exist but are untracked:
+  - evidence/final-f1-plan-compliance.txt
+  - evidence/final-f2-code-quality.txt
+  - evidence/final-f3-real-manual-qa.txt
+  - evidence/final-f4-scope-fidelity.txt
+  - evidence/handoff-status-2026-06-18.txt
+
+F1 result
+- Verdict: REJECT.
+- Main reason: exact manual QA command used git log --oneline -12, which did not show task 1 and task 2 because extra task-12 evidence commits pushed them outside the last 12 entries.
+- Important nuance: git log --oneline --decorate -20 did show task 1 through task 12 commits, so this is likely an audit-window issue, not missing implementation commits.
+- Artifact: evidence/final-f1-plan-compliance.txt
+
+F2 result
+- Verdict: REJECT.
+- Issue 1: shared roadmap links encode the selected cohort but do not apply decoded initialState.cohort back to CohortProvider/setCohort. Non-default cohort shared links can load under the default cohort and drop selections.
+- File called out: src/app/s/[shareToken]/roadmap/page.tsx
+- Issue 2: roadmap selected state is Record<string, string>, so choice groups with choose > 1 cannot represent multiple selected subjects and credit totals can be wrong.
+- File called out: src/app/s/[shareToken]/roadmap/page.tsx
+- Artifact: evidence/final-f2-code-quality.txt
+
+F3 result
+- Verdict: REJECT.
+- Re-ran: corepack pnpm run test:e2e:hyoja
+- Result: exit code 1, 2 failed Playwright tests.
+- Failure 1: /s/[shareToken]/recommend showed a 404 while the test expected Economics.
+- Failure 2: /create failed with ERR_CONNECTION_REFUSED at http://127.0.0.1:3100/create after the first failure.
+- Existing task-12 E2E evidence had previously passed, but current rerun is controlling evidence for final QA.
+- Artifact: evidence/final-f3-real-manual-qa.txt
+
+F4 result
+- Verdict: REJECT.
+- Main rejection reason: dirty worktree from final evidence artifacts.
+- Scope findings themselves were mostly positive:
+  - root Hyoja app was not touched by inspected parity commits.
+  - ChatBot is omitted from public surface.
+  - StudentCurriculumAssistant is retired.
+  - grade 1 is filtered from public data; grade 1 matches are negative-test fixtures.
+  - upload/review/publish evidence exists from task 10/11/12.
+- Artifact: evidence/final-f4-scope-fidelity.txt
+
+Current working tree note
+- Worktree has untracked final evidence/handoff files.
+- Plan file outside the worktree was modified to mark task 12 complete and restore F1 to unchecked.
+- Ledger outside the worktree includes task 12 completion and an F1 rejected/completed pair written by the subagent; treat the F1 completion ledger line as superseded by this handoff note and the corrected plan checkbox.
+
+Recommended next steps
+1. Fix roadmap cohort restoration from shared state.
+2. Fix roadmap selection model to support multi-select groups where choose > 1.
+3. Re-run targeted roadmap unit tests with pnpm.
+4. Re-run corepack pnpm run test:e2e:hyoja and investigate the /recommend 404 if it persists.
+5. Re-run final F1-F4 audits. F1 should use a wider log window or explicitly search for the known task commit messages.
+6. Commit final audit artifacts only after F1-F4 approve.

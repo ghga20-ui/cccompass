@@ -1,0 +1,137 @@
+{
+  "drafts": [
+    {
+      "id": "01d5a712-ad6c-474c-b24f-39c2312430cb",
+      "schoolName": "Upload Sample High School",
+      "status": "published",
+      "curriculumJson": {
+        "schoolName": "Upload Sample High School",
+        "sourceYear": "2028",
+        "cohorts": [
+          {
+            "entranceYear": "2028",
+            "label": "2028학년도 입학생",
+            "grades": [
+              {
+                "grade": 2,
+                "semesters": [
+                  {
+                    "semester": 1,
+                    "requiredSubjects": [
+                      {
+                        "name": "문학",
+                        "area": "국어",
+                        "credits": 4,
+                        "rawText": "2학년 1학기 문학 4학점 필수",
+                        "confidence": 1
+                      }
+                    ],
+                    "choiceGroups": [
+                      {
+                        "id": "grade-2-semester-1-choice-a",
+                        "label": "선택A",
+                        "choose": 1,
+                        "minChoose": 1,
+                        "maxChoose": 1,
+                        "creditsEach": 3,
+                        "subjects": [
+                          {
+                            "name": "물리학",
+                            "area": "과학",
+                            "credits": 3
+                          },
+                          {
+                            "name": "생명과학",
+                            "area": "과학",
+                            "credits": 3
+                          }
+                        ],
+                        "notes": [
+                          "mock data"
+                        ],
+                        "confidence": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "parsedText": "테스트고등학교\n2026학년도 입학생 교육과정 편제표\n2학년 1학기 문학 4학점 필수\n2학년 1학기 선택A 택1 물리학 3학점 생명과학 3학점",
+      "warnings": [],
+      "sourceSnippets": [
+        "테스트고등학교\n2026학년도 입학생 교육과정 편제표\n2학년 1학기 문학 4학점 필수\n2학년 1학기 선택A 택1 물리학 3학점 생명과학 3학점"
+      ],
+      "editToken": "d3tZg9HDdyB5d6DtGqgUvgCCQGRkrEsK",
+      "createdAt": "2026-06-18T06:50:02.776Z",
+      "updatedAt": "2026-06-18T06:50:11.399Z"
+    }
+  ],
+  "publications": [
+    {
+      "draftId": "01d5a712-ad6c-474c-b24f-39c2312430cb",
+      "schoolName": "Upload Sample High School",
+      "curriculumJson": {
+        "schoolName": "Upload Sample High School",
+        "sourceYear": "2028",
+        "cohorts": [
+          {
+            "entranceYear": "2028",
+            "label": "2028학년도 입학생",
+            "grades": [
+              {
+                "grade": 2,
+                "semesters": [
+                  {
+                    "semester": 1,
+                    "requiredSubjects": [
+                      {
+                        "name": "문학",
+                        "area": "국어",
+                        "credits": 4,
+                        "rawText": "2학년 1학기 문학 4학점 필수",
+                        "confidence": 1
+                      }
+                    ],
+                    "choiceGroups": [
+                      {
+                        "id": "grade-2-semester-1-choice-a",
+                        "label": "선택A",
+                        "choose": 1,
+                        "minChoose": 1,
+                        "maxChoose": 1,
+                        "creditsEach": 3,
+                        "subjects": [
+                          {
+                            "name": "물리학",
+                            "area": "과학",
+                            "credits": 3
+                          },
+                          {
+                            "name": "생명과학",
+                            "area": "과학",
+                            "credits": 3
+                          }
+                        ],
+                        "notes": [
+                          "mock data"
+                        ],
+                        "confidence": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "shareToken": "EFy1t-AKQw5hrQrGMvi_5DYB6YfokBj-",
+      "editToken": "d3tZg9HDdyB5d6DtGqgUvgCCQGRkrEsK",
+      "createdAt": "2026-06-18T06:50:11.368Z",
+      "updatedAt": "2026-06-18T06:50:11.368Z"
+    }
+  ]
+}

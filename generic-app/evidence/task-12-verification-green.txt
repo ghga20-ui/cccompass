@@ -1,0 +1,10 @@
+pnpm verification summary
+pnpm install: PASS (task-12-pnpm-install-green.txt)
+pnpm run test: PASS (task-12-test.txt)
+pnpm run lint: PASS (task-12-lint.txt)
+pnpm run typecheck: PASS (task-12-typecheck.txt)
+pnpm run build: PASS (task-12-build.txt)
+pnpm run test:e2e:hyoja: PASS (task-12-e2e.txt)
+hardcoding scan: PASS NO_MATCH (task-12-hardcoding-scan.txt)
+LSP: fallback to typecheck because typescript-language-server unavailable (task-12-lsp.txt)
+cleanup: no listeners on 3000/3100/55432 (task-12-cleanup-ports.txt)

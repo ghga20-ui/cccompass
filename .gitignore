@@ -1,9 +1,15 @@
 # Dependencies
 node_modules/
 app/node_modules/
+parser-worker/node_modules/
 
 # Next.js
 app/.next/
+generic-app/.next/
+generic-app/test-results/
+generic-app/supabase/.temp/
+parser-worker/dist/
+*.tsbuildinfo
 
 # Environment
 .env

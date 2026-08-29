@@ -1,0 +1,23 @@
+{
+  "name": "curriculum-parser-worker",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "start": "node dist/src/server.js",
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^4.0.14"
+  },
+  "dependencies": {
+    "kordoc": "^3.1.1"
+  }
+}

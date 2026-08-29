@@ -1,0 +1,59 @@
+﻿F2 code quality review - generic Hyoja-parity curriculum assistant
+Date: 2026-06-18
+Verdict: APPROVE
+
+Previously rejected findings and resolution:
+- Shared roadmap links now restore non-default cohorts before filtering shared selections.
+- Roadmap selection state now supports multi-select groups with Record<string, string[]> and backward-compatible string decoding.
+- Multi-select credit totals now count the selected subjects up to the group choose limit.
+
+Manual-QA exact invocation:
+powershell -NoProfile -Command "Set-Location 'C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl\generic-app'; corepack pnpm run lint; corepack pnpm run typecheck"
+PASS observable: both commands exit 0.
+
+Automated evidence:
+- corepack pnpm run test -- tests/unit/hyoja-roadmap-page.test.tsx: PASS (evidence/fix-roadmap-green.txt)
+- corepack pnpm run lint: PASS (evidence/fix-roadmap-lint.txt)
+- corepack pnpm run typecheck: PASS (evidence/fix-roadmap-typecheck.txt)
+- forbidden route/escape hatch scan: PASS (evidence/fix-roadmap-scan.txt)
+
+File-size check:
+- src/app/s/[shareToken]/roadmap/page.tsx pure_loc=174
+- src/lib/roadmap-selection-state.ts pure_loc=61
+- tests/unit/hyoja-roadmap-page.test.tsx pure_loc=148
+
+Adversarial probes:
+- malformed input: stale grade-one shared selection remains filtered; invalid groups are dropped by decodeRoadmapSelectionState.
+- prompt injection: no LLM boundary in roadmap state; public E2E still covers prompt-injection fixture absence.
+- cancel/resume: rerun started from disk state and did not depend on previous process state.
+- stale state: non-default cohort shared state is restored and verified by unit test.
+- dirty worktree: git status captured below; dirty state is expected fix/evidence only.
+- hung or long commands: lint/typecheck/test completed under timeout.
+- flaky tests: targeted roadmap test and public suite both pass after fix.
+- misleading success output: exit codes enforced and artifacts captured.
+- repeated interruptions: handoff artifact remains and fix evidence is independent.
+
+Cleanup receipt:
+NO_LISTENERS_3000_3100_55432
+
+git status --short:
+ M evidence/task-11-e2e-db.json
+ M evidence/task-11-public-recommend.png
+ M evidence/task-11-upload-publish.png
+ M src/app/s/[shareToken]/roadmap/page.tsx
+ M src/lib/roadmap-selection-state.ts
+ M tests/unit/hyoja-roadmap-page.test.tsx
+?? evidence/final-f1-plan-compliance.txt
+?? evidence/final-f2-code-quality.txt
+?? evidence/final-f3-real-manual-qa.txt
+?? evidence/final-f4-scope-fidelity.txt
+?? evidence/fix-roadmap-build.txt
+?? evidence/fix-roadmap-cleanup-ports.txt
+?? evidence/fix-roadmap-e2e.txt
+?? evidence/fix-roadmap-green.txt
+?? evidence/fix-roadmap-lint.txt
+?? evidence/fix-roadmap-red.txt
+?? evidence/fix-roadmap-scan.txt
+?? evidence/fix-roadmap-test-public.txt
+?? evidence/fix-roadmap-typecheck.txt
+?? evidence/handoff-status-2026-06-18.txt

@@ -1,0 +1,69 @@
+﻿F4 scope fidelity audit
+Date: 2026-06-18
+Verdict: APPROVE
+
+Manual-QA exact invocation:
+powershell -NoProfile -Command "Set-Location 'C:\Users\admin\.config\superpowers\worktrees\project2_curriculum\generic-curriculum-assistant-impl\generic-app'; rg -n 'ChatBot|StudentCurriculumAssistant|href=\"/recommend\"|href=\"/roadmap\"|href=\"/subjects\"' src tests"
+PASS observable: no forbidden production public-surface matches; allowed test-only ChatBot absence assertions are documented.
+
+Scope findings:
+- Original root Hyoja app was not modified by this fix; work is confined to generic worktree plus plan/ledger evidence.
+- Public production surface has no ChatBot, StudentCurriculumAssistant, or root-relative public href matches from the forbidden scan.
+- The only forbidden-scan hit is a unit test asserting ChatBot absence.
+- Grade 1 public exclusion remains covered by existing negative fixtures and E2E; grade: 1 matches are test fixtures only.
+- No deployment, chatbot, parser-worker, or root app scope was added.
+- Upload/review/publish public handoff passes in corepack pnpm run test:e2e:hyoja.
+
+Forbidden scan output:
+tests\unit\hyoja-public-layout.test.tsx:148:    expect(screen.queryByText(/ChatBot/i)).not.toBeInTheDocument();
+
+Production forbidden matches:
+NONE
+
+Grade-1 scan classification:
+tests\e2e\fixtures\hyoja-grade-filter-curriculum.ts:26:          grade: 1,
+tests\unit\hyoja-public-layout.test.tsx:38:          grade: 1,
+tests\unit\hyoja-public-layout.test.tsx:84:          grade: 1,
+tests\unit\hyoja-school-adapter.test.ts:22:          grade: 1,
+tests\unit\hyoja-school-adapter.test.ts:101:          grade: 1,
+tests\unit\publish-public-handoff.test.tsx:48:          grade: 1,
+tests\unit\public-student-page.test.tsx:42:          grade: 1,
+
+Adversarial probes:
+- malformed input: grade-1 and invalid shared selection cases remain covered.
+- prompt injection: E2E fixture absence remains covered.
+- cancel/resume: no long-lived resources created by this audit.
+- stale state: fresh disk scans and E2E rerun used.
+- dirty worktree: dirty state is expected fix/evidence files only before commit.
+- hung or long commands: scans completed under timeout.
+- flaky tests: E2E and public test suite passed after prior failure.
+- misleading success output: scan output classified by production vs test/evidence surface.
+- repeated interruptions: handoff note and new final evidence exist.
+
+Cleanup receipt:
+NO_LISTENERS_3000_3100_55432
+
+Unexpected status entries:
+NONE
+
+git status --short:
+ M evidence/task-11-e2e-db.json
+ M evidence/task-11-public-recommend.png
+ M evidence/task-11-upload-publish.png
+ M src/app/s/[shareToken]/roadmap/page.tsx
+ M src/lib/roadmap-selection-state.ts
+ M tests/unit/hyoja-roadmap-page.test.tsx
+?? evidence/final-f1-plan-compliance.txt
+?? evidence/final-f2-code-quality.txt
+?? evidence/final-f3-real-manual-qa.txt
+?? evidence/final-f4-scope-fidelity.txt
+?? evidence/fix-roadmap-build.txt
+?? evidence/fix-roadmap-cleanup-ports.txt
+?? evidence/fix-roadmap-e2e.txt
+?? evidence/fix-roadmap-green.txt
+?? evidence/fix-roadmap-lint.txt
+?? evidence/fix-roadmap-red.txt
+?? evidence/fix-roadmap-scan.txt
+?? evidence/fix-roadmap-test-public.txt
+?? evidence/fix-roadmap-typecheck.txt
+?? evidence/handoff-status-2026-06-18.txt
