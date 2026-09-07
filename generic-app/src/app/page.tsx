@@ -11,6 +11,7 @@ import { BrandLogo } from "@/components/Logo";
 import { CompassMotif } from "@/components/CompassMotif";
 import { Reveal } from "@/components/Reveal";
 import Footer from "@/components/Footer";
+import { CompassFilm } from "@/components/landing/CompassFilm";
 
 const stats = [
   { value: "6종", label: "편제표 형식 지원" },
@@ -131,6 +132,8 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+
+      <CompassFilm />
 
       {/* S2. 숫자 스탯 밴드 */}
       <section className="border-y border-[var(--primary)]/10 bg-[var(--secondary)]">
