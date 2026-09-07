@@ -19,7 +19,8 @@
 
 ## 다음 단계 / 함정
 
-- 최종 크기 조정 후 재빌드 확인 → 커밋/푸시 → 운영 반영 확인.
+- 최종 크기 조정 후 lint/build 재통과. 구현 커밋 `c3574d2` clean 브랜치 push 완료, Vercel 자동배포 success 확인.
+- `generic-curriculum-assistant.vercel.app` 및 `www.cccompass.xyz` 새 모션 마크업 확인. 배포 직후 커스텀 도메인에서 CDN 반영 지연이 잠시 있었음.
 - clean 브랜치에 push하면 Vercel production 자동배포. 서비스 `https://cccompass.xyz`.
 - 3D 엔진을 개발 중 수정하면 동적 import 인스턴스는 Fast Refresh만으로 교체되지 않을 수 있음. 새 엔진 검증은 전체 새로고침 필요.
 - 실기기 성능 측정은 미실시. 기존 파서·공급자/DB 이력은 원본 저장소 HANDOFF.md 참조.
