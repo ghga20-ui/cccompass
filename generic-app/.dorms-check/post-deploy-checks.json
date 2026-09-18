@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-18T03:03:22.083Z",
+  "deployment": "dpl_6ToBUt7bFfFGULa2iWcwvRo6Bs5D",
+  "commit": "ea2b3dd",
+  "checks": [
+    {
+      "path": "/",
+      "status": 403
+    },
+    {
+      "path": "/create",
+      "status": 403
+    },
+    {
+      "path": "/guide",
+      "status": 403
+    },
+    {
+      "path": "/faq",
+      "status": 403
+    },
+    {
+      "path": "/review/security-audit-nonexistent",
+      "status": 403
+    },
+    {
+      "path": "/api/curricula/security-audit-nonexistent",
+      "status": 403
+    }
+  ]
+}

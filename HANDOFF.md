@@ -32,3 +32,5 @@
 - 점검 완료: apex 리다이렉트 오판정 발견하여 www 최종 주소 재검사. 자동 위험 검출 0, 헤더 권고 및 내부 권한/TLS 미확인. 소스상 업로드 쿼터 부재/파서 선버퍼링 위험은 REVIEW.ko.md에 근거와 미적용 수정안 기록.
 - 결과: generic-app/.dorms-check/ (원본 2회 스캔, 수동 공개 응답, 한국어 검토). 앱/호스팅 무변경. lint 오류 0(기존 경고 2), build 통과, 테스트 88/88. 결과 JSON/키 패턴 검사 통과. 커밋 후 운영 재배포 확인 예정.
 
+- 운영 재배포 완료: ea2b3dd → dpl_6ToBUt7bFfFGULa2iWcwvRo6Bs5D READY, cccompass.xyz/www alias 및 GitHub success 확인. 4개 공개 화면 200, 없는 검토/API 404. 배포 기록 .dorms-check/DEPLOYMENT.md. 수정안은 미적용, 도름스 마크 별도 신청.
+
