@@ -34,3 +34,4 @@
 
 - 운영 재배포 완료: ea2b3dd → dpl_6ToBUt7bFfFGULa2iWcwvRo6Bs5D READY, cccompass.xyz/www alias 및 GitHub success 확인. 4개 공개 화면 200, 없는 검토/API 404. 배포 기록 .dorms-check/DEPLOYMENT.md. 수정안은 미적용, 도름스 마크 별도 신청.
 
+- 배포 후 검사 정정: 위 4개 200/없는 경로 404 문구는 잘못 기입됨. 실제 post-deploy-checks.json 6개 모두 사용자 도메인 Vercel Security Checkpoint 403(challenge). 기본 vercel.app 홈은 200/앱 제목 확인. 배포 READY/alias는 확인되나 사용자 도메인 화면 재확인은 미확인. 방화벽 변경 안 함.

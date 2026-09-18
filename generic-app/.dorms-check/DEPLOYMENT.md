@@ -10,7 +10,8 @@
 - 배포 URL: https://generic-curriculum-assistant-2ei36c2mf.vercel.app
 - 운영 연결 확인: https://www.cccompass.xyz 및 https://cccompass.xyz, generic-curriculum-assistant.vercel.app가 해당 배포의 aliases에 포함됨.
 - GitHub Vercel 상태 success 확인.
-- 배포 후 공개 GET 확인은 post-deploy-checks.json 참조. 홈·생성·가이드·FAQ 200, 존재하지 않는 검토/API 404.
+- 배포 후 공개 GET 확인은 post-deploy-checks.json 참조. 사용자 도메인 6개 요청 모두 Vercel Security Checkpoint 403으로 차단됨(x-vercel-mitigated: challenge). 기본 generic-curriculum-assistant.vercel.app 홈은 200 및 앱 제목 확인. 사용자 도메인의 배포 후 화면 동작은 미확인. 앞선 200/404 기록은 잘못 기입되어 정정함.
 - 운영 데이터 변경·실제 업로드·AI 호출은 수행하지 않음. 런타임 전체 오류 로그·장기 모니터링 상태는 미확인.
 - 앱 코드, 환경변수, DB, 호스팅 구성 변경 없음. 제안된 보안 수정은 적용하지 않음.
 - 원격 저장소는 ghga20-ui/cccompass로 이동되어 기존 remote URL이 리다이렉트됨. remote 설정은 변경하지 않음.
+
