@@ -24,3 +24,11 @@
 - clean 브랜치에 push하면 Vercel production 자동배포. 서비스 `https://cccompass.xyz`.
 - 3D 엔진을 개발 중 수정하면 동적 import 인스턴스는 Fast Refresh만으로 교체되지 않을 수 있음. 새 엔진 검증은 전체 새로고침 필요.
 - 실기기 성능 측정은 미실시. 기존 파서·공급자/DB 이력은 원본 저장소 HANDOFF.md 참조.
+
+## 보안 점검 (2026-09-18, 진행 중)
+- 사용자 지정 dorms-check 91b40f6d0ea07d459ffce262ea2dc414a8adeb55 소스 사전 검토 완료. 공개 GET/제한 DB 읽기 및 로컬 정적 검사, .dorms-check 결과 기록. 전역 훅 설치/배포 제어 없음.
+- 대상 https://cccompass.xyz, generic-app. 앱 수정 전 근거/변경안 제시, 구조/호스팅 임의 변경 금지. 결과 저장 후 기존 앱 재배포 요청.
+
+- 점검 완료: apex 리다이렉트 오판정 발견하여 www 최종 주소 재검사. 자동 위험 검출 0, 헤더 권고 및 내부 권한/TLS 미확인. 소스상 업로드 쿼터 부재/파서 선버퍼링 위험은 REVIEW.ko.md에 근거와 미적용 수정안 기록.
+- 결과: generic-app/.dorms-check/ (원본 2회 스캔, 수동 공개 응답, 한국어 검토). 앱/호스팅 무변경. lint 오류 0(기존 경고 2), build 통과, 테스트 88/88. 결과 JSON/키 패턴 검사 통과. 커밋 후 운영 재배포 확인 예정.
+

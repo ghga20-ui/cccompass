@@ -1,0 +1,74 @@
+{
+  "at": "2026-09-18T02:58:11.464Z",
+  "results": [
+    {
+      "url": "https://www.cccompass.xyz/",
+      "finalUrl": "https://www.cccompass.xyz/",
+      "status": 200,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    },
+    {
+      "url": "https://www.cccompass.xyz/privacy",
+      "finalUrl": "https://www.cccompass.xyz/privacy",
+      "status": 404,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    },
+    {
+      "url": "https://www.cccompass.xyz/terms",
+      "finalUrl": "https://www.cccompass.xyz/terms",
+      "status": 404,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    },
+    {
+      "url": "https://www.cccompass.xyz/.env",
+      "finalUrl": "https://www.cccompass.xyz/.env",
+      "status": 404,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    },
+    {
+      "url": "https://www.cccompass.xyz/.git/config",
+      "finalUrl": "https://www.cccompass.xyz/.git/config",
+      "status": 404,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    },
+    {
+      "url": "https://www.cccompass.xyz/api/curricula/security-audit-nonexistent",
+      "finalUrl": "https://www.cccompass.xyz/api/curricula/security-audit-nonexistent",
+      "status": 404,
+      "headers": {
+        "strict-transport-security": "max-age=63072000"
+      },
+      "title": null
+    },
+    {
+      "url": "https://www.cccompass.xyz/review/security-audit-nonexistent",
+      "finalUrl": "https://www.cccompass.xyz/review/security-audit-nonexistent",
+      "status": 404,
+      "headers": {
+        "strict-transport-security": "max-age=63072000",
+        "x-powered-by": "Next.js"
+      },
+      "title": "커리컴퍼스 · CurriCompass"
+    }
+  ]
+}
