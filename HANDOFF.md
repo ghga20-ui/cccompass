@@ -35,3 +35,11 @@
 - 운영 재배포 완료: ea2b3dd → dpl_6ToBUt7bFfFGULa2iWcwvRo6Bs5D READY, cccompass.xyz/www alias 및 GitHub success 확인. 4개 공개 화면 200, 없는 검토/API 404. 배포 기록 .dorms-check/DEPLOYMENT.md. 수정안은 미적용, 도름스 마크 별도 신청.
 
 - 배포 후 검사 정정: 위 4개 200/없는 경로 404 문구는 잘못 기입됨. 실제 post-deploy-checks.json 6개 모두 사용자 도메인 Vercel Security Checkpoint 403(challenge). 기본 vercel.app 홈은 200/앱 제목 확인. 배포 READY/alias는 확인되나 사용자 도메인 화면 재확인은 미확인. 방화벽 변경 안 함.
+
+## 저장 오류 복구 (2026-09-18, 진행 중)
+- 사용자 저장 실패 재현. PUT이 앱 런타임에 도착하지 않고 Vercel 시스템 challenge(403 HTML)에 차단됨. 11:58 이후 firewall events와 사용자 증상 일치. 앞선 보안 점검에서도 동일 challenge 기록.
+- 같은 Chrome에서 홈페이지를 새 탭으로 열면 자동 브라우저 확인 후 정상 진입. 기존 편집 탭의 데이터 유지 후 저장 재시도 검증 중.
+- 저장/게시 응답의 x-vercel-mitigated: challenge를 감지해 새 탭 확인 링크와 재시도 안내 추가. 방화벽/인증 설정 변경 없음. 다음: 회귀 테스트, lint/build, 커밋·푸시 및 배포 확인.
+
+- 운영 복구 확인: 기존 Chrome 편집 탭에서 홈페이지 새 탭 자동 확인 후 다시 저장 → 교육과정 초안을 저장했습니다 성공 메시지 확인. 사용자 입력을 새로고침하거나 게시하지 않음. 회귀 테스트 5건 통과(403/429·입력 유지·재저장·게시 중단·게시 challenge·일반 오류 분리).
+- 검증 완료: lint 오류 0(기존 경고 2), production build 성공, 전체 테스트 93/93 통과(--maxWorkers=2). 최초 무제한 병렬 테스트는 빌드/lint와 CPU 경합으로 timeout 및 worker 기동 실패 → 동시 실행 수 제한 재검증 정상. 브라우저 자동 확인 후 실제 저장 성공 확인.

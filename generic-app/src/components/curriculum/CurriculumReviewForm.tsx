@@ -26,12 +26,21 @@ type CurriculumReviewFormProps = {
 type ApiPayload = {
   error?: string;
   manageUrl?: string;
+  needsBrowserCheck?: boolean;
 };
 
 const fallbackSaveError = "저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 const fallbackPublishError = "게시 중 문제가 발생했습니다. 저장 내용을 확인한 뒤 다시 시도해 주세요.";
 
 async function readApiPayload(response: Response): Promise<ApiPayload> {
+  // Edge challenges are HTML and never reach the save/publish API.
+  if (response.headers.get("x-vercel-mitigated") === "challenge") {
+    return {
+      error: "브라우저 보안 확인이 필요합니다. 입력 내용은 이 화면에 유지됩니다. 아래 링크를 새 탭에서 열어 확인을 마친 뒤, 이 화면으로 돌아와 다시 눌러 주세요.",
+      needsBrowserCheck: true,
+    };
+  }
+
   try {
     const payload: unknown = await response.json();
 
@@ -56,6 +65,7 @@ export function CurriculumReviewForm({
   const [messageType, setMessageType] = useState<"success" | "error">("success");
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [needsBrowserCheck, setNeedsBrowserCheck] = useState(false);
   // cohortIndex별 활성 학년(grade 숫자)
   const [activeGrades, setActiveGrades] = useState<Record<number, number>>({});
   function activeGradeFor(cohortIndex: number, fallbackGrade: number) {
@@ -288,6 +298,7 @@ export function CurriculumReviewForm({
       const payload = await readApiPayload(response);
 
       if (!response.ok) {
+        setNeedsBrowserCheck(payload.needsBrowserCheck === true);
         setMessageType("error");
         setMessage(payload.error || fallbackSaveError);
         return false;
@@ -312,6 +323,7 @@ export function CurriculumReviewForm({
     }
 
     setMessage("");
+    setNeedsBrowserCheck(false);
     setIsSaving(true);
 
     try {
@@ -327,6 +339,7 @@ export function CurriculumReviewForm({
     }
 
     setMessage("");
+    setNeedsBrowserCheck(false);
     setIsPublishing(true);
 
     try {
@@ -345,6 +358,7 @@ export function CurriculumReviewForm({
       const payload = await readApiPayload(response);
 
       if (!response.ok || !payload.manageUrl) {
+        setNeedsBrowserCheck(payload.needsBrowserCheck === true);
         setMessageType("error");
         setMessage(payload.error || fallbackPublishError);
         return;
@@ -589,6 +603,16 @@ export function CurriculumReviewForm({
           }`}
         >
           {message}
+          {needsBrowserCheck ? (
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block font-semibold underline underline-offset-4"
+            >
+              브라우저 확인하기 (새 탭)
+            </a>
+          ) : null}
         </p>
       ) : null}
 
