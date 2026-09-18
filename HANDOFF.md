@@ -43,3 +43,4 @@
 
 - 운영 복구 확인: 기존 Chrome 편집 탭에서 홈페이지 새 탭 자동 확인 후 다시 저장 → 교육과정 초안을 저장했습니다 성공 메시지 확인. 사용자 입력을 새로고침하거나 게시하지 않음. 회귀 테스트 5건 통과(403/429·입력 유지·재저장·게시 중단·게시 challenge·일반 오류 분리).
 - 검증 완료: lint 오류 0(기존 경고 2), production build 성공, 전체 테스트 93/93 통과(--maxWorkers=2). 최초 무제한 병렬 테스트는 빌드/lint와 CPU 경합으로 timeout 및 worker 기동 실패 → 동시 실행 수 제한 재검증 정상. 브라우저 자동 확인 후 실제 저장 성공 확인.
+- 완료: 수정 커밋 20f5e40 clean 브랜치 push 및 운영 배포 dpl_BjyuBvPNmkorggquuoxwgbWYWRhw READY 확인. www.cccompass.xyz/cccompass.xyz alias 연결 확인. 사용자의 기존 편제표 저장 성공, 학생 게시 미실행. 반복 curl 검사는 동일 IP의 Vercel 자동 challenge를 다시 유발할 수 있으므로 피하고 실제 브라우저로 확인할 것.
