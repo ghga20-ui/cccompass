@@ -35,7 +35,7 @@ export function CompassFilm() {
       <iframe
         ref={frame}
         className={styles.film}
-        src="/motion/cccompass-native-15s-v1.html"
+        src="/motion/cccompass-pop-15s-v2.html?embed=1"
         title="커리컴퍼스 · 학교 과목 선택과 3년 계획 안내"
         loading="lazy"
         onLoad={fitContent}
