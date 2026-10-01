@@ -6,7 +6,7 @@ import {
   subjects as staticSubjects,
   type Subject,
 } from "@/data/subjects";
-import { expandSubjectNames, type StudentSchoolData } from "@/lib/hyoja/school-adapter";
+import { expandSubjectNames, getSelectionCredits, type StudentSchoolData } from "@/lib/hyoja/school-adapter";
 
 export interface SubjectCatalog {
   subjects: Subject[];
@@ -102,14 +102,17 @@ function collectUploadedSubjectSeeds(data: StudentSchoolData) {
 
     cohort.selections.forEach((group) => {
       group.options.forEach((option) => {
+        const metadata = group.optionMetadata && Object.prototype.hasOwnProperty.call(group.optionMetadata, option)
+          ? group.optionMetadata[option]
+          : undefined;
         expandSubjectNames(option).forEach((name) => {
           const key = normalizeSubjectName(name);
           if (seeds.has(key)) return;
           seeds.set(key, {
             name,
-            area: "",
-            category: "",
-            credits: group.creditsEach,
+            area: metadata?.area ?? "",
+            category: metadata?.category ?? "",
+            credits: getSelectionCredits(group, [option]),
           });
         });
       });

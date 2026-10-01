@@ -1,7 +1,6 @@
 import { subjects } from "@/data/subjects";
 import {
   hasConcentratedMarker,
-  resolveConcentratedName,
   splitConcentratedNames,
 } from "@/lib/curriculum/split-subjects";
 import type {
@@ -60,17 +59,46 @@ function normalizeName(name: string): string {
   return canonical ?? name;
 }
 
+// 원본 편제표와 대조해 확인한 인식 오류만 교정한다. 유사도/부분 일치는 사용하지 않는다.
+const verifiedRecognitionAliases = new Map<string, string>([
+  ["세포의 물질대사", "세포와 물질대사"],
+  ["행성과 우주과학", "행성우주과학"],
+]);
+
+function normalizeRecognizedSubject(subject: CurriculumSubject): CurriculumSubject {
+  const canonical = canonicalByCompact.get(subject.name.replace(/\s+/g, ""));
+  // 실제 카탈로그에 있는 이름은 별칭 규칙보다 우선한다.
+  if (canonical) return { ...subject, name: canonical };
+
+  const aliasTarget = verifiedRecognitionAliases.get(subject.name);
+  const corrected = aliasTarget && canonicalByCompact.get(aliasTarget.replace(/\s+/g, ""));
+  if (!corrected) return { ...subject };
+
+  return {
+    ...subject,
+    name: corrected,
+    rawText: subject.rawText ?? subject.name,
+    confidence: Math.min(subject.confidence ?? 0.49, 0.49),
+  };
+}
+
 function expandSubjectList(list: CurriculumSubject[]): CurriculumSubject[] {
   const out: CurriculumSubject[] = [];
   for (const subject of list) {
     const parts = splitByMasterList(subject.name);
     if (parts) {
-      // 뭉친 과목 분해: credits는 분해된 각 과목에 그대로 복제(검수에서 조정), confidence 하향
+      // 학점 배분은 추측하지 않는다. 복제한 학점은 원문과 함께 검수하도록
+      // review-flags의 경고 기준(< 0.5) 아래로 confidence를 낮춘다.
       parts.forEach((name) =>
-        out.push({ ...subject, name, confidence: Math.min(subject.confidence ?? 0.5, 0.5) }),
+        out.push({
+          ...subject,
+          name,
+          rawText: subject.rawText ?? subject.name,
+          confidence: Math.min(subject.confidence ?? 0.49, 0.49),
+        }),
       );
     } else {
-      out.push({ ...subject, name: normalizeName(subject.name) });
+      out.push(normalizeRecognizedSubject(subject));
     }
   }
   return out;
@@ -83,10 +111,39 @@ function expandGroup(group: ChoiceGroup): ChoiceGroup {
 }
 
 function groupSignature(group: ChoiceGroup): string {
-  return group.subjects
-    .map((s) => s.name)
-    .sort()
-    .join("|");
+  // 과목명만 같아도 선택 수·학점·이수 조건이 다르면 별도 선택군이다.
+  // 생성 ID와 옵션 순서만 무시하고, 의미가 같은 그룹만 중복 제거한다.
+  return JSON.stringify({
+    label: group.label,
+    choose: group.choose,
+    minChoose: group.minChoose,
+    maxChoose: group.maxChoose,
+    creditsEach: group.creditsEach,
+    notes: group.notes ?? [],
+    subjects: group.subjects
+      .map((subject) => JSON.stringify([
+        subject.name,
+        subject.credits,
+        subject.area,
+        subject.category,
+      ]))
+      .sort(),
+  });
+}
+
+function concentratedPair(name: string): [string, string] | null {
+  if (!hasConcentratedMarker(name) || name.split("↔").length !== 2) return null;
+  const parts = splitConcentratedNames(name).map(normalizeName);
+  return parts.length === 2 && parts[0] !== parts[1] ? [parts[0], parts[1]] : null;
+}
+
+function resolveConcentratedSubject(subject: CurriculumSubject, semester: number): CurriculumSubject {
+  const pair = concentratedPair(subject.name);
+  return pair ? {
+    ...subject,
+    name: pair[semester === 2 ? 1 : 0],
+    rawText: subject.rawText ?? subject.name,
+  } : subject;
 }
 
 /**
@@ -100,67 +157,64 @@ function splitConcentratedAcrossSemesters(grade: CurriculumGrade): CurriculumGra
     ...semester,
     choiceGroups: semester.choiceGroups.map((group) => ({
       ...group,
-      subjects: group.subjects.map((s) =>
-        hasConcentratedMarker(s.name)
-          ? { ...s, name: resolveConcentratedName(s.name, semester.semester) }
-          : s,
-      ),
+      subjects: group.subjects.map((subject) => resolveConcentratedSubject(subject, semester.semester)),
     })),
   }));
 
-  const sem1 = semesters.find((s) => s.semester === 1);
-  const sem2 = semesters.find((s) => s.semester === 2);
-
-  // 2) 1·2학기 둘 다 없으면 지정과목 ↔를 그 학기 기준 제자리 해석
-  if (!sem1 || !sem2) {
-    return {
-      ...grade,
-      semesters: semesters.map((semester) => ({
-        ...semester,
-        requiredSubjects: semester.requiredSubjects.map((s) =>
-          hasConcentratedMarker(s.name)
-            ? { ...s, name: resolveConcentratedName(s.name, semester.semester) }
-            : s,
-        ),
-      })),
-    };
-  }
-
-  // 3) 지정과목 ↔를 앞→1학기 / 뒤→2학기로 분리(원본 제거 후 양쪽에 추가, 이름 중복 방지)
-  const toSem1: CurriculumSubject[] = [];
-  const toSem2: CurriculumSubject[] = [];
-  const stripped = semesters.map((semester) => {
-    const requiredSubjects: CurriculumSubject[] = [];
-    for (const subject of semester.requiredSubjects) {
-      if (hasConcentratedMarker(subject.name)) {
-        const parts = splitConcentratedNames(subject.name);
-        if (parts.length >= 2) {
-          toSem1.push({ ...subject, name: parts[0] });
-          toSem2.push({ ...subject, name: parts[parts.length - 1] });
-          continue;
-        }
-      }
-      requiredSubjects.push(subject);
-    }
-    return { ...semester, requiredSubjects };
-  });
-
-  const addUnique = (list: CurriculumSubject[], additions: CurriculumSubject[]) => {
-    const have = new Set(list.map((s) => s.name));
-    for (const addition of additions) {
-      if (!have.has(addition.name)) {
-        list.push(addition);
-        have.add(addition.name);
-      }
-    }
+  // 2) 학기별 원본을 함께 비교한다. 단일 과목 명시 > 해당 학기의 쌍 > 반대 학기 추론.
+  type PairEntry = {
+    subject: CurriculumSubject;
+    semester: number;
+    names: [string, string];
+    key: string;
   };
+  const pairs = new Map<CurriculumSubject, PairEntry>();
+  semesters.forEach((semester) => {
+    semester.requiredSubjects.forEach((subject) => {
+      const names = concentratedPair(subject.name);
+      if (names) pairs.set(subject, { subject, semester: semester.semester, names, key: JSON.stringify(names) });
+    });
+  });
+  const entries = [...pairs.values()];
+  const ambiguousPairs = new Set<string>();
+  for (const target of new Set(semesters.map((semester) => semester.semester))) {
+    const explicitNames = new Set(semesters
+      .filter((semester) => semester.semester === target)
+      .flatMap((semester) => semester.requiredSubjects.filter((subject) => !pairs.has(subject)))
+      .map((subject) => subject.name));
+    const candidates = new Map<string, PairEntry[]>();
+    entries.forEach((entry) => {
+      const name = entry.names[target - 1];
+      candidates.set(name, [...(candidates.get(name) ?? []), entry]);
+    });
+    candidates.forEach((options, name) => {
+      if (explicitNames.has(name)) return;
+      const local = options.filter((entry) => entry.semester === target);
+      const preferred = local.length > 0 ? local : options;
+      if (new Set(preferred.map((entry) => entry.subject.credits)).size > 1) {
+        // 동등한 원본끼리 충돌하면 쌍 전체를 그대로 남겨 집중이수 검수를 요청한다.
+        options.forEach((entry) => ambiguousPairs.add(entry.key));
+      }
+    });
+  }
 
   return {
     ...grade,
-    semesters: stripped.map((semester) => {
-      const requiredSubjects = [...semester.requiredSubjects];
-      if (semester.semester === 1) addUnique(requiredSubjects, toSem1);
-      if (semester.semester === 2) addUnique(requiredSubjects, toSem2);
+    semesters: semesters.map((semester) => {
+      const requiredSubjects = semester.requiredSubjects.filter((subject) => {
+        const pair = pairs.get(subject);
+        return !pair || ambiguousPairs.has(pair.key);
+      });
+      const have = new Set(requiredSubjects.map((subject) => subject.name));
+      entries
+        .filter((entry) => !ambiguousPairs.has(entry.key))
+        .sort((a, b) => Number(b.semester === semester.semester) - Number(a.semester === semester.semester))
+        .forEach((entry) => {
+          const resolved = resolveConcentratedSubject(entry.subject, semester.semester);
+          if (have.has(resolved.name)) return;
+          requiredSubjects.push(resolved);
+          have.add(resolved.name);
+        });
       return { ...semester, requiredSubjects };
     }),
   };

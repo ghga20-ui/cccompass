@@ -8,6 +8,7 @@ import { SubjectRow } from "@/components/curriculum/SubjectRow";
 import { AddSubjectControl } from "@/components/curriculum/AddSubjectControl";
 import { Button } from "@/components/ui/button";
 import { createEmptyChoiceGroup, generateGroupId } from "@/lib/curriculum/factory";
+import { getSelectionCreditRange } from "@/lib/hyoja/school-adapter";
 import { getReviewFlag } from "@/lib/curriculum/review-flags";
 import {
   schoolCurriculumSchema,
@@ -131,14 +132,21 @@ export function CurriculumReviewForm({
     return n;
   }
 
-  // 학기 예상 학점 합계 (지정 + 선택군 택N×과목당학점)
-  function semesterCreditSum(semester: CurriculumSemester): number {
-    const designated = semester.requiredSubjects.reduce((sum, s) => sum + (s.credits || 0), 0);
-    const choice = semester.choiceGroups.reduce((sum, g) => {
-      const each = g.creditsEach ?? g.subjects[0]?.credits ?? 0;
-      return sum + g.choose * each;
-    }, 0);
-    return designated + choice;
+  // 개별 과목 학점과 선택 수 범위를 학생 화면과 동일한 규칙으로 합산한다.
+  function semesterCreditSum(semester: CurriculumSemester): string {
+    const designated = semester.requiredSubjects.reduce((sum, subject) => sum + (subject.credits || 0), 0);
+    const range = semester.choiceGroups.reduce((sum, group) => {
+      const credits = getSelectionCreditRange({
+        ...group,
+        options: group.subjects.map((subject) => subject.name),
+        creditsEach: group.creditsEach ?? group.subjects[0]?.credits ?? 0,
+        optionCredits: group.creditsEach === undefined
+          ? Object.fromEntries(group.subjects.map((subject) => [subject.name, subject.credits]))
+          : undefined,
+      });
+      return { min: sum.min + credits.min, max: sum.max + credits.max };
+    }, { min: designated, max: designated });
+    return range.min === range.max ? String(range.min) : `${range.min}~${range.max}`;
   }
 
   function updateRequiredSubject(
@@ -490,6 +498,7 @@ export function CurriculumReviewForm({
 
   return (
     <form className="mt-10 space-y-8" onSubmit={(event) => event.preventDefault()}>
+      <fieldset disabled={isSaving || isPublishing} className="min-w-0 space-y-8 border-0 p-0">
       {reviewCount > 0 ? (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
           <p className="text-sm font-semibold text-amber-900">
@@ -591,6 +600,8 @@ export function CurriculumReviewForm({
           </section>
         );
       })}
+
+      </fieldset>
 
       {message ? (
         <p

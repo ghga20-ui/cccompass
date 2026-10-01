@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useId } from "react";
 import Link from "next/link";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import type { SelectionGroup as SelectionGroupType } from "@/lib/hyoja/school-adapter";
+import { getSelectionCredits, type SelectionGroup as SelectionGroupType } from "@/lib/hyoja/school-adapter";
 import type { Subject } from "@/data/subjects";
 import { getAssessmentBadge } from "@/data/assessment";
 import { buildSubjectDetailHref } from "@/lib/hyoja/share-routes";
@@ -45,6 +45,8 @@ export default function SelectionGroup({
   conflictSubjects,
   detailReturnPath,
 }: SelectionGroupProps) {
+  const notesId = useId();
+  const notes = group.notes?.filter((note) => note.trim()) ?? [];
   // 범위 택N~M 지원: 최대 선택 수(maxChoose)를 캡으로 사용
   const maxChoose = group.maxChoose ?? group.choose;
   const minChoose = group.minChoose ?? group.choose;
@@ -54,6 +56,13 @@ export default function SelectionGroup({
   // 최소 선택 수를 채웠는지(완료 판정). 범위면 minChoose, 아니면 choose
   const isComplete = selected.length >= minChoose;
   const chooseLabel = isRange ? `택${minChoose}~${maxChoose}` : `택${group.choose}`;
+  const optionCreditValues = group.options.map((name) => getSelectionCredits(group, [name]));
+  const minOptionCredits = Math.min(...optionCreditValues);
+  const maxOptionCredits = Math.max(...optionCreditValues);
+  const hasVariableCredits = minOptionCredits !== maxOptionCredits;
+  const creditLabel = hasVariableCredits
+    ? `과목별 ${minOptionCredits}~${maxOptionCredits}학점`
+    : `과목당 ${group.creditsEach}학점`;
 
   const handleToggle = useCallback(
     (name: string) => {
@@ -70,13 +79,29 @@ export default function SelectionGroup({
           {group.label}
         </h4>
         <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-          {chooseLabel} / 과목당 {group.creditsEach}학점
+          {chooseLabel} / {creditLabel}
         </span>
       </div>
 
+      {notes.length > 0 && (
+        <div
+          id={notesId}
+          role="note"
+          aria-label="편제·교사 안내"
+          className="rounded-lg bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground"
+        >
+          <p className="font-medium text-foreground">편제·교사 안내</p>
+          <ul className="mt-1 list-disc space-y-1 pl-4">
+            {notes.map((note, index) => (
+              <li key={index} className="whitespace-pre-line">{note}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Options list */}
       <div className="space-y-1">
-        {group.options.map((name) => {
+        {group.options.map((name, optionIndex) => {
           const isSelected = selected.includes(name);
           const isRecommended = recommendedSubjects?.has(name) ?? false;
           const conflictReason = conflictSubjects?.get(name);
@@ -112,6 +137,7 @@ export default function SelectionGroup({
                   isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
                 )}
                 aria-label={`${name} 선택`}
+                aria-describedby={notes.length > 0 ? notesId : undefined}
               >
                 <span
                   className={cn(
@@ -145,6 +171,11 @@ export default function SelectionGroup({
                 >
                   {name}
                 </span>
+                {hasVariableCredits && (
+                  <span className="ml-1.5 text-[10px] text-muted-foreground">
+                    {optionCreditValues[optionIndex]}학점
+                  </span>
+                )}
                 {subjectData && typeLabel && cat !== "공통" && (
                   <span className="ml-1.5 inline-flex items-center gap-1">
                     <span className={cn("rounded px-1 py-0 text-[10px] font-medium leading-[16px]", categoryStyle[typeLabel] ?? "bg-muted text-muted-foreground")}>

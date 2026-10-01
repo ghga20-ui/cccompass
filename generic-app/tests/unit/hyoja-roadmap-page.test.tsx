@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import RoadmapPage from "@/app/s/[shareToken]/roadmap/page";
-import { CohortProvider } from "@/contexts/CohortContext";
+import { CohortProvider, useCohort } from "@/contexts/CohortContext";
 import { HyojaRuntimeProvider } from "@/contexts/HyojaRuntimeContext";
 import type { StudentSchoolData } from "@/lib/hyoja/school-adapter";
 import { encodeRoadmapSelectionState } from "@/lib/roadmap-selection-state";
@@ -89,14 +89,14 @@ const schoolData: StudentSchoolData = {
   },
 };
 
-function renderRoadmap(initialCohort = "2028") {
-  Object.defineProperty(navigator, "clipboard", {
-    configurable: true,
-    value: { writeText: mocks.writeText },
-  });
+function CohortObserver() {
+  const { cohort } = useCohort();
+  return <output data-testid="active-cohort">{cohort}</output>;
+}
 
-  return render(
-    <HyojaRuntimeProvider shareToken="student-share-token" schoolData={schoolData}>
+function RoadmapHarness({ initialCohort = "2028", data = schoolData }: { initialCohort?: string; data?: StudentSchoolData }) {
+  return (
+    <HyojaRuntimeProvider shareToken="student-share-token" schoolData={data}>
       <CohortProvider
         cohorts={[
           { entranceYear: "2027", label: "2027 entrance" },
@@ -104,10 +104,18 @@ function renderRoadmap(initialCohort = "2028") {
         ]}
         initialCohort={initialCohort}
       >
+        <CohortObserver />
         <RoadmapPage />
       </CohortProvider>
-    </HyojaRuntimeProvider>,
+    </HyojaRuntimeProvider>
   );
+}
+function renderRoadmap(initialCohort = "2028", data = schoolData) {
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText: mocks.writeText },
+  });
+  return render(<RoadmapHarness initialCohort={initialCohort} data={data} />);
 }
 
 afterEach(() => {
@@ -175,6 +183,84 @@ describe("Hyoja roadmap page", () => {
     expect(screen.getByText("1/1 선택 ✓")).toBeInTheDocument();
     // 다른 cohort(2028)의 과목은 노출되지 않는다
     expect(screen.queryByText("Physics I")).not.toBeInTheDocument();
+  });
+
+  it("restores the shared cohort on a fresh visit instead of the provider default", () => {
+    mocks.searchParams = new URLSearchParams({
+      c: "2028",
+      s: encodeRoadmapSelectionState({ cohort: "2028", selections: {
+        "2028-2-1-choice-a": ["Economics"],
+      } }),
+    });
+    renderRoadmap("2027");
+    expect(screen.getByText("Literature")).toBeInTheDocument();
+    expect(screen.getByTestId("active-cohort")).toHaveTextContent("2028");
+    expect(screen.queryByText("Default Literature")).not.toBeInTheDocument();
+    expect(screen.getByText("7 / 11학점")).toBeInTheDocument();
+  });
+
+  it("does not count removed, duplicate, or over-limit choices from an old shared link", () => {
+    mocks.searchParams = new URLSearchParams({ s: encodeRoadmapSelectionState({
+      cohort: "2028", selections: {
+        "2028-2-1-choice-a": ["Removed Subject", "Economics", "Economics", "Physics I"],
+      },
+    }) });
+    renderRoadmap();
+    expect(screen.getByText("7 / 11학점")).toBeInTheDocument();
+    expect(screen.getByText("1/1 선택 ✓")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "공유하기" }));
+    const copied = new URL(String(mocks.writeText.mock.calls.at(-1)?.[0]));
+    const restored = JSON.parse(atob(copied.searchParams.get("s")!.replace(/-/g, "+").replace(/_/g, "/")));
+    expect(restored.selections["2028-2-1-choice-a"]).toEqual(["Economics"]);
+  });
+
+  it("restores legacy state-only links and replaces state on query navigation", () => {
+    mocks.searchParams = new URLSearchParams({ s: encodeRoadmapSelectionState({
+      cohort: "2028", selections: { "2028-2-1-choice-a": ["Economics"] },
+    }) });
+    const view = renderRoadmap("2027");
+    expect(screen.getByTestId("active-cohort")).toHaveTextContent("2028");
+    expect(screen.getByText("7 / 11학점")).toBeInTheDocument();
+    mocks.searchParams = new URLSearchParams({ c: "2027", s: encodeRoadmapSelectionState({
+      cohort: "2027", selections: { "2027-2-1-choice-a": ["Default Economics"] },
+    }) });
+    view.rerender(<RoadmapHarness initialCohort="2027" />);
+    expect(screen.getByTestId("active-cohort")).toHaveTextContent("2027");
+    expect(screen.getByText(/^7 \/ 7학점/)).toBeInTheDocument();
+    expect(screen.queryByText("Literature")).not.toBeInTheDocument();
+  });
+
+  it("uses a valid cohort query but discards state belonging to a different cohort", () => {
+    mocks.searchParams = new URLSearchParams({ c: "2028", s: encodeRoadmapSelectionState({
+      cohort: "2027", selections: { "2028-2-1-choice-a": ["Economics"] },
+    }) });
+    renderRoadmap("2027");
+    expect(screen.getByTestId("active-cohort")).toHaveTextContent("2028");
+    expect(screen.getByText("4 / 11학점")).toBeInTheDocument();
+  });
+
+  it("counts each selected option's credits and displays the attainable range", () => {
+    const data = structuredClone(schoolData);
+    data.cohorts["2027"].selections[0] = {
+      ...data.cohorts["2027"].selections[0], creditsEach: 2, totalCredits: 2,
+      options: ["Two Credit", "Four Credit"],
+      optionCredits: { "Two Credit": 2, "Four Credit": 4 },
+    };
+    renderRoadmap("2027", data);
+    fireEvent.click(screen.getByRole("button", { name: "Four Credit 선택" }));
+    expect(screen.getByText("8 / 6~8학점 ✓")).toBeInTheDocument();
+  });
+
+  it("marks a permitted extra range choice complete instead of requiring the minimum credits", () => {
+    const data = structuredClone(schoolData);
+    data.cohorts["2027"].selections[0] = {
+      ...data.cohorts["2027"].selections[0], choose: 1, minChoose: 1, maxChoose: 2,
+      creditsEach: 2, totalCredits: 2, options: ["Option A", "Option B"],
+    };
+    renderRoadmap("2027", data);
+    fireEvent.click(screen.getByRole("button", { name: "Option A 선택" }));
+    fireEvent.click(screen.getByRole("button", { name: "Option B 선택" }));
+    expect(screen.getByText("8 / 6~8학점 ✓")).toBeInTheDocument();
   });
 
   it("supports choosing multiple subjects from a multi-select group", () => {

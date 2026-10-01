@@ -5,10 +5,12 @@ import {
   getCohortData,
   getDesignatedSubjects,
   getSelectionGroups,
+  getSelectionCredits,
+  getSelectionCreditRange,
   getStudentCohortOptions,
   getStudentSemesterConfigs,
 } from "@/lib/hyoja/school-adapter";
-import type { SchoolCurriculum } from "@/lib/curriculum/schema";
+import type { ChoiceGroup, SchoolCurriculum } from "@/lib/curriculum/schema";
 
 const curriculum: SchoolCurriculum = {
   schoolName: "Sample High School",
@@ -129,6 +131,70 @@ const curriculum: SchoolCurriculum = {
 };
 
 describe("SchoolCurriculum to Hyoja student data adapter", () => {
+  function adaptChoiceGroup(overrides: Partial<ChoiceGroup> = {}) {
+    const data = adaptCurriculumForStudentAssistant({
+      schoolName: "테스트고",
+      cohorts: [{
+        entranceYear: "2026",
+        label: "2026",
+        grades: [{ grade: 2, semesters: [{
+          semester: 1,
+          requiredSubjects: [],
+          choiceGroups: [{
+            id: "choice",
+            label: "선택",
+            choose: 1,
+            subjects: [
+              { name: "문학", credits: 2 },
+              { name: "경제", credits: 4 },
+              { name: "드로잉", credits: 3 },
+            ],
+            ...overrides,
+          }],
+        }] }],
+      }],
+    });
+    return data.cohorts["2026"].selections[0];
+  }
+
+  it("preserves different per-option credits when no uniform credit is specified", () => {
+    const group = adaptChoiceGroup();
+    expect(group.optionCredits).toEqual({ 문학: 2, 경제: 4, 드로잉: 3 });
+    expect(getSelectionCredits(group, ["경제"])).toBe(4);
+    expect(getSelectionCreditRange(group)).toEqual({ min: 2, max: 4 });
+  });
+
+  it("counts each offered selected subject once and ignores unknown names", () => {
+    const group = adaptChoiceGroup({ choose: 2 });
+    expect(getSelectionCredits(group, ["경제", "문학", "경제", "없음"])).toBe(6);
+    expect(getSelectionCredits(group, [])).toBe(0);
+  });
+
+  it("computes attainable credit bounds from the selection-count range", () => {
+    const group = adaptChoiceGroup({ choose: 1, minChoose: 1, maxChoose: 2 });
+    expect(getSelectionCreditRange(group)).toEqual({ min: 2, max: 7 });
+    const fixed = adaptChoiceGroup({ choose: 2 });
+    expect(getSelectionCreditRange(fixed)).toEqual({ min: 5, max: 7 });
+  });
+
+  it("keeps explicit uniform group credits authoritative", () => {
+    const group = adaptChoiceGroup({ creditsEach: 3, choose: 2 });
+    expect(group.optionCredits).toBeUndefined();
+    expect(getSelectionCredits(group, ["문학", "경제"])).toBe(6);
+    expect(getSelectionCreditRange(group)).toEqual({ min: 6, max: 6 });
+  });
+
+  it("keeps equal subject credits compatible with legacy uniform groups", () => {
+    const group = adaptChoiceGroup({
+      choose: 2,
+      subjects: [{ name: "문학", credits: 3 }, { name: "경제", credits: 3 }],
+    });
+    expect(group.optionCredits).toBeUndefined();
+    expect(group.creditsEach).toBe(3);
+    expect(getSelectionCredits(group, ["문학", "경제"])).toBe(6);
+    expect(getSelectionCreditRange(group)).toEqual({ min: 6, max: 6 });
+  });
+
   it("adapts published curriculum into Hyoja-compatible student data", () => {
     const data = adaptCurriculumForStudentAssistant(curriculum);
 
@@ -179,6 +245,10 @@ describe("SchoolCurriculum to Hyoja student data adapter", () => {
         creditsEach: 3,
         totalCredits: 6,
         options: ["Economics", "Physics I"],
+        optionMetadata: {
+          Economics: { area: "Social" },
+          "Physics I": { area: "Science" },
+        },
       },
     ]);
     expect(getSelectionGroups(data, "2024", 3, 2)[0]).toMatchObject({
@@ -221,6 +291,7 @@ describe("SchoolCurriculum to Hyoja student data adapter", () => {
         creditsEach: 2,
         totalCredits: 2,
         options: ["Hidden Grade 1 Choice"],
+        optionMetadata: { "Hidden Grade 1 Choice": { area: "Common" } },
       },
     ]);
     expect(getAllAvailableSubjectNames(data, "2024", 1, 1)).toEqual([

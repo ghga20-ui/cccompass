@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState, useCallback, Suspense } from "react";
+import { useMemo, useState, useCallback, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, GraduationCap, Share2, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +14,9 @@ import {
   getCohortData,
   getDesignatedSubjects,
   getSelectionGroups,
+  getSelectionCredits,
+  getSelectionCreditRange,
   getSelectionSemesterConfigs,
-  type CohortData,
 } from "@/lib/hyoja/school-adapter";
 import type { SubjectCatalog } from "@/lib/hyoja/subject-catalog";
 import { buildShareHref } from "@/lib/hyoja/share-routes";
@@ -73,9 +74,13 @@ function buildRecommendedNamesFromDept(
   return names;
 }
 
+function creditRangeLabel(min: number, max: number) {
+  return min === max ? String(min) : `${min}~${max}`;
+}
+
 // ========== Main Content ==========
 
-function RoadmapContent() {
+function RoadmapContent({ cohort, cohortLabel }: { cohort: string; cohortLabel: string }) {
   const searchParams = useSearchParams();
   const deptName = searchParams.get("dept");
   const interestParam = searchParams.get("interests");
@@ -84,7 +89,6 @@ function RoadmapContent() {
     [interestParam],
   );
   const sParam = searchParams.get("s");
-  const { cohort, cohortLabel } = useCohort();
   const { basePath, schoolData, subjectCatalog } = useHyojaRuntime();
   const cohortData = getCohortData(schoolData, cohort);
 
@@ -124,7 +128,15 @@ function RoadmapContent() {
   // 공유 링크 복원 (JSON base64url)
   const [selections, setSelections] = useState<Record<string, string[]>>(() => {
     const decoded = decodeRoadmapSelectionState(sParam, validGroupIds);
-    return decoded?.selections ?? {};
+    if (!decoded || decoded.cohort !== cohort || !cohortData) return {};
+    // Shared links can outlive a teacher edit. Only count options still offered,
+    // once each, and never restore more than the current group permits.
+    return Object.fromEntries(cohortData.selections.flatMap((group) => {
+      const selected = [...new Set(decoded.selections[group.id] ?? [])]
+        .filter((name) => group.options.includes(name))
+        .slice(0, group.maxChoose ?? group.choose);
+      return selected.length ? [[group.id, selected]] : [];
+    }));
   });
 
   // 대학 핵심과목 커버리지 (관심계열·학과 진입 모두)
@@ -243,17 +255,25 @@ function RoadmapContent() {
       const groups = getSelectionGroups(schoolData, cohort, grade, semester);
       const selectionCredits = groups.reduce((sum, g) => {
         const sel = selections[g.id] || [];
-        return sum + sel.length * g.creditsEach;
+        return sum + getSelectionCredits(g, sel);
       }, 0);
 
-      const totalExpected =
-        designatedCredits + groups.reduce((sum, g) => sum + g.totalCredits, 0);
+      const ranges = groups.map(getSelectionCreditRange);
+      const expectedMin = designatedCredits + ranges.reduce((sum, range) => sum + range.min, 0);
+      const expectedMax = designatedCredits + ranges.reduce((sum, range) => sum + range.max, 0);
+      const isComplete = groups.every((group) => {
+        const count = (selections[group.id] ?? []).length;
+        return count >= (group.minChoose ?? group.choose) && count <= (group.maxChoose ?? group.choose);
+      });
 
       return {
         designatedCredits,
         selectionCredits,
         total: designatedCredits + selectionCredits,
-        totalExpected,
+        expectedMin,
+        expectedMax,
+        totalExpected: creditRangeLabel(expectedMin, expectedMax),
+        isComplete,
       };
     },
     [schoolData, cohort, selections],
@@ -265,20 +285,24 @@ function RoadmapContent() {
         const c = getSemesterCredits(grade, semester);
         return {
           selected: acc.selected + c.total,
-          expected: acc.expected + c.totalExpected,
+          expectedMin: acc.expectedMin + c.expectedMin,
+          expectedMax: acc.expectedMax + c.expectedMax,
+          isComplete: acc.isComplete && c.isComplete,
         };
       },
-      { selected: 0, expected: 0 },
+      { selected: 0, expectedMin: 0, expectedMax: 0, isComplete: true },
     );
   }, [semesterConfigs, getSemesterCredits]);
 
   const gradeTotals = useMemo(() => {
-    const byGrade: Record<number, { selected: number; expected: number }> = {};
+    const byGrade: Record<number, { selected: number; expectedMin: number; expectedMax: number; isComplete: boolean }> = {};
     semesterConfigs.forEach(({ grade, semester }) => {
-      if (!byGrade[grade]) byGrade[grade] = { selected: 0, expected: 0 };
+      if (!byGrade[grade]) byGrade[grade] = { selected: 0, expectedMin: 0, expectedMax: 0, isComplete: true };
       const c = getSemesterCredits(grade, semester);
       byGrade[grade].selected += c.total;
-      byGrade[grade].expected += c.totalExpected;
+      byGrade[grade].expectedMin += c.expectedMin;
+      byGrade[grade].expectedMax += c.expectedMax;
+      byGrade[grade].isComplete &&= c.isComplete;
     });
     return byGrade;
   }, [semesterConfigs, getSemesterCredits]);
@@ -446,7 +470,7 @@ function RoadmapContent() {
         ctx.fillStyle = "#111827";
         ctx.fillText(label, PAD, cy + 12);
 
-        const creditTxt = `${credits.total}/${credits.totalExpected}학점${credits.total === credits.totalExpected ? " ✓" : ""}`;
+        const creditTxt = `${credits.total}/${credits.totalExpected}학점${credits.isComplete ? " ✓" : ""}`;
         ctx.font = `400 11px ${FONT}`;
         ctx.fillStyle = "#9ca3af";
         ctx.fillText(creditTxt, W - PAD - ctx.measureText(creditTxt).width, cy + 12);
@@ -497,14 +521,14 @@ function RoadmapContent() {
         gradeList.forEach((grade) => {
           const gt = gradeTotals[grade];
           if (!gt) return;
-          const t = `고${grade} ${gt.selected}/${gt.expected}학점${gt.selected === gt.expected ? " ✓" : ""}`;
-          ctx.fillStyle = gt.selected === gt.expected ? "#059669" : "#6b7280";
+          const t = `고${grade} ${gt.selected}/${creditRangeLabel(gt.expectedMin, gt.expectedMax)}학점${gt.isComplete ? " ✓" : ""}`;
+          ctx.fillStyle = gt.isComplete ? "#059669" : "#6b7280";
           ctx.fillText(t, fx, cy + 14);
           fx += ctx.measureText(t).width + 16;
         });
       } else {
-        const t = `전체 ${grandTotal.selected}/${grandTotal.expected}학점${grandTotal.selected === grandTotal.expected ? " ✓" : ""}`;
-        ctx.fillStyle = grandTotal.selected === grandTotal.expected ? "#059669" : "#6b7280";
+        const t = `전체 ${grandTotal.selected}/${creditRangeLabel(grandTotal.expectedMin, grandTotal.expectedMax)}학점${grandTotal.isComplete ? " ✓" : ""}`;
+        ctx.fillStyle = grandTotal.isComplete ? "#059669" : "#6b7280";
         ctx.fillText(t, PAD, cy + 14);
       }
 
@@ -580,7 +604,7 @@ function RoadmapContent() {
             gradeList.map((grade) => {
               const gt = gradeTotals[grade];
               if (!gt) return null;
-              const isComplete = gt.selected === gt.expected;
+              const isComplete = gt.isComplete;
               return (
                 <div
                   key={grade}
@@ -593,7 +617,7 @@ function RoadmapContent() {
                 >
                   <span className="font-semibold">고{grade}</span>
                   <span className="text-base font-bold">
-                    {gt.selected}/{gt.expected}
+                    {gt.selected}/{creditRangeLabel(gt.expectedMin, gt.expectedMax)}
                   </span>
                   <span>학점</span>
                   {isComplete && <span>{"✓"}</span>}
@@ -604,17 +628,17 @@ function RoadmapContent() {
             <div
               className={cn(
                 "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
-                grandTotal.selected === grandTotal.expected
+                grandTotal.isComplete
                   ? "bg-emerald-50 text-emerald-700"
                   : "bg-muted/60 text-muted-foreground",
               )}
             >
               <span className="font-semibold">전체</span>
               <span className="text-base font-bold">
-                {grandTotal.selected}/{grandTotal.expected}
+                {grandTotal.selected}/{creditRangeLabel(grandTotal.expectedMin, grandTotal.expectedMax)}
               </span>
               <span>학점</span>
-              {grandTotal.selected === grandTotal.expected && <span>{"✓"}</span>}
+              {grandTotal.isComplete && <span>{"✓"}</span>}
             </div>
           )}
         </div>
@@ -726,7 +750,7 @@ function RoadmapContent() {
                   <div
                     className={cn(
                       "flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium",
-                      credits.total === credits.totalExpected
+                      credits.isComplete
                         ? "bg-emerald-50 text-emerald-700"
                         : "bg-muted/50 text-muted-foreground",
                     )}
@@ -734,7 +758,7 @@ function RoadmapContent() {
                     <span>학기 학점 합계</span>
                     <span>
                       {credits.total} / {credits.totalExpected}학점
-                      {credits.total === credits.totalExpected && " ✓"}
+                      {credits.isComplete && " ✓"}
                     </span>
                   </div>
                 </div>
@@ -778,6 +802,27 @@ function RoadmapContent() {
   );
 }
 
+function RoadmapState() {
+  const searchParams = useSearchParams();
+  const { cohort: activeCohort, cohortOptions, setCohort } = useCohort();
+  const encoded = searchParams.get("s");
+  const requestedCohort = searchParams.get("c") ??
+    decodeRoadmapSelectionState(encoded, new Set())?.cohort;
+  const sharedCohort = cohortOptions.find((option) => option.entranceYear === requestedCohort);
+  const cohort = sharedCohort?.entranceYear ?? activeCohort;
+  const cohortLabel = cohortOptions.find((option) => option.entranceYear === cohort)?.label ?? cohort;
+
+  // Keep subsequent subject/detail navigation on the restored entrance year.
+  useEffect(() => {
+    if (sharedCohort && activeCohort !== sharedCohort.entranceYear) {
+      setCohort(sharedCohort.entranceYear);
+    }
+  }, [activeCohort, sharedCohort, setCohort]);
+
+  // Query navigation and cohort changes must initialize the matching saved state.
+  return <RoadmapContent key={`${cohort}:${encoded ?? ""}`} cohort={cohort} cohortLabel={cohortLabel} />;
+}
+
 export default function RoadmapPage() {
   return (
     <Suspense
@@ -787,7 +832,7 @@ export default function RoadmapPage() {
         </div>
       }
     >
-      <RoadmapContent />
+      <RoadmapState />
     </Suspense>
   );
 }

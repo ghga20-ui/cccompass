@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createSubjectCatalog } from "@/lib/hyoja/subject-catalog";
-import type { StudentSchoolData } from "@/lib/hyoja/school-adapter";
+import { adaptCurriculumForStudentAssistant, type StudentSchoolData } from "@/lib/hyoja/school-adapter";
+import { getAssessmentBadge } from "@/data/assessment";
 
 const studentSchoolData: StudentSchoolData = {
   schoolName: "Sample High School",
@@ -60,6 +61,30 @@ const studentSchoolData: StudentSchoolData = {
 };
 
 describe("Hyoja subject catalog fallback", () => {
+  it("preserves uploaded elective area, category and individual credits through the adapter", () => {
+    const data = adaptCurriculumForStudentAssistant({
+      schoolName: "테스트고",
+      cohorts: [{ entranceYear: "2026", label: "2026", grades: [{ grade: 2, semesters: [{
+        semester: 1,
+        requiredSubjects: [],
+        choiceGroups: [{
+          id: "custom", label: "맞춤 선택", choose: 1,
+          subjects: [
+            { name: "학교 예술 창작", area: "예술", category: "진로선택", credits: 2 },
+            { name: "학교 사회 탐구", area: "사회", category: "융합선택", credits: 4 },
+          ],
+        }],
+      }] }] }],
+    });
+    const catalog = createSubjectCatalog(data);
+    const arts = catalog.getSubjectByName("학교 예술 창작")!;
+    const social = catalog.getSubjectByName("학교 사회 탐구")!;
+    expect(arts).toMatchObject({ area: "예술", category: "진로선택", credits: "2" });
+    expect(getAssessmentBadge(arts).label).toBe("A·B·C");
+    expect(social).toMatchObject({ area: "사회", category: "융합선택", credits: "4" });
+    expect(getAssessmentBadge(social).label).toBe("A·B·C·D·E");
+  });
+
   it("merges static and uploaded subject metadata", () => {
     const catalog = createSubjectCatalog(studentSchoolData);
 

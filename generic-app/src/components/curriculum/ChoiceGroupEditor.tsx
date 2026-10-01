@@ -62,8 +62,13 @@ export function ChoiceGroupEditor({
       ? `택 ${minChoose}`
       : `택 ${minChoose}~${maxChoose}`
     : `택 ${group.choose}`;
-  // 같은 선택군 과목은 학점이 동일하므로 그룹 단위로 관리한다.
-  const creditValue = group.creditsEach ?? group.subjects[0]?.credits ?? 1;
+  const individualCredits = group.creditsEach === undefined;
+  const creditValues = group.subjects.map((subject) => group.creditsEach ?? subject.credits);
+  const minCredits = creditValues.length ? Math.min(...creditValues) : 1;
+  const maxCredits = creditValues.length ? Math.max(...creditValues) : 1;
+  const hasVariableCredits = minCredits !== maxCredits;
+  const creditValue = hasVariableCredits ? "" : minCredits;
+  const creditLabel = hasVariableCredits ? `과목별 ${minCredits}~${maxCredits}학점` : `과목당 ${minCredits}학점`;
 
   function updateSubject(subjectIndex: number, subject: CurriculumSubject) {
     onChange({
@@ -85,7 +90,7 @@ export function ChoiceGroupEditor({
   }
 
   function addOption(input: { name: string; credits: number }) {
-    const credits = group.creditsEach ?? group.subjects[0]?.credits ?? input.credits;
+    const credits = group.creditsEach ?? input.credits;
     onChange({
       ...group,
       subjects: [...group.subjects, { name: input.name, credits }],
@@ -122,7 +127,7 @@ export function ChoiceGroupEditor({
           {chooseLabel}
         </span>
         <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">
-          과목당 {creditValue}학점
+          {creditLabel}
         </span>
         <div className="ml-auto flex items-center gap-1">
           {onMove && otherTargets.length > 0 ? (
@@ -186,7 +191,7 @@ export function ChoiceGroupEditor({
         <div className="flex flex-wrap items-end justify-end gap-x-5 gap-y-2">
           <div className="space-y-1">
             <label htmlFor={`${groupId}-credits`} className="block text-xs font-semibold text-slate-600">
-              과목당 학점
+              {individualCredits ? "모든 과목에 일괄 적용" : "과목당 학점"}
             </label>
             <input
               id={`${groupId}-credits`}
@@ -194,11 +199,30 @@ export function ChoiceGroupEditor({
               min="0.5"
               step="0.5"
               value={creditValue}
+              placeholder={hasVariableCredits ? "개별" : undefined}
               onChange={(event) => setCredit(Number(event.target.value))}
               aria-label={`${group.label || "선택 그룹"} 과목당 학점`}
               className={`w-20 ${fieldClass}`}
             />
           </div>
+
+          {!individualCredits && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => onChange({
+                ...group,
+                creditsEach: undefined,
+                subjects: group.subjects.map((subject) => ({
+                  ...subject,
+                  credits: group.creditsEach ?? subject.credits,
+                })),
+              })}
+            >
+              과목별로 수정
+            </Button>
+          )}
 
           <div className="space-y-1">
             <div className="flex items-center justify-between gap-3">
@@ -275,7 +299,7 @@ export function ChoiceGroupEditor({
               onChange={(updatedSubject) => updateSubject(subjectIndex, updatedSubject)}
               onDelete={() => removeOption(subjectIndex)}
               canDelete={group.subjects.length > 1}
-              hideCredits
+              hideCredits={!individualCredits}
             />
           ))}
           <AddSubjectControl onAdd={addOption} label="이 그룹에 과목 추가" />

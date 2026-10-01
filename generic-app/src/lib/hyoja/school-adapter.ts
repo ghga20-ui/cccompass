@@ -25,8 +25,14 @@ export interface SelectionGroup {
   /** 최대 선택 수(범위 택N~M). 미지정이면 choose로 간주 — 학생 선택 캡 */
   maxChoose?: number;
   creditsEach: number;
+  /** 과목별 학점이 다를 때 사용. 없으면 creditsEach를 적용한다. */
+  optionCredits?: Record<string, number>;
+  /** 업로드 선택과목의 영역/유형. 기존 문자열 options와 함께 보존한다. */
+  optionMetadata?: Record<string, Pick<CurriculumSubject, "area" | "category">>;
   totalCredits: number;
   options: string[];
+  /** 편제 원문·교사 안내. 자유 서술은 선택 제한으로 해석하지 않는다. */
+  notes?: string[];
 }
 
 export interface CohortData {
@@ -51,6 +57,38 @@ export interface SemesterConfig {
   grade: number;
   semester: number;
   label: string;
+}
+
+export type SelectionCreditGroup = Pick<
+  SelectionGroup,
+  "options" | "creditsEach" | "optionCredits" | "choose" | "minChoose" | "maxChoose"
+>;
+
+function getOptionCredits(group: SelectionCreditGroup, name: string): number {
+  return group.optionCredits && Object.prototype.hasOwnProperty.call(group.optionCredits, name)
+    ? group.optionCredits[name]
+    : group.creditsEach;
+}
+
+/** 현재 개설된 선택 과목만 중복 없이 합산한다. */
+export function getSelectionCredits(group: SelectionCreditGroup, selected: string[]): number {
+  const offered = new Set(group.options);
+  return [...new Set(selected)].reduce(
+    (sum, name) => sum + (offered.has(name) ? getOptionCredits(group, name) : 0),
+    0,
+  );
+}
+
+/** 최소/최대 선택 수와 과목별 학점으로 가능한 이수 학점 범위를 계산한다. */
+export function getSelectionCreditRange(group: SelectionCreditGroup): { min: number; max: number } {
+  const credits = [...new Set(group.options)]
+    .map((name) => getOptionCredits(group, name))
+    .sort((a, b) => a - b);
+  const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
+  return {
+    min: sum(credits.slice(0, group.minChoose ?? group.choose)),
+    max: sum(credits.slice(-(group.maxChoose ?? group.choose))),
+  };
 }
 
 /**
@@ -155,6 +193,9 @@ export function adaptCurriculumForStudentAssistant(
 
                 const minChoose = group.minChoose ?? group.choose;
                 const maxChoose = group.maxChoose ?? group.choose;
+                const hasVariableCredits = group.creditsEach === undefined &&
+                  new Set(group.subjects.map((subject) => subject.credits)).size > 1;
+                const metadataSubjects = group.subjects.filter((subject) => subject.area || subject.category);
 
                 selections.push({
                   id: `${cohort.entranceYear}-${grade.grade}-${semester.semester}-${group.id}`,
@@ -165,8 +206,20 @@ export function adaptCurriculumForStudentAssistant(
                   minChoose,
                   maxChoose,
                   creditsEach,
+                  ...(hasVariableCredits ? {
+                    optionCredits: Object.fromEntries(
+                      group.subjects.map((subject) => [subject.name, subject.credits]),
+                    ),
+                  } : {}),
+                  ...(metadataSubjects.length ? {
+                    optionMetadata: Object.fromEntries(metadataSubjects.map((subject) => [
+                      subject.name,
+                      { area: subject.area, category: subject.category },
+                    ])),
+                  } : {}),
                   totalCredits: creditsEach * group.choose,
                   options: uniqueNames(group.subjects),
+                  ...(group.notes !== undefined ? { notes: group.notes } : {}),
                 });
               });
             });

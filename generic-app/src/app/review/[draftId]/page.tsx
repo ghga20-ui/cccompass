@@ -29,6 +29,8 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
     select: {
       editToken: true,
       curriculumJson: true,
+      warnings: true,
+      parsedText: true,
     },
   });
 
@@ -37,6 +39,14 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
   }
 
   const initialCurriculum = schoolCurriculumSchema.parse(draft.curriculumJson);
+  const reviewWarnings = Array.isArray(draft.warnings)
+    ? draft.warnings.filter((warning): warning is string => typeof warning === "string" && warning.trim().length > 0)
+    : [];
+  // A nonempty AI result can still omit source availability annotations.
+  // Flag the source for review; never guess which semester or subject to delete.
+  if (typeof draft.parsedText === "string" && /미\s*개\s*설/.test(draft.parsedText.replace(/<[^<>]*>/g, " "))) {
+    reviewWarnings.unshift("원본에 ‘미개설’ 표시가 있습니다. 해당 과목은 학생에게 제공되지 않도록 학기별로 확인·제외한 뒤 게시해 주세요.");
+  }
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
@@ -54,6 +64,15 @@ export default async function ReviewPage({ params, searchParams }: ReviewPagePro
             있습니다. 저장 후 게시하면 학생 안내 화면에서 사용할 수 있습니다.
           </p>
         </div>
+
+        {reviewWarnings.length > 0 && (
+          <aside role="note" aria-label="원문 및 분석 검토 사항" className="mt-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+            <h2 className="font-semibold">원문 및 분석 검토 사항</h2>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {[...new Set(reviewWarnings)].map((warning) => <li key={warning}>{warning}</li>)}
+            </ul>
+          </aside>
+        )}
 
         <CurriculumReviewForm
           draftId={draftId}
