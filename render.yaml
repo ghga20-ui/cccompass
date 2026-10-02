@@ -7,7 +7,7 @@ services:
     runtime: node
     plan: free
     rootDir: parser-worker
-    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm run build
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm run build
     startCommand: pnpm run start
     healthCheckPath: /health
     autoDeploy: true

@@ -7,7 +7,8 @@ describe("kordoc package selection", () => {
     const packageJson = await readFile(join(process.cwd(), "package.json"), "utf8");
     const adapterSource = await readFile(join(process.cwd(), "src", "adapters", "kordoc.ts"), "utf8");
 
-    expect(packageJson).toContain('"kordoc": "^3.1.1"');
+    expect(packageJson).toContain('"kordoc": "4.18.2"');
+    expect(packageJson).toContain('"pdfjs-dist": "4.10.38"');
     expect(packageJson).not.toContain('"@clazic/kordoc"');
     expect(adapterSource).toContain('from "kordoc"');
   });

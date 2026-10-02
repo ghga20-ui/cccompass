@@ -8,6 +8,7 @@ export type ParsedDocument = {
   text: string;
   tables: string[][];
   metadata: {
+    [key: string]: unknown;
     parser: string;
     fileName: string;
   };

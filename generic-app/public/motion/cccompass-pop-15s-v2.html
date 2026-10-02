@@ -116,7 +116,8 @@ window.TypeArt={"ko":{" ":[500.0,""],"!":[354.0,"M248 -516V-748H106V-515Q106 -46
  const canvas=document.getElementById('film'),g=canvas.getContext('2d',{alpha:false});
  if(!g){document.getElementById('notice').textContent='이 브라우저에서 Canvas를 시작하지 못했습니다.';return;}
  const params=new URLSearchParams(location.search),renderMode=params.has('render'),embedMode=params.has('embed');
- if(renderMode)document.body.classList.add('render-mode');\n if(embedMode)document.body.classList.add('embed-mode');
+ if(renderMode)document.body.classList.add('render-mode');
+ if(embedMode)document.body.classList.add('embed-mode');
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const state={time:reduce.matches?13.2:0,playing:!reduce.matches&&!renderMode,loop:true,sound:false,raf:0,last:0,hidden:false,uiTick:-1};
  const rnd=K.seeded(19072026),bits=Array.from({length:32},()=>({a:rnd()*TAU,r:85+rnd()*135,k:rnd(),rot:rnd()*TAU}));

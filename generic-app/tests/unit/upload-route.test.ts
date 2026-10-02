@@ -159,6 +159,20 @@ describe("POST /api/curricula/upload", () => {
     });
   });
 
+  it("persists a source-review warning for skipped PDF images even when needsOcr is false", async () => {
+    const { POST } = await import("@/app/api/curricula/upload/route");
+    mocks.parse.mockResolvedValueOnce({
+      text: "제목만 추출됨", tables: [],
+      metadata: { parser: "kordoc", fileName: "curriculum.pdf", qualitySummary: { needsOcr: false }, warnings: [{ code: "SKIPPED_IMAGE", message: "image skipped" }] },
+    });
+    const response = await POST(createRequest(createUploadFile()));
+    const body = await readJson(response);
+    expect(response.status).toBe(200);
+    expect(body.warnings).toEqual([expect.stringContaining("원본 편제표")]);
+    expect(mocks.createDraft).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ warnings: body.warnings }) }));
+    expect(mocks.structure).toHaveBeenCalledWith(expect.objectContaining({ file: expect.objectContaining({ base64: expect.any(String) }) }));
+  });
+
   it("returns 400 when form data cannot be read", async () => {
     const { POST } = await import("@/app/api/curricula/upload/route");
 

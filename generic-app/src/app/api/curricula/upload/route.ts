@@ -234,6 +234,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const parserWarnings = Array.isArray(parsed.metadata.warnings) ? parsed.metadata.warnings : [];
+  const requiresSourceReview = parsed.metadata.requiresVisualReview === true || parserWarnings.some(
+    (warning: unknown) => warning !== null && typeof warning === "object" && "code" in warning &&
+      ["NEEDS_OCR", "SKIPPED_IMAGE", "OCR_FAILED", "OCR_LOW_CONF", "PARTIAL_PARSE", "TRUNCATED_TABLE"].includes(String(warning.code)),
+  );
+  const warnings = [...new Set([
+    ...structured.warnings,
+    ...(requiresSourceReview ? ["문서의 이미지·표 일부가 텍스트 추출에서 누락되었을 수 있습니다. AI 분석 결과를 원본 편제표와 대조해 확인해 주세요."] : []),
+  ])];
+
   let draft;
 
   try {
@@ -242,7 +252,7 @@ export async function POST(request: Request) {
         schoolName: validation.data.schoolName,
         curriculumJson: validation.data,
         parsedText: parsed.text,
-        warnings: structured.warnings,
+        warnings,
         sourceSnippets: structured.sourceSnippets,
         editToken: createShareToken(),
       },
@@ -260,6 +270,6 @@ export async function POST(request: Request) {
     draftId: draft.id,
     reviewUrl: `/edit/${draft.editToken}`,
     schoolName: validation.data.schoolName,
-    warnings: structured.warnings,
+    warnings,
   });
 }
