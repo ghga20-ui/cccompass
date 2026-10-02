@@ -6,7 +6,8 @@
 .film {
   display: block;
   width: 100%;
-  height: calc((min(1200px, 100vw - 48px)) * 740 / 1200 + 120px);
+  aspect-ratio: 16 / 9;
+  height: auto;
   border: 0;
   background: #fff8e8;
   border-radius: 10px;
@@ -24,12 +25,6 @@
   border: 0;
 }
 
-/* The film recomposes at its own 700px viewport, rather than cropping. */
-@media (max-width: 747px) {
-  .film { height: calc((100vw - 48px) * 980 / 700 + 120px); }
-}
-
 @media (max-width: 480px) {
   .section { width: calc(100% - 24px); margin-bottom: 40px; }
-  .film { height: calc((100vw - 24px) * 980 / 700 + 120px); }
 }
