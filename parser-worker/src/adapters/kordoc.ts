@@ -20,6 +20,24 @@ function collectTables(blocks: IRBlock[] | undefined) {
 }
 
 export class KordocParserAdapter implements ParserAdapter {
+  async checkReadiness() {
+    // Loading the adapter alone does not load Kordoc's optional PDF engine.
+    // Import it without opening documents, starting OCR, or downloading models.
+    const [pdf, pdfWorker] = await Promise.all([
+      import("pdfjs-dist/legacy/build/pdf.mjs"),
+      import("pdfjs-dist/legacy/build/pdf.worker.mjs"),
+    ]);
+
+    if (typeof parse !== "function" || typeof collectTableBlocks !== "function" ||
+        typeof VERSION !== "string" || !/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(VERSION) ||
+        typeof pdf.getDocument !== "function" ||
+        typeof pdfWorker.WorkerMessageHandler?.setup !== "function") {
+      throw new Error("Parser runtime is unavailable.");
+    }
+
+    return { adapter: "kordoc" as const, parserVersion: VERSION };
+  }
+
   async parse(input: Parameters<ParserAdapter["parse"]>[0]): Promise<ParseResponse> {
     const result = await parse(input.buffer, { ocr: false, formulaOcr: false });
 

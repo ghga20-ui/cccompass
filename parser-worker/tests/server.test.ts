@@ -36,6 +36,16 @@ describe("parser worker", () => {
     await expect(response.json()).resolves.toEqual({ ok: true });
   });
 
+  it("exposes current adapter readiness without caching it", async () => {
+    const response = await fetch(`${baseUrl}/ready`);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    await expect(response.json()).resolves.toMatchObject({
+      ok: true, ready: true, adapter: "mock",
+    });
+  });
+
   it("requires the parser token", async () => {
     const response = await fetch(`${baseUrl}/parse`, {
       method: "POST",

@@ -1,4 +1,5 @@
 import { getParserAdapter } from "./adapters/index.js";
+import { checkParserReadiness } from "./readiness.js";
 import type { ParseRequest } from "./types.js";
 
 type HeaderValue = string | string[] | undefined;
@@ -58,6 +59,10 @@ export async function handleParserRequest(
 ): Promise<ParserHttpResponse> {
   if (request.method === "GET" && request.path === "/health") {
     return { status: 200, body: { ok: true } };
+  }
+
+  if (request.method === "GET" && request.path === "/ready") {
+    return checkParserReadiness();
   }
 
   if (request.method !== "POST" || request.path !== "/parse") {

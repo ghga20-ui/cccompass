@@ -23,6 +23,11 @@ export function createServer() {
   return http.createServer(async (request, response) => {
     const bodyText = await readBodyText(request);
     const path = request.url?.split("?")[0] ?? "/";
+
+    if (path === "/ready") {
+      response.setHeader("Cache-Control", "no-store");
+    }
+
     const result = await handleParserRequest({
       method: request.method ?? "GET",
       path,

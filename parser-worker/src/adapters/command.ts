@@ -77,6 +77,17 @@ function parseCommandOutput(output: string, fileName: string): ParseResponse {
 }
 
 export class CommandParserAdapter implements ParserAdapter {
+  async checkReadiness() {
+    const timeoutMs = Number(process.env.PARSER_COMMAND_TIMEOUT_MS ?? 120000);
+
+    // Configuration check only: health probes must never execute this command.
+    if (!process.env.PARSER_COMMAND?.trim() || !Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+      throw new Error("Invalid parser command configuration.");
+    }
+
+    return { adapter: "command" as const };
+  }
+
   async parse(input: Parameters<ParserAdapter["parse"]>[0]) {
     const command = process.env.PARSER_COMMAND;
 

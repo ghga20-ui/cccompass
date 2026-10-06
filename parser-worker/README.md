@@ -43,6 +43,14 @@ Health check:
 curl http://localhost:8787/health
 ```
 
+`GET /health` remains a liveness check and always returns `{ "ok": true }` while the server is responding. It does not prove the parser can load.
+
+Use `GET /ready` before submitting a parse request. It returns HTTP 200 with `{ "ok": true, "ready": true, "adapter": "kordoc", "parserVersion": "4.18.2" }` when the configured adapter loads. The version comes from the loaded Kordoc module; the Kordoc check also imports the PDFJS engine and worker and validates their entry points. Import/configuration failures or a check that does not finish within five seconds return HTTP 503 with `{ "ok": false, "ready": false, "error": "parser-not-ready" }`. Responses use `Cache-Control: no-store`.
+
+Readiness only checks local runtime dependencies. It does not parse a file, start PDF workers, run OCR, download models, or validate extraction quality. The `mock` adapter reports `adapter: "mock"` without a parser version. The `command` adapter reports `adapter: "command"` after checking for a nonempty command and a positive finite timeout; it never executes or verifies the external command during readiness. Neither adapter should be mistaken for a loaded Kordoc runtime.
+
+If present, a valid full commit SHA from `RENDER_GIT_COMMIT` (preferred) or `GIT_COMMIT_SHA` is returned as `build`. Other environment values, command text, tokens, and dependency error details are not returned. On Vercel, `/ready` rewrites to the equivalent `/api/ready` function.
+
 ## Vercel Deployment
 
 Deploy this directory as its own Vercel project:

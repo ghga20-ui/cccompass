@@ -15,6 +15,10 @@ export type ParseResponse = {
 };
 
 export interface ParserAdapter {
+  checkReadiness(): Promise<{
+    adapter: "mock" | "command" | "kordoc";
+    parserVersion?: string;
+  }>;
   parse(input: {
     fileName: string;
     mimeType: string;

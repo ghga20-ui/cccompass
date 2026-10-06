@@ -1,6 +1,10 @@
 import type { ParserAdapter } from "../types.js";
 
 export class MockParserAdapter implements ParserAdapter {
+  async checkReadiness() {
+    return { adapter: "mock" as const };
+  }
+
   async parse(input: Parameters<ParserAdapter["parse"]>[0]) {
     return {
       text: [
