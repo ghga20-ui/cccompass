@@ -73,6 +73,7 @@ describe("curriculum providers", () => {
         { status: 200 },
       ),
     );
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({ ok: true, ready: true, adapter: "kordoc" }), { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
 
     const parser = getParserProvider();

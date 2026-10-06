@@ -10,6 +10,7 @@ import { postProcessCurriculum } from "@/lib/curriculum/post-process";
 import { prisma } from "@/lib/db";
 import { getStructurerProvider } from "@/lib/llm";
 import { getParserProvider } from "@/lib/parser";
+import { ParserServiceError } from "@/lib/parser/service-readiness";
 import { createShareToken } from "@/lib/tokens";
 import type { CohortMode, StructuringHints } from "@/lib/llm";
 
@@ -165,6 +166,14 @@ export async function POST(request: Request) {
       buffer,
     });
   } catch (error) {
+    if (error instanceof ParserServiceError) {
+      const message = error.code === "parser-warming-timeout" || error.code === "parser-not-ready"
+        ? "문서를 읽을 서버가 아직 준비되지 않았어요. 잠시 후 다시 시도해 주세요."
+        : error.code === "parser-timeout"
+          ? "문서를 읽는 시간이 초과됐어요. 파일을 확인한 뒤 다시 시도해 주세요."
+          : "문서를 읽을 서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.";
+      return NextResponse.json({ error: message, code: error.code }, { status: error.status });
+    }
     console.error("Curriculum parser provider failed", error);
 
     return NextResponse.json({ error: "문서 분석 중 오류가 발생했습니다." }, { status: 502 });

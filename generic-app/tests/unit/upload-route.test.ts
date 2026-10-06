@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ParserServiceError } from "@/lib/parser/service-readiness";
 
 const mocks = vi.hoisted(() => ({
   createDraft: vi.fn(),
@@ -171,6 +172,20 @@ describe("POST /api/curricula/upload", () => {
     expect(body.warnings).toEqual([expect.stringContaining("원본 편제표")]);
     expect(mocks.createDraft).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ warnings: body.warnings }) }));
     expect(mocks.structure).toHaveBeenCalledWith(expect.objectContaining({ file: expect.objectContaining({ base64: expect.any(String) }) }));
+  });
+
+  it.each([
+    ["parser-warming-timeout", 504],
+    ["parser-not-ready", 503],
+    ["parser-timeout", 504],
+  ] as const)("returns a clear %s without structuring or saving", async (code, status) => {
+    const { POST } = await import("@/app/api/curricula/upload/route");
+    mocks.parse.mockRejectedValueOnce(new ParserServiceError(code, status));
+    const response = await POST(createRequest(createUploadFile()));
+    expect(response.status).toBe(status);
+    expect(await readJson(response)).toMatchObject({ code, error: expect.any(String) });
+    expect(mocks.structure).not.toHaveBeenCalled();
+    expect(mocks.createDraft).not.toHaveBeenCalled();
   });
 
   it("returns 400 when form data cannot be read", async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
   ChevronDown,
@@ -30,7 +30,6 @@ const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 // 진행 단계와 각 단계가 끝나는 누적 예상 시간(초). 진행감을 주기 위한 추정값.
 const PROGRESS_STEPS = [
-  { label: "파서 서버 준비 중", until: 6 },
   { label: "문서 읽는 중", until: 15 },
   { label: "편제표 표 구조 분석 중", until: 35 },
   { label: "AI가 과목 정보를 정리하는 중", until: Infinity },
@@ -79,6 +78,7 @@ export default function CreatePage() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
   const [isUploading, setIsUploading] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
   const [error, setError] = useState("");
   const [elapsed, setElapsed] = useState(0);
   const [done, setDone] = useState(false);
@@ -87,10 +87,36 @@ export default function CreatePage() {
   const startedAtRef = useRef<number | null>(null);
   const errorId = "curriculum-upload-error";
 
-  // 페이지 진입 시 Render 파서를 미리 깨운다(콜드스타트 완화, fire-and-forget).
-  useEffect(() => {
-    fetch("/api/warm").catch(() => {});
+  const submittingRef = useRef(false);
+  const warmupRef = useRef<Promise<boolean> | null>(null);
+  const warmupAbortRef = useRef<AbortController | null>(null);
+  const prepareParser = useCallback(() => {
+    if (warmupRef.current) return warmupRef.current;
+    const controller = new AbortController();
+    warmupAbortRef.current = controller;
+    const timer = window.setTimeout(() => controller.abort(), 90_000);
+    const pending: Promise<boolean> = fetch("/api/warm", {
+      cache: "no-store",
+      signal: controller.signal,
+    }).then(async (response) => {
+      const body: unknown = await response.json();
+      return !controller.signal.aborted && response.ok && body !== null && typeof body === "object" &&
+        "ok" in body && body.ok === true && "ready" in body && body.ready === true;
+    }).catch(() => false).finally(() => {
+      window.clearTimeout(timer);
+      if (warmupRef.current === pending) warmupRef.current = null;
+    });
+    warmupRef.current = pending;
+    return pending;
   }, []);
+
+  useEffect(() => {
+    void prepareParser();
+    return () => {
+      warmupAbortRef.current?.abort();
+      warmupRef.current = null;
+    };
+  }, [prepareParser]);
 
   useEffect(() => {
     if (!isUploading) return;
@@ -101,8 +127,8 @@ export default function CreatePage() {
     return () => window.clearInterval(timer);
   }, [isUploading]);
 
-  const activeStep = getActiveStepIndex(elapsed);
-  const progress = done
+  const activeStep = isPreparing ? -1 : getActiveStepIndex(elapsed);
+  const progress = isPreparing ? 0 : done
     ? 100
     : Math.min(95, Math.round((1 - Math.exp(-elapsed / EXPECTED_SECONDS)) * 100));
 
@@ -143,7 +169,7 @@ export default function CreatePage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isUploading) return;
+    if (submittingRef.current) return;
 
     if (!schoolName.trim()) {
       setError("학교명을 입력해 주세요.");
@@ -154,13 +180,23 @@ export default function CreatePage() {
       return;
     }
 
+    submittingRef.current = true;
+    setIsPreparing(true);
     setError("");
     setDone(false);
     setElapsed(0);
     startedAtRef.current = Date.now();
     setIsUploading(true);
+    let navigating = false;
 
     try {
+      if (!await prepareParser()) {
+        setError("서버 준비를 확인하지 못했어요. 파일은 그대로 있으니 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+      setIsPreparing(false);
+      startedAtRef.current = Date.now();
+      setElapsed(0);
       const formData = new FormData();
       formData.set("schoolName", schoolName);
       formData.set("entranceYears", entranceYears);
@@ -180,10 +216,17 @@ export default function CreatePage() {
       }
 
       setDone(true);
+      navigating = true;
       window.location.href = payload.reviewUrl;
     } catch {
+      navigating = false;
       setError(fallbackError);
-      setIsUploading(false);
+    } finally {
+      if (!navigating) {
+        submittingRef.current = false;
+        setIsPreparing(false);
+        setIsUploading(false);
+      }
     }
   }
 
@@ -456,7 +499,7 @@ export default function CreatePage() {
             className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300 sm:w-auto"
           >
             <Upload className="h-4 w-4" aria-hidden="true" />
-            {isUploading ? "분석 중" : "업로드하고 분석하기"}
+            {isPreparing ? "서버 준비 중" : isUploading ? "분석 중" : "업로드하고 분석하기"}
           </button>
         </form>
       </section>
@@ -468,7 +511,7 @@ export default function CreatePage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-6 backdrop-blur-sm"
         >
           <div className="w-full max-w-md rounded-2xl bg-white p-7 shadow-xl">
-            <h2 className="text-lg font-bold text-slate-900">편제표를 분석하고 있어요</h2>
+            <h2 className="text-lg font-bold text-slate-900">{isPreparing ? "문서를 읽을 서버를 준비하고 있어요" : "편제표를 분석하고 있어요"}</h2>
 
             <div className="mt-5">
               <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
